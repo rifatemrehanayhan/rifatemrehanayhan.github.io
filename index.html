@@ -3,435 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rıfat Emrehan AYHAN | Portfolyo</title>
-    
-    <style>
-        @font-face {
-            font-family: 'SF Pro Display';
-            src: local('SF Pro Display Regular'), local('SF Pro Display');
-            font-weight: 400;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'SF Pro Display';
-            src: local('SF Pro Display Medium'), local('SF Pro Display');
-            font-weight: 500;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'SF Pro Display';
-            src: local('SF Pro Display Semibold'), local('SF Pro Display');
-            font-weight: 600;
-            font-style: normal;
-        }
+    <title>Rıfat Emrehan Ayhan – Portfolio</title>
 
-        /* --- GENEL AYARLAR (CV'ye uygun sade stil) --- */
+    <!-- SF Pro Display -->
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
+
+    <style>
         :root {
-            --bg-color: #121212; /* Çok koyu gri/siyah */
-            --text-color: #f0f0f0;
-            --accent-color: #888; /* Gri detaylar */
-            --card-bg: #1e1e1e;
+            --dark-blue: #1C2D4A;
+            --mid-blue: #2F4E7B;
+            --light-bg: #F4F6FA;
+            --white: #ffffff;
         }
 
         body {
             margin: 0;
-            padding: 0;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; /* SF Pro Display önce, sonra sistem fontları */
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            text-align: center;
-            overflow-x: hidden; /* Yatay kaydırmayı engelle */
+            font-family: 'SF Pro Display', sans-serif;
+            color: var(--light-bg);
+            overflow-x: hidden;
         }
 
-        /* Arkaplan Videosu */
-        .background-video-container {
+        /* Arkaplan video */
+        #bg-video {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1; /* İçeriğin arkasında kalması için */
-        }
-
-        .background-video {
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: cover;
-            filter: blur(8px) brightness(0.5); /* Blur ve karartma efekti */
-            transform: scale(1.05); /* Blur'dan kaynaklı kenar boşluklarını kapatmak için hafif büyütme */
-            animation: panBackground 60s linear infinite alternate; /* Yavaş kayma animasyonu */
+            filter: blur(12px) brightness(0.45);
+            z-index: -1;
         }
 
-        @keyframes panBackground {
-            0% { transform: scale(1.05) translate(0, 0); }
-            100% { transform: scale(1.05) translate(-5%, -5%); }
+        /* ANA SAYFA */
+        .hero {
+            text-align: center;
+            padding-top: 80px;
+        }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 600;
+            margin: 0;
+            color: var(--white);
+            text-shadow: 0px 2px 6px rgba(0,0,0,0.4);
+        }
+        .hero h2 {
+            font-size: 22px;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-top: 10px;
+            color: var(--white);
         }
 
-        /* --- BAŞLIK ALANI --- */
-        header {
-            padding: 60px 20px 40px;
-            position: relative; /* Z-index için */
-            z-index: 10;
+        /* Ana kutular */
+        .section-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 80px;
+            padding: 20px;
+        }
+        .big-box {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            padding: 50px 80px;
+            border-radius: 20px;
+            font-size: 32px;
+            border: 3px solid var(--white);
+            color: var(--white);
+            cursor: pointer;
+            transition: 0.3s;
+            user-select: none;
+            font-weight: 500;
+        }
+        .big-box:hover {
+            background: var(--white);
+            color: var(--dark-blue);
+            transform: scale(1.06);
+        }
+
+        /* Gizli bölüm tasarımı */
+        .hidden-section {
+            display: none;
+            padding: 40px;
+            color: var(--white);
+        }
+
+        /* Geri butonu */
+        .back-btn {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .back-btn:hover {
+            background: var(--white);
+            color: var(--dark-blue);
         }
 
         h1 {
-            font-size: 2.8rem; /* Daha büyük */
-            font-weight: 600;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            color: var(--white);
+            text-shadow: 0px 2px 6px rgba(0,0,0,0.4);
         }
 
-        .job-title {
-            font-size: 1.3rem; /* Daha büyük */
-            color: var(--accent-color);
-            font-weight: 400;
-            letter-spacing: 2px;
-        }
-
-        /* --- ANA SAYFA KUTULARI (Giriş Ekranı) --- */
-        .main-hero-section {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 200px); /* Üst başlık alanı çıkarıldı */
-            gap: 40px; /* Kutular arası boşluk */
-            padding: 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .hero-box {
-            background: rgba(30, 30, 30, 0.8); /* Şeffaf ama koyu */
-            border: 1px solid rgba(136, 136, 136, 0.3); /* Hafif çerçeve */
-            border-radius: 12px;
-            width: 45%; /* Ekranın yarısına yakın */
-            max-width: 500px;
-            height: 350px; /* Sabit yükseklik */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            backdrop-filter: blur(5px); /* Kutulara hafif blur */
-        }
-
-        .hero-box:hover {
-            background: rgba(240, 240, 240, 0.1); /* Hafif parlama */
-            border-color: rgba(240, 240, 240, 0.5);
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-        }
-
-        /* --- İÇERİK ALANI (Gizli kalacak) --- */
-        .content-sections {
-            display: none; /* Varsayılan olarak gizli */
-            position: relative;
-            z-index: 10;
-            background-color: var(--bg-color); /* Sekme açılınca arka plan belirginleşsin */
-            padding-top: 20px;
-        }
-
-        .content-sections.active {
-            display: block;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .section {
-            display: none; /* Varsayılan olarak gizli */
-            animation: fadeIn 0.5s;
-        }
-
-        .section.active {
-            display: block; /* Sadece seçili olan görünür */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- NAVİGASYON (Sekme Açılınca Görünen Butonlar) --- */
-        .nav-buttons {
-            margin: 30px 0;
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--text-color);
-            padding: 10px 30px;
-            margin: 0 10px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            background: var(--text-color);
-            color: var(--bg-color);
-            border-color: var(--text-color);
-        }
-
-        /* --- GRID YAPISI (Videolar ve Resimler için) --- */
-        .grid {
+        /* Video Grid */
+        .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        .video-grid video {
+            width: 100%;
+            border-radius: 14px;
+            cursor: pointer;
+            background: #000;
+            transition: 0.3s;
+            border: 3px solid rgba(255,255,255,0.4);
+        }
+        .video-grid video:hover {
+            transform: scale(1.03);
+            border-color: var(--white);
+        }
+
+        .sub-title {
+            margin-top: 40px;
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--white);
+        }
+
+        /* Görsel Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            margin-bottom: 50px;
+            margin-top: 40px;
         }
-
-        /* --- VİDEO KARTLARI --- */
-        .video-card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            position: relative;
-            aspect-ratio: 16/9;
-        }
-
-        .video-card video {
+        .image-grid img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: opacity 0.3s;
-        }
-
-        /* Video üzerine gelince çıkan yazı (Opsiyonel) */
-        .video-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.7);
-            padding: 10px;
-            font-size: 0.9rem;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .video-card:hover .video-overlay {
-            transform: translateY(0);
-        }
-
-        /* --- GÖRSEL KARTLARI --- */
-        .image-card {
-            border-radius: 8px;
-            overflow: hidden;
+            border-radius: 12px;
             cursor: pointer;
-            aspect-ratio: 1; /* Kare format */
+            transition: 0.3s;
+            border: 3px solid rgba(255,255,255,0.4);
         }
-
-        .image-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        /* Görsel Hover Efekti: Büyüme */
-        .image-card:hover img {
-            transform: scale(1.1);
-        }
-
-        /* --- ALT BAŞLIKLAR (Ekran Görüntüleri için) --- */
-        .sub-header {
-            text-align: left;
-            border-bottom: 1px solid var(--accent-color);
-            margin: 40px 0 20px 0;
-            padding-bottom: 10px;
-            font-size: 1.5rem;
-            color: var(--text-color);
-        }
-
-        /* --- LIGHTBOX (Tam Ekran Modu) --- */
-        .lightbox {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.95);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .lightbox-content {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 4px;
-            box-shadow: 0 0 20px rgba(255,255,255,0.1);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: #fff;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        /* Mobilde düzenleme */
-        @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            .job-title { font-size: 1rem; }
-            .main-hero-section { flex-direction: column; gap: 20px; }
-            .hero-box { width: 90%; height: 250px; font-size: 1.5rem; }
-            .grid { grid-template-columns: 1fr; }
+        .image-grid img:hover {
+            transform: scale(1.05);
+            border-color: var(--white);
         }
     </style>
 </head>
 <body>
-    <div class="background-video-container">
-        <video class="background-video" autoplay muted loop src="videos/background-abstract.mp4"></video>
-    </div>
 
-    <header>
-        <h1>RIFAT EMREHAN AYHAN</h1>
-        <div class="job-title">VIDEO EDİTÖRÜ | KURGU-MONTAJ | İÇERİK EDİTÖRÜ</div>
-    </header>
+    <!-- Blur abstract motion background video -->
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="https://storage.coverr.co/videos/coverr-blue-flowing-lights-5106/1080p.mp4" type="video/mp4">
+    </video>
 
-    <div id="mainHero" class="main-hero-section">
-        <div class="hero-box" onclick="showPortfolio('videos')">Video Çalışmalarım</div>
-        <div class="hero-box" onclick="showPortfolio('images')">Görsel Çalışmalarım</div>
-    </div>
-
-    <div id="portfolioContent" class="content-sections">
-        
-        <div class="nav-buttons">
-            <button class="nav-btn active" onclick="showSection('videos')">VİDEOLAR</button>
-            <button class="nav-btn" onclick="showSection('images')">GÖRSELLER</button>
+    <!-- ANA SAYFA -->
+    <div id="home">
+        <div class="hero">
+            <h1>Rıfat Emrehan Ayhan</h1>
+            <h2>Video Editörü • Kurgu & Montaj • İçerik Üreticisi</h2>
         </div>
 
-        <div class="container">
-            
-            <div id="videos" class="section active">
-                
-                <div class="sub-header">Video Çalışmaları</div>
-                <div class="grid">
-                    <div class="video-card" onclick="openLightbox('video', 'videos/ornek1.mp4')">
-                        <video src="videos/ornek1.mp4" muted loop onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
-                        <div class="video-overlay">Proje Adı 1</div>
-                    </div>
-
-                    <div class="video-card" onclick="openLightbox('video', 'videos/ornek2.mp4')">
-                        <video src="videos/ornek2.mp4" muted loop onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
-                        <div class="video-overlay">Proje Adı 2</div>
-                    </div>
-                </div>
-
-                <div class="sub-header">Program Ekran Görüntüleri (Premiere Pro / After Effects)</div>
-                <div class="grid">
-                    <div class="image-card" onclick="openLightbox('image', 'images/ekran1.jpg')">
-                        <img src="images/ekran1.jpg" alt="Premiere Pro Timeline">
-                    </div>
-                    <div class="image-card" onclick="openLightbox('image', 'images/ekran2.jpg')">
-                        <img src="images/ekran2.jpg" alt="After Effects Comp">
-                    </div>
-                </div>
-
-            </div>
-
-            <div id="images" class="section">
-                <div class="sub-header">Görsel Tasarımlar & Kapak Fotoğrafları</div>
-                <div class="grid">
-                    <div class="image-card" onclick="openLightbox('image', 'images/tasarim1.jpg')">
-                        <img src="images/tasarim1.jpg" alt="YouTube Kapak Tasarımı">
-                    </div>
-                    <div class="image-card" onclick="openLightbox('image', 'images/tasarim2.jpg')">
-                        <img src="images/tasarim2.jpg" alt="Sosyal Medya Postu">
-                    </div>
-                     <div class="image-card" onclick="openLightbox('image', 'images/tasarim3.jpg')">
-                        <img src="images/tasarim3.jpg" alt="Manipülasyon Çalışması">
-                    </div>
-                </div>
-            </div>
-
+        <div class="section-boxes">
+            <div class="big-box" onclick="showSection('videos')">Video Çalışmalarım</div>
+            <div class="big-box" onclick="showSection('images')">Görsel Çalışmalarım</div>
         </div>
     </div>
 
-    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
-        <span class="close-btn" onclick="closeLightbox(event)">&times;</span>
-        <div id="lightbox-container"></div>
+    <!-- VİDEO BÖLÜMÜ -->
+    <div id="videos" class="hidden-section">
+
+        <div class="back-btn" onclick="goHome()">← Geri</div>
+        <h1>Video Çalışmalarım</h1>
+
+        <div class="video-grid">
+            <div><video muted preload="none" src="video1.mp4"></video></div>
+            <div><video muted preload="none" src="video2.mp4"></video></div>
+        </div>
+
+        <h2 class="sub-title">Program Ekran Görüntüleri</h2>
+        <div class="image-grid">
+            <img src="ss1.jpg">
+            <img src="ss2.jpg">
+        </div>
+
+    </div>
+
+    <!-- GÖRSEL BÖLÜMÜ -->
+    <div id="images" class="hidden-section">
+
+        <div class="back-btn" onclick="goHome()">← Geri</div>
+        <h1>Görsel Çalışmalarım</h1>
+
+        <div class="image-grid">
+            <img src="img1.jpg">
+            <img src="img2.jpg">
+            <img src="img3.jpg">
+        </div>
+
     </div>
 
     <script>
-        // ANA SAYFA KUTULARI TIKLANDIĞINDA İÇERİK BÖLÜMÜNÜ GÖSTER
-        function showPortfolio(sectionToShow) {
-            document.getElementById('mainHero').style.display = 'none'; // Ana sayfa kutularını gizle
-            document.getElementById('portfolioContent').classList.add('active'); // İçerik bölümünü göster
-            showSection(sectionToShow); // İlgili bölümü aktif et (Videolar veya Görseller)
+        function showSection(id) {
+            document.getElementById("home").style.display = "none";
+            document.getElementById(id).style.display = "block";
+        }
+        function goHome() {
+            document.getElementById("videos").style.display = "none";
+            document.getElementById("images").style.display = "none";
+            document.getElementById("home").style.display = "block";
         }
 
-        // SEKMELER ARASI GEÇİŞ
-        function showSection(sectionId) {
-            // Tüm bölümleri gizle
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        // Video hover + fullscreen
+        document.querySelectorAll("video").forEach(video => {
+            video.addEventListener("mouseenter", () => {
+                video.play();
+            });
+            video.addEventListener("mouseleave", () => {
+                video.pause();
+                video.currentTime = 0;
+            });
+            video.addEventListener("click", () => {
+                if (video.requestFullscreen) video.requestFullscreen();
+                video.play();
+            });
+        });
 
-            // İstenen bölümü aç
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Butonu aktif yap
-            const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => btn.getAttribute('onclick').includes(sectionId));
-            if(activeBtn) activeBtn.classList.add('active');
-        }
-
-        // LIGHTBOX AÇMA (Video veya Resim)
-        function openLightbox(type, src) {
-            const lightbox = document.getElementById('lightbox');
-            const container = document.getElementById('lightbox-container');
-            
-            container.innerHTML = ''; // Önceki içeriği temizle
-
-            if (type === 'video') {
-                const video = document.createElement('video');
-                video.src = src;
-                video.controls = true;
-                video.autoplay = true;
-                video.className = 'lightbox-content';
-                container.appendChild(video);
-            } else {
-                const img = document.createElement('img');
-                img.src = src;
-                img.className = 'lightbox-content';
-                container.appendChild(img);
-            }
-
-            lightbox.style.display = 'flex';
-        }
-
-        // LIGHTBOX KAPATMA
-        function closeLightbox(e) {
-            // Sadece siyah alana veya X butonuna tıklayınca kapanır
-            if (e.target.id === 'lightbox' || e.target.classList.contains('close-btn')) {
-                document.getElementById('lightbox').style.display = 'none';
-                document.getElementById('lightbox-container').innerHTML = ''; // Videoyu durdurmak için içeriği sil
-            }
-        }
-
-        // Sayfa yüklendiğinde varsayılan olarak ana sayfayı göster
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('mainHero').style.display = 'flex';
-            document.getElementById('portfolioContent').classList.remove('active');
+        // Görsel tıklayınca büyük açma
+        document.querySelectorAll("img").forEach(img => {
+            img.addEventListener("click", () => {
+                const w = window.open("", "_blank");
+                w.document.write(`<img src="${img.src}" style="width:100%">`);
+            });
         });
     </script>
+
 </body>
 </html>
