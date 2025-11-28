@@ -4,9 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rıfat Emrehan AYHAN | Portfolyo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: local('SF Pro Display Regular'), local('SF Pro Display');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: local('SF Pro Display Medium'), local('SF Pro Display');
+            font-weight: 500;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: local('SF Pro Display Semibold'), local('SF Pro Display');
+            font-weight: 600;
+            font-style: normal;
+        }
+
         /* --- GENEL AYARLAR (CV'ye uygun sade stil) --- */
         :root {
             --bg-color: #121212; /* Çok koyu gri/siyah */
@@ -18,19 +36,47 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; /* SF Pro Display önce, sonra sistem fontları */
             background-color: var(--bg-color);
             color: var(--text-color);
             text-align: center;
+            overflow-x: hidden; /* Yatay kaydırmayı engelle */
+        }
+
+        /* Arkaplan Videosu */
+        .background-video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1; /* İçeriğin arkasında kalması için */
+        }
+
+        .background-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(8px) brightness(0.5); /* Blur ve karartma efekti */
+            transform: scale(1.05); /* Blur'dan kaynaklı kenar boşluklarını kapatmak için hafif büyütme */
+            animation: panBackground 60s linear infinite alternate; /* Yavaş kayma animasyonu */
+        }
+
+        @keyframes panBackground {
+            0% { transform: scale(1.05) translate(0, 0); }
+            100% { transform: scale(1.05) translate(-5%, -5%); }
         }
 
         /* --- BAŞLIK ALANI --- */
         header {
-            padding: 60px 20px;
+            padding: 60px 20px 40px;
+            position: relative; /* Z-index için */
+            z-index: 10;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem; /* Daha büyük */
             font-weight: 600;
             margin-bottom: 10px;
             letter-spacing: 1px;
@@ -38,13 +84,84 @@
         }
 
         .job-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem; /* Daha büyük */
             color: var(--accent-color);
-            font-weight: 300;
+            font-weight: 400;
             letter-spacing: 2px;
         }
 
-        /* --- NAVİGASYON (SEKMELER) --- */
+        /* --- ANA SAYFA KUTULARI (Giriş Ekranı) --- */
+        .main-hero-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px); /* Üst başlık alanı çıkarıldı */
+            gap: 40px; /* Kutular arası boşluk */
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-box {
+            background: rgba(30, 30, 30, 0.8); /* Şeffaf ama koyu */
+            border: 1px solid rgba(136, 136, 136, 0.3); /* Hafif çerçeve */
+            border-radius: 12px;
+            width: 45%; /* Ekranın yarısına yakın */
+            max-width: 500px;
+            height: 350px; /* Sabit yükseklik */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px); /* Kutulara hafif blur */
+        }
+
+        .hero-box:hover {
+            background: rgba(240, 240, 240, 0.1); /* Hafif parlama */
+            border-color: rgba(240, 240, 240, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+        }
+
+        /* --- İÇERİK ALANI (Gizli kalacak) --- */
+        .content-sections {
+            display: none; /* Varsayılan olarak gizli */
+            position: relative;
+            z-index: 10;
+            background-color: var(--bg-color); /* Sekme açılınca arka plan belirginleşsin */
+            padding-top: 20px;
+        }
+
+        .content-sections.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            display: none; /* Varsayılan olarak gizli */
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block; /* Sadece seçili olan görünür */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- NAVİGASYON (Sekme Açılınca Görünen Butonlar) --- */
         .nav-buttons {
             margin: 30px 0;
         }
@@ -65,27 +182,6 @@
             background: var(--text-color);
             color: var(--bg-color);
             border-color: var(--text-color);
-        }
-
-        /* --- İÇERİK ALANI --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .section {
-            display: none; /* Varsayılan olarak gizli */
-            animation: fadeIn 0.5s;
-        }
-
-        .section.active {
-            display: block; /* Sadece seçili olan görünür */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* --- GRID YAPISI (Videolar ve Resimler için) --- */
@@ -194,67 +290,81 @@
 
         /* Mobilde düzenleme */
         @media (max-width: 768px) {
-            h1 { font-size: 1.8rem; }
+            h1 { font-size: 2rem; }
+            .job-title { font-size: 1rem; }
+            .main-hero-section { flex-direction: column; gap: 20px; }
+            .hero-box { width: 90%; height: 250px; font-size: 1.5rem; }
             .grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+    <div class="background-video-container">
+        <video class="background-video" autoplay muted loop src="videos/background-abstract.mp4"></video>
+    </div>
 
     <header>
         <h1>RIFAT EMREHAN AYHAN</h1>
         <div class="job-title">VIDEO EDİTÖRÜ | KURGU-MONTAJ | İÇERİK EDİTÖRÜ</div>
     </header>
 
-    <div class="nav-buttons">
-        <button class="nav-btn active" onclick="showSection('videos')">VİDEOLAR</button>
-        <button class="nav-btn" onclick="showSection('images')">GÖRSELLER</button>
+    <div id="mainHero" class="main-hero-section">
+        <div class="hero-box" onclick="showPortfolio('videos')">Video Çalışmalarım</div>
+        <div class="hero-box" onclick="showPortfolio('images')">Görsel Çalışmalarım</div>
     </div>
 
-    <div class="container">
+    <div id="portfolioContent" class="content-sections">
         
-        <div id="videos" class="section active">
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('videos')">VİDEOLAR</button>
+            <button class="nav-btn" onclick="showSection('images')">GÖRSELLER</button>
+        </div>
+
+        <div class="container">
             
-            <div class="sub-header">Video Çalışmaları</div>
-            <div class="grid">
-                <div class="video-card" onclick="openLightbox('video', 'videos/ornek1.mp4')">
-                    <video src="videos/ornek1.mp4" muted loop onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
-                    <div class="video-overlay">Proje Adı 1</div>
+            <div id="videos" class="section active">
+                
+                <div class="sub-header">Video Çalışmaları</div>
+                <div class="grid">
+                    <div class="video-card" onclick="openLightbox('video', 'videos/ornek1.mp4')">
+                        <video src="videos/ornek1.mp4" muted loop onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
+                        <div class="video-overlay">Proje Adı 1</div>
+                    </div>
+
+                    <div class="video-card" onclick="openLightbox('video', 'videos/ornek2.mp4')">
+                        <video src="videos/ornek2.mp4" muted loop onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
+                        <div class="video-overlay">Proje Adı 2</div>
+                    </div>
                 </div>
 
-                <div class="video-card" onclick="openLightbox('video', 'videos/ornek2.mp4')">
-                    <video src="videos/ornek2.mp4" muted loop onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"></video>
-                    <div class="video-overlay">Proje Adı 2</div>
+                <div class="sub-header">Program Ekran Görüntüleri (Premiere Pro / After Effects)</div>
+                <div class="grid">
+                    <div class="image-card" onclick="openLightbox('image', 'images/ekran1.jpg')">
+                        <img src="images/ekran1.jpg" alt="Premiere Pro Timeline">
+                    </div>
+                    <div class="image-card" onclick="openLightbox('image', 'images/ekran2.jpg')">
+                        <img src="images/ekran2.jpg" alt="After Effects Comp">
+                    </div>
                 </div>
+
             </div>
 
-            <div class="sub-header">Program Ekran Görüntüleri (Premiere Pro / After Effects)</div>
-            <div class="grid">
-                <div class="image-card" onclick="openLightbox('image', 'images/ekran1.jpg')">
-                    <img src="images/ekran1.jpg" alt="Premiere Pro Timeline">
-                </div>
-                <div class="image-card" onclick="openLightbox('image', 'images/ekran2.jpg')">
-                    <img src="images/ekran2.jpg" alt="After Effects Comp">
+            <div id="images" class="section">
+                <div class="sub-header">Görsel Tasarımlar & Kapak Fotoğrafları</div>
+                <div class="grid">
+                    <div class="image-card" onclick="openLightbox('image', 'images/tasarim1.jpg')">
+                        <img src="images/tasarim1.jpg" alt="YouTube Kapak Tasarımı">
+                    </div>
+                    <div class="image-card" onclick="openLightbox('image', 'images/tasarim2.jpg')">
+                        <img src="images/tasarim2.jpg" alt="Sosyal Medya Postu">
+                    </div>
+                     <div class="image-card" onclick="openLightbox('image', 'images/tasarim3.jpg')">
+                        <img src="images/tasarim3.jpg" alt="Manipülasyon Çalışması">
+                    </div>
                 </div>
             </div>
 
         </div>
-
-        <div id="images" class="section">
-            <div class="sub-header">Görsel Tasarımlar & Kapak Fotoğrafları</div>
-            <div class="grid">
-                <div class="image-card" onclick="openLightbox('image', 'images/tasarim1.jpg')">
-                    <img src="images/tasarim1.jpg" alt="YouTube Kapak Tasarımı">
-                </div>
-                <div class="image-card" onclick="openLightbox('image', 'images/tasarim2.jpg')">
-                    <img src="images/tasarim2.jpg" alt="Sosyal Medya Postu">
-                </div>
-                 <div class="image-card" onclick="openLightbox('image', 'images/tasarim3.jpg')">
-                    <img src="images/tasarim3.jpg" alt="Manipülasyon Çalışması">
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
@@ -263,6 +373,13 @@
     </div>
 
     <script>
+        // ANA SAYFA KUTULARI TIKLANDIĞINDA İÇERİK BÖLÜMÜNÜ GÖSTER
+        function showPortfolio(sectionToShow) {
+            document.getElementById('mainHero').style.display = 'none'; // Ana sayfa kutularını gizle
+            document.getElementById('portfolioContent').classList.add('active'); // İçerik bölümünü göster
+            showSection(sectionToShow); // İlgili bölümü aktif et (Videolar veya Görseller)
+        }
+
         // SEKMELER ARASI GEÇİŞ
         function showSection(sectionId) {
             // Tüm bölümleri gizle
@@ -309,6 +426,12 @@
                 document.getElementById('lightbox-container').innerHTML = ''; // Videoyu durdurmak için içeriği sil
             }
         }
+
+        // Sayfa yüklendiğinde varsayılan olarak ana sayfayı göster
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('mainHero').style.display = 'flex';
+            document.getElementById('portfolioContent').classList.remove('active');
+        });
     </script>
 </body>
 </html>
