@@ -16,11 +16,12 @@
         }
 
         body {
-            <div id="cursor-orb"></div>
             margin: 0;
+            /* Ana font olarak SF Pro Display kullanılıyor */
             font-family: 'SF Pro Display', sans-serif;
             color: var(--light-bg);
             overflow-x: hidden;
+            cursor: none; /* Varsayılan imleci gizle, sadece hale görünsün */
         }
 
         /* Arkaplan video */
@@ -29,15 +30,38 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
-            /* Video çok parlaksa yazılar okunmaz, bu yüzden karartıyoruz */
-            filter: blur(1px) brightness(0.4); 
+            /* Blur 4px'e düşürüldü */
+            filter: blur(4px) brightness(0.4); 
             z-index: -1;
+        }
+
+        /* --- FARE TAKİPÇİSİ IŞIK HALESİ (CURSOR ORB) --- */
+        #cursor-orb {
+            position: fixed;
+            width: 30px; /* Harenin boyutu */
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2); /* Hafif şeffaf beyaz ışık */
+            pointer-events: none; /* Tıklamaları engellememesi için */
+            transform: translate(-50%, -50%); /* Merkezi farenin ucuna hizalar */
+            filter: blur(8px); /* Yumuşak bulanıklık efekti */
+            z-index: 9999; /* En üstte olmalı */
+            transition: transform 0.15s ease-out; /* Akıcı hareket */
+            opacity: 0.7;
+        }
+        /* Big Box üzerine gelince belirginleşme ve büyüme */
+        .big-box:hover ~ #cursor-orb {
+            transform: translate(-50%, -50%) scale(1.5);
+            background: rgba(255, 255, 255, 0.4);
+            filter: blur(12px);
         }
 
         /* ANA SAYFA */
         .hero {
             text-align: center;
             padding-top: 100px;
+            position: relative;
+            z-index: 10;
         }
         .hero h1 {
             font-size: 48px;
@@ -63,10 +87,12 @@
             gap: 40px;
             margin-top: 80px;
             padding: 20px;
-            flex-wrap: wrap; /* Mobilde alt alta geçsin */
+            flex-wrap: wrap; 
+            position: relative;
+            z-index: 10;
         }
         .big-box {
-            background: rgba(255,255,255,0.05); /* Daha şeffaf */
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(10px);
             padding: 50px 60px;
             border-radius: 16px;
@@ -85,6 +111,7 @@
             color: #000;
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            cursor: none; /* Kutu üzerinde fare imlecini gösterme */
         }
 
         /* Gizli bölüm tasarımı */
@@ -120,7 +147,7 @@
         /* Video Grid */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 30px;
         }
         .video-container {
@@ -162,7 +189,7 @@
             cursor: pointer;
             transition: 0.3s;
             border: 1px solid rgba(255,255,255,0.2);
-            aspect-ratio: 16/9; /* Görselleri standart kutu yapar */
+            aspect-ratio: 16/9;
         }
         .image-grid img:hover {
             transform: scale(1.03);
@@ -178,6 +205,8 @@
     </style>
 </head>
 <body>
+
+    <div id="cursor-orb"></div>
 
     <video id="bg-video" autoplay muted loop playsinline>
         <source src="videos/background.mp4" type="video/mp4">
@@ -206,7 +235,7 @@
             <div class="video-container">
                 <video muted loop preload="metadata" src="videos/video2.mp4"></video>
             </div>
-        </div>
+            </div>
 
         <h2 class="sub-title">Program Ekran Görüntüleri</h2>
         <div class="image-grid">
@@ -227,10 +256,11 @@
     </div>
 
     <script>
+        // ANA SAYFA VE İÇERİK GEÇİŞLERİ
         function showSection(id) {
             document.getElementById("home").style.display = "none";
             document.getElementById(id).style.display = "block";
-            window.scrollTo(0,0); // Sayfa başına git
+            window.scrollTo(0,0);
         }
         function goHome() {
             document.getElementById("videos").style.display = "none";
@@ -238,6 +268,15 @@
             document.getElementById("home").style.display = "block";
         }
 
+        // --- FARE TAKİP EFETKİ KODU BURADA ---
+        document.addEventListener('mousemove', (e) => {
+            const orb = document.getElementById('cursor-orb');
+            if (orb) {
+                orb.style.left = `${e.clientX}px`;
+                orb.style.top = `${e.clientY}px`;
+            }
+        });
+        
         // Video hover + fullscreen
         document.querySelectorAll(".video-grid video").forEach(video => {
             video.addEventListener("mouseenter", () => {
@@ -245,7 +284,7 @@
             });
             video.addEventListener("mouseleave", () => {
                 video.pause();
-                video.currentTime = 0; // Başa sar
+                video.currentTime = 0;
             });
             video.addEventListener("click", () => {
                 if (video.requestFullscreen) {
@@ -258,18 +297,17 @@
             });
         });
 
-        // Görsel tıklayınca büyük açma
+        // Görsel tıklayınca büyük açma (lightbox/modal yerine yeni sekme)
         document.querySelectorAll(".image-grid img").forEach(img => {
             img.addEventListener("click", () => {
                 const w = window.open("", "_blank");
                 w.document.write(`
                     <body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;height:100vh;">
-                        <img src="${img.src}" style="max-width:100%;max-height:100%;box-shadow:0 0 20px rgba(0,0,0,0.5)">
+                        <img src="${img.src}" style="max-width:95%;max-height:95%;object-fit:contain;box-shadow:0 0 20px rgba(0,0,0,0.5)">
                     </body>
                 `);
             });
         });
     </script>
-
 </body>
 </html>
