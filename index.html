@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rıfat Emrehan Ayhan – Portfolio</title>
 
-    <!-- SF Pro Display -->
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
 
     <style>
@@ -29,28 +28,31 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
-            filter: blur(12px) brightness(0.45);
+            /* Video çok parlaksa yazılar okunmaz, bu yüzden karartıyoruz */
+            filter: blur(8px) brightness(0.4); 
             z-index: -1;
         }
 
         /* ANA SAYFA */
         .hero {
             text-align: center;
-            padding-top: 80px;
+            padding-top: 100px;
         }
         .hero h1 {
             font-size: 48px;
-            font-weight: 600;
+            font-weight: 700;
             margin: 0;
             color: var(--white);
-            text-shadow: 0px 2px 6px rgba(0,0,0,0.4);
+            text-shadow: 0px 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
         }
         .hero h2 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 300;
             opacity: 0.9;
             margin-top: 10px;
             color: var(--white);
+            letter-spacing: 0.5px;
         }
 
         /* Ana kutular */
@@ -60,109 +62,126 @@
             gap: 40px;
             margin-top: 80px;
             padding: 20px;
+            flex-wrap: wrap; /* Mobilde alt alta geçsin */
         }
         .big-box {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(15px);
-            padding: 50px 80px;
-            border-radius: 20px;
-            font-size: 32px;
-            border: 3px solid var(--white);
+            background: rgba(255,255,255,0.05); /* Daha şeffaf */
+            backdrop-filter: blur(10px);
+            padding: 50px 60px;
+            border-radius: 16px;
+            font-size: 28px;
+            border: 1px solid rgba(255,255,255,0.3);
             color: var(--white);
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.4s ease;
             user-select: none;
             font-weight: 500;
+            min-width: 200px;
+            text-align: center;
         }
         .big-box:hover {
-            background: var(--white);
-            color: var(--dark-blue);
-            transform: scale(1.06);
+            background: rgba(255,255,255,0.9);
+            color: #000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         /* Gizli bölüm tasarımı */
         .hidden-section {
             display: none;
             padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
             color: var(--white);
+            background: rgba(0,0,0,0.6); /* İçerik okunsun diye hafif siyah zemin */
+            min-height: 100vh;
         }
 
         /* Geri butonu */
         .back-btn {
-            font-size: 18px;
-            margin-bottom: 20px;
+            font-size: 16px;
+            margin-bottom: 30px;
             display: inline-block;
-            background: rgba(255,255,255,0.15);
-            padding: 10px 20px;
-            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 24px;
+            border-radius: 30px;
             cursor: pointer;
             transition: 0.3s;
-            border: 2px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .back-btn:hover {
             background: var(--white);
-            color: var(--dark-blue);
-        }
-
-        h1 {
-            color: var(--white);
-            text-shadow: 0px 2px 6px rgba(0,0,0,0.4);
+            color: #000;
         }
 
         /* Video Grid */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        .video-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: #000;
         }
         .video-grid video {
             width: 100%;
-            border-radius: 14px;
+            display: block;
             cursor: pointer;
-            background: #000;
             transition: 0.3s;
-            border: 3px solid rgba(255,255,255,0.4);
-        }
-        .video-grid video:hover {
-            transform: scale(1.03);
-            border-color: var(--white);
         }
 
         .sub-title {
-            margin-top: 40px;
-            font-size: 28px;
-            font-weight: 500;
+            margin-top: 60px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
             color: var(--white);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 10px;
         }
 
         /* Görsel Grid */
         .image-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            margin-top: 40px;
+            margin-top: 20px;
         }
         .image-grid img {
             width: 100%;
-            border-radius: 12px;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
             cursor: pointer;
             transition: 0.3s;
-            border: 3px solid rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            aspect-ratio: 16/9; /* Görselleri standart kutu yapar */
         }
         .image-grid img:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
             border-color: var(--white);
+            z-index: 2;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .video-grid { grid-template-columns: 1fr; }
+            .section-boxes { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Blur abstract motion background video -->
     <video id="bg-video" autoplay muted loop playsinline>
-        <source src="https://youtu.be/yZVXJnXjko4" type="video/mp4">
+        <source src="videos/background.mp4" type="video/mp4">
     </video>
 
-    <!-- ANA SAYFA -->
     <div id="home">
         <div class="hero">
             <h1>Rıfat Emrehan Ayhan</h1>
@@ -175,43 +194,42 @@
         </div>
     </div>
 
-    <!-- VİDEO BÖLÜMÜ -->
     <div id="videos" class="hidden-section">
-
-        <div class="back-btn" onclick="goHome()">← Geri</div>
+        <div class="back-btn" onclick="goHome()">← Ana Sayfa</div>
         <h1>Video Çalışmalarım</h1>
 
         <div class="video-grid">
-            <div><video muted preload="none" src="video1.mp4"></video></div>
-            <div><video muted preload="none" src="video2.mp4"></video></div>
+            <div class="video-container">
+                <video muted loop preload="metadata" src="videos/video1.mp4"></video>
+            </div>
+            <div class="video-container">
+                <video muted loop preload="metadata" src="videos/video2.mp4"></video>
+            </div>
         </div>
 
         <h2 class="sub-title">Program Ekran Görüntüleri</h2>
         <div class="image-grid">
-            <img src="ss1.jpg">
-            <img src="ss2.jpg">
+            <img src="images/ss1.jpg">
+            <img src="images/ss2.jpg">
         </div>
-
     </div>
 
-    <!-- GÖRSEL BÖLÜMÜ -->
     <div id="images" class="hidden-section">
-
-        <div class="back-btn" onclick="goHome()">← Geri</div>
+        <div class="back-btn" onclick="goHome()">← Ana Sayfa</div>
         <h1>Görsel Çalışmalarım</h1>
 
         <div class="image-grid">
-            <img src="img1.jpg">
-            <img src="img2.jpg">
-            <img src="img3.jpg">
+            <img src="images/img1.jpg">
+            <img src="images/img2.jpg">
+            <img src="images/img3.jpg">
         </div>
-
     </div>
 
     <script>
         function showSection(id) {
             document.getElementById("home").style.display = "none";
             document.getElementById(id).style.display = "block";
+            window.scrollTo(0,0); // Sayfa başına git
         }
         function goHome() {
             document.getElementById("videos").style.display = "none";
@@ -220,25 +238,34 @@
         }
 
         // Video hover + fullscreen
-        document.querySelectorAll("video").forEach(video => {
+        document.querySelectorAll(".video-grid video").forEach(video => {
             video.addEventListener("mouseenter", () => {
                 video.play();
             });
             video.addEventListener("mouseleave", () => {
                 video.pause();
-                video.currentTime = 0;
+                video.currentTime = 0; // Başa sar
             });
             video.addEventListener("click", () => {
-                if (video.requestFullscreen) video.requestFullscreen();
+                if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                } else if (video.webkitRequestFullscreen) { /* Safari */
+                    video.webkitRequestFullscreen();
+                }
+                video.muted = false; // Tam ekranda sesi aç
                 video.play();
             });
         });
 
         // Görsel tıklayınca büyük açma
-        document.querySelectorAll("img").forEach(img => {
+        document.querySelectorAll(".image-grid img").forEach(img => {
             img.addEventListener("click", () => {
                 const w = window.open("", "_blank");
-                w.document.write(`<img src="${img.src}" style="width:100%">`);
+                w.document.write(`
+                    <body style="margin:0;background:#111;display:flex;align-items:center;justify-content:center;height:100vh;">
+                        <img src="${img.src}" style="max-width:100%;max-height:100%;box-shadow:0 0 20px rgba(0,0,0,0.5)">
+                    </body>
+                `);
             });
         });
     </script>
