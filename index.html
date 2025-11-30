@@ -38,8 +38,8 @@
         /* --- FARE TAKİPÇİSİ IŞIK HALESİ (CURSOR ORB) --- */
         #cursor-orb {
             position: fixed;
-            width: 20px; /* Harenin boyutu */
-            height: 20px;
+            width: 30px; /* Harenin boyutu */
+            height: 30px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.2); /* Hafif şeffaf beyaz ışık */
             pointer-events: none; /* Tıklamaları engellememesi için */
@@ -47,7 +47,7 @@
             filter: blur(8px); /* Yumuşak bulanıklık efekti */
             z-index: 9999; /* En üstte olmalı */
             transition: transform 0.15s ease-out; /* Akıcı hareket */
-            opacity: 0.5;
+            opacity: 1;
         }
         /* Big Box üzerine gelince belirginleşme ve büyüme */
         .big-box:hover ~ #cursor-orb {
