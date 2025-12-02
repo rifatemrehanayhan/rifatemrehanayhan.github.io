@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
 
     <style>
+
+        .section-boxes {
+    perspective: 1200px;
+}
+
+        
         :root {
             --dark-blue: #1C2D4A;
             --mid-blue: #2F4E7B;
@@ -66,33 +72,39 @@
             padding: 20px;
         }
         .big-box {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(10px);
-    padding: 50px 80px;
-    border-radius: 20px;
-    font-size: 32px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            padding: 50px 80px;
+            border-radius: 20px;
+            font-size: 32px;
+        
+            /* Kenar çizgisi yok */
+            border: none;
+        
+            /* HAFİF GLOW EFEKTİ */
+            box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+        
+            color: var(--white);
+            cursor: pointer;
+            transition: 0.35s;
+            user-select: none;
+            font-weight: 500;
+        }
 
-    /* Kenar çizgisi yok */
-    border: none;
+        .big-box {
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
 
-    /* HAFİF GLOW EFEKTİ */
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
-
-    color: var(--white);
-    cursor: pointer;
-    transition: 0.35s;
-    user-select: none;
-    font-weight: 500;
-}
-
-.big-box:hover {
-    background: var(--white);
-    color: var(--dark-blue);
-    transform: scale(1.06);
-
-    /* Hover'da glow biraz daha artar */
-    box-shadow: 0 0 28px rgba(255, 255, 255, 0.45);
-}
+        
+        .big-box:hover {
+            background: var(--white);
+            color: var(--dark-blue);
+            transform: scale(1.06);
+        
+            /* Hover'da glow biraz daha artar */
+            box-shadow: 0 0 28px rgba(255, 255, 255, 0.45);
+        }
 
 
 
@@ -219,6 +231,30 @@
     </div>
 
     <script>
+
+    // 3D TILT CARD EFFECT
+    document.querySelectorAll(".big-box").forEach(card => {
+    
+        card.addEventListener("mousemove", e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;    // kutu içindeki fare konumu X
+            const y = e.clientY - rect.top;     // kutu içindeki fare konumu Y
+    
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+    
+            // Ne kadar döneceği (derece)
+            const rotateX = ((y - centerY) / 12) * -1;
+            const rotateY = (x - centerX) / 12;
+    
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.06)`;
+        });
+    
+        card.addEventListener("mouseleave", () => {
+            card.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+        });
+    });
+        
     function showSection(id) {
         document.getElementById("home").style.display = "none";
         document.getElementById(id).style.display = "block";
