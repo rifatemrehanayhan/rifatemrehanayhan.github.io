@@ -207,39 +207,41 @@
     </div>
 
     <script>
-        function showSection(id) {
-            document.getElementById("home").style.display = "none";
-            document.getElementById(id).style.display = "block";
-        }
-        function goHome() {
-            document.getElementById("videos").style.display = "none";
-            document.getElementById("images").style.display = "none";
-            document.getElementById("home").style.display = "block";
-        }
+    function showSection(id) {
+        document.getElementById("home").style.display = "none";
+        document.getElementById(id).style.display = "block";
+    }
 
-        // Video hover + fullscreen
-        document.querySelectorAll("video").forEach(video => {
-            video.addEventListener("mouseenter", () => {
-                video.play();
-            });
-            video.addEventListener("mouseleave", () => {
-                video.pause();
-                video.currentTime = 0;
-            });
-            video.addEventListener("click", () => {
-                if (video.requestFullscreen) video.requestFullscreen();
-                video.play();
-            });
-        });
+    function goHome() {
+        document.getElementById("videos").style.display = "none";
+        document.getElementById("images").style.display = "none";
+        document.getElementById("home").style.display = "block";
+    }
 
-        // Görsel tıklanınca büyük açma
-        document.querySelectorAll("img").forEach(img => {
-            img.addEventListener("click", () => {
-                const w = window.open("", "_blank");
-                w.document.write(`<img src="${img.src}" style="width:100%">`);
-            });
+    // SADECE galeri videolarını seç
+    document.querySelectorAll("video:not(#bg-video)").forEach(video => {
+        video.addEventListener("mouseenter", () => {
+            video.play();
         });
-    </script>
+        video.addEventListener("mouseleave", () => {
+            video.pause();
+            video.currentTime = 0;
+        });
+        video.addEventListener("click", () => {
+            if (video.requestFullscreen) video.requestFullscreen();
+            video.play();
+        });
+    });
+
+    // Görselleri tıklandığında büyük açma
+    document.querySelectorAll("img").forEach(img => {
+        img.addEventListener("click", () => {
+            const w = window.open("", "_blank");
+            w.document.write(`<img src="${img.src}" style="width:100%">`);
+        });
+    });
+</script>
+
 
 </body>
 </html>
