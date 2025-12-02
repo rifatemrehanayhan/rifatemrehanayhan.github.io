@@ -71,19 +71,29 @@
     padding: 50px 80px;
     border-radius: 20px;
     font-size: 32px;
-    /* KENAR ÇİZGİSİ KALDIRILDI */
+
+    /* Kenar çizgisi yok */
     border: none;
+
+    /* HAFİF GLOW EFEKTİ */
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+
     color: var(--white);
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.35s;
     user-select: none;
     font-weight: 500;
 }
+
 .big-box:hover {
     background: var(--white);
     color: var(--dark-blue);
     transform: scale(1.06);
+
+    /* Hover'da glow biraz daha artar */
+    box-shadow: 0 0 28px rgba(255, 255, 255, 0.45);
 }
+
 
 
         /* Gizli bölümler */
