@@ -23,7 +23,7 @@
             overflow-x: hidden;
         }
 
-        /* Arkaplan video */
+        /* ARKAPLAN VİDEO */
         #bg-video {
             position: fixed;
             top: 0; 
@@ -32,9 +32,10 @@
             height: 100%;
             object-fit: cover;
             z-index: -1;
-            filter: blur(12px) brightness(0.45);
+            
+            /* İSTEDİĞİN BLUR 1px */
+            filter: blur(1px) brightness(0.55);
         }
-
 
         /* ANA SAYFA */
         .hero {
@@ -65,8 +66,8 @@
             padding: 20px;
         }
         .big-box {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(15px);
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
             padding: 50px 80px;
             border-radius: 20px;
             font-size: 32px;
@@ -83,7 +84,7 @@
             transform: scale(1.06);
         }
 
-        /* Gizli bölüm tasarımı */
+        /* Gizli bölümler */
         .hidden-section {
             display: none;
             padding: 40px;
@@ -107,11 +108,6 @@
             color: var(--dark-blue);
         }
 
-        h1 {
-            color: var(--white);
-            text-shadow: 0px 2px 6px rgba(0,0,0,0.4);
-        }
-
         /* Video Grid */
         .video-grid {
             display: grid;
@@ -129,13 +125,6 @@
         .video-grid video:hover {
             transform: scale(1.03);
             border-color: var(--white);
-        }
-
-        .sub-title {
-            margin-top: 40px;
-            font-size: 28px;
-            font-weight: 500;
-            color: var(--white);
         }
 
         /* Görsel Grid */
@@ -156,13 +145,19 @@
             transform: scale(1.05);
             border-color: var(--white);
         }
+
+        .sub-title {
+            margin-top: 40px;
+            font-size: 28px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Blur abstract motion background video -->
-    <video> id="bg-video" autoplay muted loop playsinline>
-        <source src="videos/background.mp4">
+    <!-- Senin klasöründeki background.mp4 -->
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="videos/background.mp4" type="video/mp4">
     </video>
 
     <!-- ANA SAYFA -->
@@ -237,7 +232,7 @@
             });
         });
 
-        // Görsel tıklayınca büyük açma
+        // Görsel tıklanınca büyük açma
         document.querySelectorAll("img").forEach(img => {
             img.addEventListener("click", () => {
                 const w = window.open("", "_blank");
