@@ -19,8 +19,8 @@
             margin: 0;
             font-family: 'SF Pro Display', sans-serif;
             color: var(--light-bg);
-            overflow-x: hidden; /* Yan kaydırma çubuğunu gizle */
-            background-color: #000; /* Yüklenirken siyah görünsün */
+            overflow-x: hidden;
+            background-color: #000;
         }
 
         /* --- ARKAPLAN VİDEO --- */
@@ -35,51 +35,67 @@
             filter: blur(1px) brightness(0.55);
         }
 
-        /* --- SAYFA GEÇİŞ SİSTEMİ (YENİ) --- */
+        /* --- SAYFA GEÇİŞ SİSTEMİ (GÜNCELLENDİ) --- */
         .page-section {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            min-height: 100vh; /* Tüm sayfayı kapla */
+            min-height: 100vh;
             padding-bottom: 50px;
             box-sizing: border-box;
             
-            /* Animasyon Ayarları */
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
+            /* Animasyon süresi ve yumuşaklığı */
+            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
             opacity: 0;
-            pointer-events: none; /* Görünmezken tıklamayı engelle */
-            
-            /* Varsayılan olarak solda gizli beklesin (İsteğine göre) */
-            transform: translateX(-100%); 
+            pointer-events: none;
         }
 
-        /* Ekranda görünen sayfa */
+        /* --- ANA SAYFA --- */
+        #home {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(0) scale(1); /* Başlangıçta tam ortada ve normal boyutta */
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* EFEKT 1: Videolara giderken Ana Sayfa (Sağa Kay + Büyü + Silin) */
+        #home.slide-out-right {
+            transform: translateX(80%) scale(1.3) !important;
+            opacity: 0;
+        }
+
+        /* EFEKT 2: Görsellere giderken Ana Sayfa (Sola Kay + Büyü + Silin) */
+        #home.slide-out-left {
+            transform: translateX(-80%) scale(1.3) !important;
+            opacity: 0;
+        }
+
+        /* --- İÇERİK SAYFALARI BAŞLANGIÇ POZİSYONLARI --- */
+        
+        /* Video Sayfası: Solda bekler */
+        #videos {
+            transform: translateX(-100%);
+        }
+
+        /* Görsel Sayfası: Sağda bekler */
+        #images {
+            transform: translateX(100%);
+        }
+
+        /* Aktif olunca merkeze gelme sınıfı */
         .page-section.active {
             opacity: 1;
             pointer-events: all;
-            transform: translateX(0); /* Merkeze gel */
-            z-index: 10;
+            transform: translateX(0) !important; /* Her zaman merkeze gel */
+            z-index: 20;
         }
 
-        /* Ana Sayfa Özel Durumu: Başlangıçta merkezde */
-        #home {
-            transform: translateX(0);
-            opacity: 1;
-            pointer-events: all;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Dikey ortalama */
-            justify-content: flex-start;
-        }
 
-        /* Ana Sayfa çıkarken sağa gitsin (İsteğin üzerine) */
-        .page-section.slide-right {
-            transform: translateX(100%) !important;
-            opacity: 0;
-        }
-
-        /* --- ANA SAYFA İÇERİK --- */
+        /* --- DİĞER TASARIM ÖGELERİ (KUTULAR, METİNLER) --- */
         .hero {
             text-align: center;
             padding-top: 100px;
@@ -105,7 +121,7 @@
             gap: 40px;
             margin-top: 80px;
             padding: 20px;
-            perspective: 1200px; /* 3D efekt için gerekli */
+            perspective: 1200px;
         }
 
         .big-box {
@@ -131,8 +147,7 @@
             box-shadow: 0 0 28px rgba(255, 255, 255, 0.45);
         }
 
-        /* --- İÇERİK SAYFALARI --- */
-        /* Padding ayarı, absolute olduğu için üstten boşluk bırakmalı */
+        /* Padding ayarları */
         #videos, #images {
             padding-top: 40px; 
             padding-left: 10%;
@@ -200,7 +215,6 @@
             font-weight: 500;
         }
 
-        /* Mobilde düzenleme */
         @media (max-width: 768px) {
             .section-boxes { flex-direction: column; align-items: center; }
             .page-section { padding-left: 20px; padding-right: 20px; }
@@ -214,51 +228,47 @@
         <source src="videos/background.mp4" type="video/mp4">
     </video>
 
-    <div id="home" class="page-section active">
+    <div id="home" class="page-section">
         <div class="hero">
             <h1>Rıfat Emrehan Ayhan</h1>
             <h2>Video Editörü • Kurgu & Montaj • İçerik Üreticisi</h2>
         </div>
 
         <div class="section-boxes">
-            <div class="big-box" onclick="showSection('videos')">Video Çalışmalarım</div>
-            <div class="big-box" onclick="showSection('images')">Görsel Çalışmalarım</div>
+            <div class="big-box" onclick="goToVideos()">Video Çalışmalarım</div>
+            <div class="big-box" onclick="goToImages()">Görsel Çalışmalarım</div>
         </div>
     </div>
 
     <div id="videos" class="page-section">
-
         <div class="back-btn" onclick="goHome()">← Geri</div>
         <h1>Video Çalışmalarım</h1>
 
         <div class="video-grid">
-            <div><video muted preload="none" src="video1.mp4"></video></div>
-            <div><video muted preload="none" src="video2.mp4"></video></div>
+            <div><video muted preload="none" src="videos/video1.mp4"></video></div>
+            <div><video muted preload="none" src="videos/video2.mp4"></video></div>
         </div>
 
         <h2 class="sub-title">Program Ekran Görüntüleri</h2>
         <div class="image-grid">
-            <img src="ss1.jpg">
-            <img src="ss2.jpg">
+            <img src="images/ss1.jpg">
+            <img src="images/ss2.jpg">
         </div>
-
     </div>
 
     <div id="images" class="page-section">
-
         <div class="back-btn" onclick="goHome()">← Geri</div>
         <h1>Görsel Çalışmalarım</h1>
 
         <div class="image-grid">
-            <img src="img1.jpg">
-            <img src="img2.jpg">
-            <img src="img3.jpg">
+            <img src="images/img1.jpg">
+            <img src="images/img2.jpg">
+            <img src="images/img3.jpg">
         </div>
-
     </div>
 
     <script>
-    // 3D TILT CARD EFFECT
+    // 3D KUTU EFEKTİ
     document.querySelectorAll(".big-box").forEach(card => {
         card.addEventListener("mousemove", e => {
             const rect = card.getBoundingClientRect();
@@ -275,37 +285,48 @@
         });
     });
 
-    // SAYFA GEÇİŞ ANİMASYONU FONKSİYONLARI
-    function showSection(id) {
-        // 1. Ana sayfayı sağa kaydırarak çıkar (slide-right class ekle)
-        const home = document.getElementById("home");
-        home.classList.remove("active");
-        home.classList.add("slide-right");
+    // --- YENİ GEÇİŞ MANTIĞI ---
 
-        // 2. Seçilen sayfayı aktif et (Bu soldan gelecektir çünkü varsayılan hali solda)
-        const targetSection = document.getElementById(id);
-        targetSection.classList.add("active");
+    function goToVideos() {
+        const home = document.getElementById("home");
+        const videos = document.getElementById("videos");
+
+        // 1. Ana sayfa SAĞA kayarak, büyüyerek silinsin
+        home.classList.add("slide-out-right");
+
+        // 2. Video sayfası SOLDAN merkeze gelsin
+        videos.classList.add("active");
         
-        // Sayfanın en üstüne at
+        window.scrollTo(0,0);
+    }
+
+    function goToImages() {
+        const home = document.getElementById("home");
+        const images = document.getElementById("images");
+
+        // 1. Ana sayfa SOLA kayarak, büyüyerek silinsin
+        home.classList.add("slide-out-left");
+
+        // 2. Görsel sayfası SAĞDAN merkeze gelsin
+        images.classList.add("active");
+
         window.scrollTo(0,0);
     }
 
     function goHome() {
-        // 1. Aktif olan sayfayı bul (Video veya Görsel) ve active class'ını sil
-        // Active silinince CSS'deki varsayılan 'transform: translateX(-100%)' devreye girer ve sola gider.
+        const home = document.getElementById("home");
+        
+        // Aktif olan alt sayfayı bul ve gizle (kendi tarafına geri döner)
         document.querySelectorAll('.page-section.active').forEach(sec => {
-            if(sec.id !== 'home') {
-                sec.classList.remove("active");
-            }
+            sec.classList.remove("active");
         });
 
-        // 2. Ana sayfayı geri getir
-        const home = document.getElementById("home");
-        home.classList.remove("slide-right"); // Sağa gitme komutunu iptal et
-        home.classList.add("active"); // Merkeze gel
+        // Ana sayfayı temizle (efektleri kaldırıp merkeze getir)
+        home.classList.remove("slide-out-right");
+        home.classList.remove("slide-out-left");
     }
 
-    // VİDEO OYNATMA MANTIĞI
+    // VİDEO OYNATMA
     document.querySelectorAll("video:not(#bg-video)").forEach(video => {
         video.addEventListener("mouseenter", () => {
             video.play();
@@ -316,12 +337,12 @@
         });
         video.addEventListener("click", () => {
             if (video.requestFullscreen) video.requestFullscreen();
-            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen(); // Safari desteği
+            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
             video.play();
         });
     });
 
-    // GÖRSEL BÜYÜTME MANTIĞI
+    // GÖRSEL BÜYÜTME
     document.querySelectorAll("img").forEach(img => {
         img.addEventListener("click", () => {
             const w = window.open("", "_blank");
