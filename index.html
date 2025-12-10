@@ -35,7 +35,7 @@
             filter: blur(1px) brightness(0.55);
         }
 
-        /* --- SAYFA GEÇİŞ SİSTEMİ (GÜNCELLENDİ) --- */
+        /* --- SAYFA GEÇİŞ SİSTEMİ --- */
         .page-section {
             position: absolute;
             top: 0;
@@ -44,8 +44,6 @@
             min-height: 100vh;
             padding-bottom: 50px;
             box-sizing: border-box;
-            
-            /* Animasyon süresi ve yumuşaklığı */
             transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
             opacity: 0;
             pointer-events: none;
@@ -55,47 +53,36 @@
         #home {
             opacity: 1;
             pointer-events: all;
-            transform: translateX(0) scale(1); /* Başlangıçta tam ortada ve normal boyutta */
+            transform: translateX(0) scale(1);
             z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* EFEKT 1: Videolara giderken Ana Sayfa (Sağa Kay + Büyü + Silin) */
+        /* Efektler: Sağa/Sola kayma ve silinme */
         #home.slide-out-right {
             transform: translateX(80%) scale(1.3) !important;
             opacity: 0;
         }
-
-        /* EFEKT 2: Görsellere giderken Ana Sayfa (Sola Kay + Büyü + Silin) */
         #home.slide-out-left {
             transform: translateX(-80%) scale(1.3) !important;
             opacity: 0;
         }
 
-        /* --- İÇERİK SAYFALARI BAŞLANGIÇ POZİSYONLARI --- */
-        
-        /* Video Sayfası: Solda bekler */
-        #videos {
-            transform: translateX(-100%);
-        }
+        /* İçerik Sayfaları Başlangıç */
+        #videos { transform: translateX(-100%); }
+        #images { transform: translateX(100%); }
 
-        /* Görsel Sayfası: Sağda bekler */
-        #images {
-            transform: translateX(100%);
-        }
-
-        /* Aktif olunca merkeze gelme sınıfı */
+        /* Aktif Sayfa */
         .page-section.active {
             opacity: 1;
             pointer-events: all;
-            transform: translateX(0) !important; /* Her zaman merkeze gel */
+            transform: translateX(0) !important;
             z-index: 20;
         }
 
-
-        /* --- DİĞER TASARIM ÖGELERİ (KUTULAR, METİNLER) --- */
+        /* --- TASARIM ÖGELERİ --- */
         .hero {
             text-align: center;
             padding-top: 100px;
@@ -147,14 +134,12 @@
             box-shadow: 0 0 28px rgba(255, 255, 255, 0.45);
         }
 
-        /* Padding ayarları */
         #videos, #images {
             padding-top: 40px; 
             padding-left: 10%;
             padding-right: 10%;
         }
 
-        /* Geri butonu */
         .back-btn {
             font-size: 18px;
             margin-bottom: 20px;
@@ -171,26 +156,41 @@
             color: var(--dark-blue);
         }
 
-        /* Video Grid */
+        /* --- VIMEO VIDEO GRID AYARLARI --- */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 25px;
         }
-        .video-grid video {
+
+        .vimeo-wrapper {
+            position: relative;
             width: 100%;
+            /* 16:9 Oranını korumak için */
+            padding-bottom: 56.25%; 
+            height: 0;
             border-radius: 14px;
-            cursor: pointer;
-            background: #000;
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.2);
             transition: 0.3s;
-            border: 3px solid rgba(255,255,255,0.4);
-        }
-        .video-grid video:hover {
-            transform: scale(1.03);
-            border-color: var(--white);
+            background: #000;
         }
 
-        /* Görsel Grid */
+        .vimeo-wrapper:hover {
+            border-color: var(--white);
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .vimeo-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- GÖRSEL GRID --- */
         .image-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -224,6 +224,8 @@
 </head>
 <body>
 
+    <div id="cursor-orb"></div>
+
     <video id="bg-video" autoplay muted loop playsinline>
         <source src="videos/background.mp4" type="video/mp4">
     </video>
@@ -245,9 +247,26 @@
         <h1>Video Çalışmalarım</h1>
 
         <div class="video-grid">
-            <div><video muted preload="none" src="videos/video1.mp4"></video></div>
-            <div><video muted preload="none" src="videos/video2.mp4"></video></div>
-        </div>
+            
+            <div class="vimeo-wrapper">
+                <iframe 
+                    src="https://player.vimeo.com/video/76979871?title=0&byline=0&portrait=0" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="vimeo-wrapper">
+                <iframe 
+                    src="https://player.vimeo.com/video/76979871?title=0&byline=0&portrait=0" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            </div>
 
         <h2 class="sub-title">Program Ekran Görüntüleri</h2>
         <div class="image-grid">
@@ -285,62 +304,31 @@
         });
     });
 
-    // --- YENİ GEÇİŞ MANTIĞI ---
-
+    // SAYFA GEÇİŞLERİ
     function goToVideos() {
         const home = document.getElementById("home");
         const videos = document.getElementById("videos");
-
-        // 1. Ana sayfa SAĞA kayarak, büyüyerek silinsin
         home.classList.add("slide-out-right");
-
-        // 2. Video sayfası SOLDAN merkeze gelsin
         videos.classList.add("active");
-        
         window.scrollTo(0,0);
     }
 
     function goToImages() {
         const home = document.getElementById("home");
         const images = document.getElementById("images");
-
-        // 1. Ana sayfa SOLA kayarak, büyüyerek silinsin
         home.classList.add("slide-out-left");
-
-        // 2. Görsel sayfası SAĞDAN merkeze gelsin
         images.classList.add("active");
-
         window.scrollTo(0,0);
     }
 
     function goHome() {
         const home = document.getElementById("home");
-        
-        // Aktif olan alt sayfayı bul ve gizle (kendi tarafına geri döner)
         document.querySelectorAll('.page-section.active').forEach(sec => {
             sec.classList.remove("active");
         });
-
-        // Ana sayfayı temizle (efektleri kaldırıp merkeze getir)
         home.classList.remove("slide-out-right");
         home.classList.remove("slide-out-left");
     }
-
-    // VİDEO OYNATMA
-    document.querySelectorAll("video:not(#bg-video)").forEach(video => {
-        video.addEventListener("mouseenter", () => {
-            video.play();
-        });
-        video.addEventListener("mouseleave", () => {
-            video.pause();
-            video.currentTime = 0;
-        });
-        video.addEventListener("click", () => {
-            if (video.requestFullscreen) video.requestFullscreen();
-            else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-            video.play();
-        });
-    });
 
     // GÖRSEL BÜYÜTME
     document.querySelectorAll("img").forEach(img => {
