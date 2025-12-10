@@ -13,6 +13,7 @@
             --mid-blue: #2F4E7B;
             --light-bg: #F4F6FA;
             --white: #ffffff;
+            --accent-color: #63C7FF; /* Yeni: Parlama rengi */
         }
 
         body {
@@ -49,114 +50,26 @@
             pointer-events: none;
         }
 
-        /* --- ANA SAYFA --- */
-        #home {
-            opacity: 1;
-            pointer-events: all;
-            transform: translateX(0) scale(1);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Efektler: Sağa/Sola kayma ve silinme */
-        #home.slide-out-right {
-            transform: translateX(80%) scale(1.3) !important;
-            opacity: 0;
-        }
-        #home.slide-out-left {
-            transform: translateX(-80%) scale(1.3) !important;
-            opacity: 0;
-        }
-
-        /* İçerik Sayfaları Başlangıç */
+        /* Ana Sayfa ve Geçiş Efektleri */
+        #home { opacity: 1; pointer-events: all; transform: translateX(0) scale(1); z-index: 10; display: flex; flex-direction: column; align-items: center; }
+        #home.slide-out-right { transform: translateX(80%) scale(1.3) !important; opacity: 0; }
+        #home.slide-out-left { transform: translateX(-80%) scale(1.3) !important; opacity: 0; }
         #videos { transform: translateX(-100%); }
         #images { transform: translateX(100%); }
+        .page-section.active { opacity: 1; pointer-events: all; transform: translateX(0) !important; z-index: 20; }
 
-        /* Aktif Sayfa */
-        .page-section.active {
-            opacity: 1;
-            pointer-events: all;
-            transform: translateX(0) !important;
-            z-index: 20;
-        }
+        /* --- TASARIM ÖGELERİ (KUTULAR vb.) --- */
+        .hero { text-align: center; padding-top: 100px; }
+        .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); text-shadow: 0px 2px 6px rgba(0,0,0,0.4); }
+        .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.9; margin-top: 10px; color: var(--white); }
+        .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; padding: 20px; perspective: 1200px; }
+        .big-box { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); padding: 50px 80px; border-radius: 20px; font-size: 32px; border: none; box-shadow: 0 0 18px rgba(255, 255, 255, 0.25); color: var(--white); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s; user-select: none; font-weight: 500; transform-style: preserve-3d; }
+        .big-box:hover { background: var(--white); color: var(--dark-blue); transform: scale(1.06); box-shadow: 0 0 28px rgba(255, 255, 255, 0.45); }
+        #videos, #images { padding-top: 40px; padding-left: 10%; padding-right: 10%; }
+        .back-btn { font-size: 18px; margin-bottom: 20px; display: inline-block; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 2px solid rgba(255,255,255,0.2); }
+        .back-btn:hover { background: var(--white); color: var(--dark-blue); }
 
-        /* --- TASARIM ÖGELERİ --- */
-        .hero {
-            text-align: center;
-            padding-top: 100px;
-        }
-        .hero h1 {
-            font-size: 48px;
-            font-weight: 600;
-            margin: 0;
-            color: var(--white);
-            text-shadow: 0px 2px 6px rgba(0,0,0,0.4);
-        }
-        .hero h2 {
-            font-size: 22px;
-            font-weight: 300;
-            opacity: 0.9;
-            margin-top: 10px;
-            color: var(--white);
-        }
-
-        .section-boxes {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 80px;
-            padding: 20px;
-            perspective: 1200px;
-        }
-
-        .big-box {
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(10px);
-            padding: 50px 80px;
-            border-radius: 20px;
-            font-size: 32px;
-            border: none;
-            box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
-            color: var(--white);
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s;
-            user-select: none;
-            font-weight: 500;
-            transform-style: preserve-3d;
-        }
-
-        .big-box:hover {
-            background: var(--white);
-            color: var(--dark-blue);
-            transform: scale(1.06);
-            box-shadow: 0 0 28px rgba(255, 255, 255, 0.45);
-        }
-
-        #videos, #images {
-            padding-top: 40px; 
-            padding-left: 10%;
-            padding-right: 10%;
-        }
-
-        .back-btn {
-            font-size: 18px;
-            margin-bottom: 20px;
-            display: inline-block;
-            background: rgba(255,255,255,0.15);
-            padding: 10px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        .back-btn:hover {
-            background: var(--white);
-            color: var(--dark-blue);
-        }
-
-        /* --- VIMEO VIDEO GRID AYARLARI --- */
+        /* --- VİDEO VE ÖNİZLEME AYARLARI --- */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -166,20 +79,32 @@
         .vimeo-wrapper {
             position: relative;
             width: 100%;
-            /* 16:9 Oranını korumak için */
+            /* Varsayılan 16:9 Oran */
             padding-bottom: 56.25%; 
-            height: 0;
+            height: 0; 
             border-radius: 14px;
             overflow: hidden;
             border: 3px solid rgba(255,255,255,0.2);
-            transition: 0.3s;
+            /* Yeni: Parlama ve transform için transition'a ekleme */
+            transition: 0.3s, box-shadow 0.3s, border-color 0.3s, transform 0.3s;
             background: #000;
+            cursor: pointer;
         }
 
+        /* 9:16 Dikey Video Çözümü */
+        .vimeo-wrapper.vertical {
+            padding-bottom: 150%; 
+        }
+        
         .vimeo-wrapper:hover {
             border-color: var(--white);
             transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* ÇERÇEVE PARLAMA EFEKTİ */
+        .vimeo-wrapper.glowing {
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 0 15px var(--accent-color), 0 0 10px rgba(255, 255, 255, 0.5) !important;
         }
 
         .vimeo-wrapper iframe {
@@ -188,6 +113,30 @@
             left: 0;
             width: 100%;
             height: 100%;
+            object-fit: contain; /* Dikey videoların etrafındaki siyah boşlukları kapatmaz, videoyu ortalar */
+        }
+
+        /* YÜZEN ÖNİZLEME KUTUSU (PREVIEW ORB) */
+        #preview-orb {
+            position: fixed;
+            width: 300px;
+            height: 170px; /* 16:9 oranı */
+            border-radius: 12px;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px var(--accent-color);
+            background: #000;
+        }
+
+        #preview-orb iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            object-fit: cover; 
         }
 
         /* --- GÖRSEL GRID --- */
@@ -219,10 +168,13 @@
             .section-boxes { flex-direction: column; align-items: center; }
             .page-section { padding-left: 20px; padding-right: 20px; }
             .hero h1 { font-size: 36px; }
+            #preview-orb { display: none; } /* Mobil cihazlarda önizlemeyi kapat */
         }
     </style>
 </head>
 <body>
+
+    <div id="preview-orb"></div>
 
     <div id="cursor-orb"></div>
 
@@ -248,88 +200,88 @@
 
         <div class="video-grid">
             
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689325">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689325?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
 
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689244">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689244?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
 
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689354">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689354?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
 
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689113">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689113?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
 
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper vertical" data-vimeo-id="1144689373">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689373?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
 
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper vertical" data-vimeo-id="1144689001">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689001?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
 
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper vertical" data-vimeo-id="1144689403">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689403?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
 
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper vertical" data-vimeo-id="1144689168">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689168?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
 
-            <div class="vimeo-wrapper">
+            <div class="vimeo-wrapper vertical" data-vimeo-id="1144689290">
                 <iframe 
                     src="https://player.vimeo.com/video/1144689290?title=0&byline=0&portrait=0" 
                     frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allow="fullscreen; picture-in-picture" 
                     allowfullscreen>
                 </iframe>
             </div>
             
-            </div>
+        </div>
 
         <h2 class="sub-title">Program Ekran Görüntüleri</h2>
         <div class="image-grid">
@@ -350,6 +302,70 @@
     </div>
 
     <script>
+    
+    // YÜZEN ÖNİZLEME İÇİN GEREKLİ DEĞİŞKENLER
+    let previewTimeout;
+    const previewOrb = document.getElementById('preview-orb');
+    let currentVimeoId = null;
+    const PREVIEW_DELAY_MS = 1000; // 1 saniye gecikme
+
+    // Yüzen Önizleme Kutusunu Mouse'a Göre Konumlandır
+    document.addEventListener('mousemove', (e) => {
+        if (previewOrb.style.opacity === '1') {
+            // Kutuyu fare imlecinin sağ altına hizala
+            previewOrb.style.left = `${e.clientX + 30}px`;
+            previewOrb.style.top = `${e.clientY + 30}px`;
+        }
+    });
+
+    document.querySelectorAll(".vimeo-wrapper").forEach(wrapper => {
+        const vimeoId = wrapper.getAttribute('data-vimeo-id');
+        
+        // Eğer data-vimeo-id eksikse uyarı ver ve es geç
+        if (!vimeoId) {
+            console.error('UYARI: Bir Vimeo kutucuğunda "data-vimeo-id" özniteliği eksik. Önizleme çalışmayacaktır.');
+            return;
+        }
+
+        wrapper.addEventListener("mouseenter", () => {
+            // Çerçeveyi hemen parlat
+            wrapper.classList.add('glowing');
+            
+            // 1 saniye sonra oynatma işlemini başlat
+            previewTimeout = setTimeout(() => {
+                if (currentVimeoId !== vimeoId) {
+                    // Yüzen kutunun iframe içeriği: Otomatik oynatma, loop ve sessiz (muted) ayarları
+                    const iframeSrc = `https://player.vimeo.com/video/${vimeoId}?autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0`;
+                    
+                    // Yüzen kutu içeriğini güncelle ve görünür yap
+                    previewOrb.innerHTML = `<iframe src="${iframeSrc}" allow="autoplay" allowfullscreen></iframe>`;
+                    previewOrb.style.opacity = '1';
+                    currentVimeoId = vimeoId;
+                }
+            }, PREVIEW_DELAY_MS);
+        });
+
+        wrapper.addEventListener("mouseleave", () => {
+            // Gecikme sayacını temizle
+            clearTimeout(previewTimeout);
+            
+            // Çerçeve parlamasını kaldır
+            wrapper.classList.remove('glowing');
+
+            // Yüzen kutuyu yavaşça gizle
+            previewOrb.style.opacity = '0';
+            
+            // Yüzen kutu tamamen gizlenince içeriği temizle
+            setTimeout(() => {
+                previewOrb.innerHTML = '';
+                currentVimeoId = null;
+            }, 300); 
+        });
+    });
+
+
+    // --- DİĞER FONKSİYONLAR ---
+
     // 3D KUTU EFEKTİ
     document.querySelectorAll(".big-box").forEach(card => {
         card.addEventListener("mousemove", e => {
@@ -394,7 +410,7 @@
     }
 
     // GÖRSEL BÜYÜTME
-    document.querySelectorAll("img").forEach(img => {
+    document.querySelectorAll(".image-grid img").forEach(img => {
         img.addEventListener("click", () => {
             const w = window.open("", "_blank");
             w.document.write(`
