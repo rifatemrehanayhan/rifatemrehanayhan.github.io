@@ -13,7 +13,7 @@
             --mid-blue: #2F4E7B;
             --light-bg: #F4F6FA;
             --white: #ffffff;
-            --accent-color: #ffffff; /* Parlama rengi beyaz olarak güncellendi */
+            --accent-color: #ffffff; /* Parlama rengi beyaza güncellendi */
         }
 
         body {
@@ -79,8 +79,8 @@
         .vimeo-wrapper {
             position: relative;
             width: 100%;
-            /* 4:3 Oranı (75% = 3/4) */
-            padding-bottom: 75%; 
+            /* 4:5 Oranı (125% = 5/4 * 100) */
+            padding-bottom: 125%; 
             height: 0; 
             border-radius: 14px;
             overflow: hidden;
@@ -93,10 +93,10 @@
         .vimeo-wrapper:hover {
             border-color: var(--white);
             transform: scale(1.02);
-            box-shadow: 0 0 15px var(--accent-color), 0 0 10px rgba(255, 255, 255, 0.5); /* Yeni Beyaz Parlama */
+            /* Parlama efekti beyaz olarak güncellendi */
+            box-shadow: 0 0 15px var(--accent-color), 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
-        /* Tüm videolar artık Thumbnail olacak (Sadece görsel ve oynat butonu) */
         .vimeo-thumbnail {
             position: absolute;
             top: 0;
@@ -106,7 +106,7 @@
             object-fit: cover; /* Görselin kutuya tam sığmasını (büyütülmesini) sağlar */
         }
         
-        /* Oynat Butonu (Opsiyonel) */
+        /* Oynat Butonu */
         .play-overlay {
             position: absolute;
             top: 0;
@@ -141,24 +141,26 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.95); /* Koyu arkaplan */
+            background-color: rgba(0, 0, 0, 0.95);
             z-index: 10000;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.3s ease;
+            padding: 20px; /* Modal içeriği kenarlara çok yapışmasın */
+            box-sizing: border-box;
         }
         
         .modal-content {
             position: relative;
-            width: 80%;
+            width: 80%; /* Maksimum genişlik */
             max-width: 1000px;
-            /* Video içeriği için 16:9 oranını kullanıyoruz */
-            padding-bottom: 45%; /* 1000px genişlik için yaklaşık 16:9 oranında yükseklik (1000 * 9 / 16 = 562.5px) */
+            /* Yükseklik artık dinamik olarak JS tarafından ayarlanacak */
             height: 0;
             background: #000;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+            transition: padding-bottom 0.3s; /* Oran değişimine yumuşaklık katmak için */
         }
 
         .modal-content iframe {
@@ -226,11 +228,9 @@
             .section-boxes { flex-direction: column; align-items: center; }
             .page-section { padding-left: 20px; padding-right: 20px; }
             .hero h1 { font-size: 36px; }
-            .vimeo-wrapper { padding-bottom: 75%; }
+            .vimeo-wrapper { padding-bottom: 125%; } /* Mobil için de 4:5 */
             .modal-content {
-                width: 90%;
-                /* Mobil için daha dar alanda 16:9 oranı */
-                padding-bottom: 50.625%; /* (9/16 * 90vw) */
+                 width: 90%;
             }
         }
     </style>
@@ -269,47 +269,47 @@
 
         <div class="video-grid">
             
-            <div class="vimeo-wrapper" data-vimeo-id="1144689325" onclick="openModal('1144689325')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689325" data-ratio="16:9" onclick="openModal('1144689325', '16:9')">
                 <img src="https://vumbnail.com/1144689325.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689244" onclick="openModal('1144689244')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689244" data-ratio="16:9" onclick="openModal('1144689244', '16:9')">
                 <img src="https://vumbnail.com/1144689244.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689354" onclick="openModal('1144689354')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689354" data-ratio="9:16" onclick="openModal('1144689354', '9:16')">
                 <img src="https://vumbnail.com/1144689354.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689113" onclick="openModal('1144689113')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689113" data-ratio="16:9" onclick="openModal('1144689113', '16:9')">
                 <img src="https://vumbnail.com/1144689113.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689373" onclick="openModal('1144689373')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689373" data-ratio="16:9" onclick="openModal('1144689373', '16:9')">
                 <img src="https://vumbnail.com/1144689373.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689001" onclick="openModal('1144689001')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689001" data-ratio="9:16" onclick="openModal('1144689001', '9:16')">
                 <img src="https://vumbnail.com/1144689001.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689403" onclick="openModal('1144689403')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689403" data-ratio="16:9" onclick="openModal('1144689403', '16:9')">
                 <img src="https://vumbnail.com/1144689403.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689168" onclick="openModal('1144689168')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689168" data-ratio="16:9" onclick="openModal('1144689168', '16:9')">
                 <img src="https://vumbnail.com/1144689168.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689290" onclick="openModal('1144689290')">
+            <div class="vimeo-wrapper" data-vimeo-id="1144689290" data-ratio="9:16" onclick="openModal('1144689290', '9:16')">
                 <img src="https://vumbnail.com/1144689290.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
@@ -340,7 +340,34 @@
     const modal = document.getElementById('video-modal');
     const iframeContainer = document.getElementById('modal-iframe-container');
 
-    function openModal(vimeoId) {
+    /**
+     * Verilen oran string'ini kullanarak (örn: '16:9') padding-bottom yüzdesini hesaplar.
+     * Bu, modalın videonun oranında açılmasını sağlar.
+     * Hesaplama: (Yükseklik / Genişlik) * 100
+     */
+    function getPaddingPercentage(ratioString) {
+        const parts = ratioString.split(':');
+        if (parts.length === 2) {
+            const width = parseFloat(parts[0]);
+            const height = parseFloat(parts[1]);
+            if (!isNaN(width) && !isNaN(height) && width > 0) {
+                return (height / width) * 100;
+            }
+        }
+        // Geçersiz oran durumunda varsayılan 16:9
+        return (9 / 16) * 100; 
+    }
+
+    /**
+     * Video Modalını açar ve iframe içeriğini, videonun orijinal oranına göre ayarlar.
+     * @param {string} vimeoId - Vimeo video ID'si.
+     * @param {string} ratio - Video en-boy oranı (örn: '16:9', '9:16', '4:3').
+     */
+    function openModal(vimeoId, ratio) {
+        // Dinamik oranı hesapla ve modal içeriğine uygula
+        const ratioPercentage = getPaddingPercentage(ratio);
+        document.querySelector('.modal-content').style.paddingBottom = `${ratioPercentage}%`;
+        
         // Iframe URL'si: Autoplay'i etkinleştirdik
         const iframeSrc = `https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0&portrait=0&fullscreen=1`;
         
@@ -358,12 +385,13 @@
     }
 
     function closeModal() {
-        // Modalı gizle
         modal.style.display = 'none';
         // Iframe içeriğini temizle (Video oynamayı durdurur)
         iframeContainer.innerHTML = '';
         // Sayfa kaymasını geri aç
         document.body.style.overflow = 'auto';
+        // Modal content padding'ini temizle (bir sonraki videoya hazırlan)
+        document.querySelector('.modal-content').style.paddingBottom = ``; 
     }
 
     // Modal'ı kapatma tuşuna veya ESC tuşuna basınca kapat
@@ -374,7 +402,7 @@
         }
     });
 
-    // --- ESKİ VE GÜNCELLENMİŞ FONKSİYONLAR ---
+    // --- DİĞER FONKSİYONLAR ---
 
     // 3D KUTU EFEKTİ
     document.querySelectorAll(".big-box").forEach(card => {
