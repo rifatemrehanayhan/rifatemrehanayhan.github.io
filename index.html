@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Rıfat Emrehan Ayhan – Portfolio</title>
 
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
@@ -13,9 +13,12 @@
             --mid-blue: #2F4E7B;
             --light-bg: #F4F6FA;
             --white: #ffffff;
-            --accent-color: #ffffff; /* Parlama rengi beyaza güncellendi */
+            --accent-color: #ffffff;
         }
 
+        /* --- GENEL --- */
+        * { box-sizing: border-box; }
+        html,body { height: 100%; }
         body {
             margin: 0;
             font-family: 'SF Pro Display', sans-serif;
@@ -27,7 +30,7 @@
         /* --- ARKAPLAN VİDEO --- */
         #bg-video {
             position: fixed;
-            top: 0; 
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
@@ -49,8 +52,6 @@
             opacity: 0;
             pointer-events: none;
         }
-
-        /* Ana Sayfa ve Geçiş Efektleri */
         #home { opacity: 1; pointer-events: all; transform: translateX(0) scale(1); z-index: 10; display: flex; flex-direction: column; align-items: center; }
         #home.slide-out-right { transform: translateX(80%) scale(1.3) !important; opacity: 0; }
         #home.slide-out-left { transform: translateX(-80%) scale(1.3) !important; opacity: 0; }
@@ -69,73 +70,66 @@
         .back-btn { font-size: 18px; margin-bottom: 20px; display: inline-block; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 2px solid rgba(255,255,255,0.2); }
         .back-btn:hover { background: var(--white); color: var(--dark-blue); }
 
-        /* --- VİDEO THUMBNAIL VE GRID AYARLARI --- */
+        /* --- VİDEO THUMBNAIL VE GRID AYARLARI (GÜNCELLEME) --- */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 25px;
         }
 
         .vimeo-wrapper {
             position: relative;
             width: 100%;
-            /* 4:5 Oranı (125% = 5/4 * 100) */
-            padding-bottom: 125%; 
-            height: 0; 
+            aspect-ratio: 16 / 9; /* default; JS değiştirir */
             border-radius: 14px;
             overflow: hidden;
-            border: 3px solid rgba(255,255,255,0.2);
-            transition: 0.3s, box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+            border: 3px solid rgba(255,255,255,0.15);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
             background: #000;
             cursor: pointer;
-        }
-        
-        .vimeo-wrapper:hover {
-            border-color: var(--white);
-            transform: scale(1.02);
-            /* Parlama efekti beyaz olarak güncellendi */
-            box-shadow: 0 0 15px var(--accent-color), 0 0 10px rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: stretch;
+            min-height: 160px;
         }
 
-        .vimeo-thumbnail {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .vimeo-wrapper img.vimeo-thumbnail {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Görselin kutuya tam sığmasını (büyütülmesini) sağlar */
+            object-fit: cover;
+            object-position: center;
+            display: block;
         }
-        
-        /* Oynat Butonu */
+
         .play-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.3);
+            background: linear-gradient(rgba(0,0,0,0.12), rgba(0,0,0,0.18));
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 1;
-            transition: background 0.3s;
+            pointer-events: none;
+            transition: background 0.2s;
         }
-
-        .vimeo-wrapper:hover .play-overlay {
-            background: rgba(0, 0, 0, 0.5);
-        }
-        
         .play-overlay::after {
             content: '▶';
-            font-size: 60px;
+            font-size: 48px;
             color: var(--white);
-            text-shadow: 0 0 10px rgba(0,0,0,0.8);
-            opacity: 0.9;
+            text-shadow: 0 0 8px rgba(0,0,0,0.6);
+            opacity: 0.95;
         }
-        
+
+        .vimeo-wrapper:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: var(--white);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.5), 0 0 22px rgba(255,255,255,0.06);
+        }
+
         /* --- MODAL (POPUP) PENCERE STİLLERİ --- */
         #video-modal {
-            display: none; /* Varsayılan olarak gizli */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -145,54 +139,50 @@
             z-index: 10000;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease;
-            padding: 20px; /* Modal içeriği kenarlara çok yapışmasın */
+            animation: fadeIn 0.18s ease;
+            padding: 20px;
             box-sizing: border-box;
         }
-        
+
         .modal-content {
             position: relative;
-            width: 80%; /* Maksimum genişlik */
-            max-width: 1000px;
-            /* Yükseklik artık dinamik olarak JS tarafından ayarlanacak */
-            height: 0;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
             background: #000;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
-            transition: padding-bottom 0.3s; /* Oran değişimine yumuşaklık katmak için */
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.12);
+            transition: width 0.18s ease, height 0.18s ease;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
         }
 
         .modal-content iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
             border: none;
+            display: block;
         }
 
         .close-btn {
             position: absolute;
-            top: -30px; 
-            right: 0px; 
+            top: -28px;
+            right: 0px;
             color: var(--white);
             font-size: 40px;
             font-weight: 300;
             cursor: pointer;
-            opacity: 0.7;
-            transition: 0.2s;
+            opacity: 0.85;
+            transition: 0.18s;
+            z-index: 10001;
+            padding: 6px 10px;
         }
-        
-        .close-btn:hover {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .close-btn:hover { opacity: 1; transform: scale(1.06); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* --- GÖRSEL GRID --- */
         .image-grid {
@@ -207,31 +197,24 @@
             cursor: pointer;
             transition: 0.3s;
             border: 3px solid rgba(255,255,255,0.4);
+            display: block;
         }
-        .image-grid img:hover {
-            transform: scale(1.05);
-            border-color: var(--white);
-        }
+        .image-grid img:hover { transform: scale(1.05); border-color: var(--white); }
 
-        .sub-title {
-            margin-top: 40px;
-            font-size: 28px;
-            font-weight: 500;
-        }
+        .sub-title { margin-top: 40px; font-size: 28px; font-weight: 500; color: var(--white); }
 
+        /* --- RESPONSIVE --- */
         @media (max-width: 1024px) {
-            .modal-content {
-                width: 90%;
-            }
+            .modal-content { width: 90%; }
+            .hero h1 { font-size: 40px; }
         }
         @media (max-width: 768px) {
             .section-boxes { flex-direction: column; align-items: center; }
             .page-section { padding-left: 20px; padding-right: 20px; }
             .hero h1 { font-size: 36px; }
-            .vimeo-wrapper { padding-bottom: 125%; } /* Mobil için de 4:5 */
-            .modal-content {
-                 width: 90%;
-            }
+            .video-grid { gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+            .play-overlay::after { font-size: 42px; }
+            .modal-content { max-height: 95vh; }
         }
     </style>
 </head>
@@ -239,13 +222,10 @@
 
     <div id="video-modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close-btn">&times;</span>
-            <div id="modal-iframe-container">
-                </div>
+            <span class="close-btn" title="Kapat">&times;</span>
+            <div id="modal-iframe-container"></div>
         </div>
     </div>
-
-    <div id="cursor-orb"></div>
 
     <video id="bg-video" autoplay muted loop playsinline>
         <source src="videos/background.mp4" type="video/mp4">
@@ -265,151 +245,103 @@
 
     <div id="videos" class="page-section">
         <div class="back-btn" onclick="goHome()">← Geri</div>
-        <h1>Video Çalışmalarım</h1>
+        <h1 style="color:var(--white)">Video Çalışmalarım</h1>
 
         <div class="video-grid">
-            
-            <div class="vimeo-wrapper" data-vimeo-id="1144689325" data-ratio="16:9" onclick="openModal('1144689325', '16:9')">
+            <!-- data-ratio değerleri video oranlarına göre ayarlı. -->
+            <div class="vimeo-wrapper" data-ratio="16:9" data-vimeo-id="1144689325" onclick="openModal('1144689325','16:9')">
                 <img src="https://vumbnail.com/1144689325.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689244" data-ratio="16:9" onclick="openModal('1144689244', '16:9')">
+            <div class="vimeo-wrapper" data-ratio="16:9" data-vimeo-id="1144689244" onclick="openModal('1144689244','16:9')">
                 <img src="https://vumbnail.com/1144689244.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689354" data-ratio="9:16" onclick="openModal('1144689354', '9:16')">
+            <div class="vimeo-wrapper" data-ratio="9:16" data-vimeo-id="1144689354" onclick="openModal('1144689354','9:16')">
                 <img src="https://vumbnail.com/1144689354.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689113" data-ratio="16:9" onclick="openModal('1144689113', '16:9')">
+            <div class="vimeo-wrapper" data-ratio="16:9" data-vimeo-id="1144689113" onclick="openModal('1144689113','16:9')">
                 <img src="https://vumbnail.com/1144689113.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689373" data-ratio="16:9" onclick="openModal('1144689373', '16:9')">
+            <div class="vimeo-wrapper" data-ratio="16:9" data-vimeo-id="1144689373" onclick="openModal('1144689373','16:9')">
                 <img src="https://vumbnail.com/1144689373.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689001" data-ratio="9:16" onclick="openModal('1144689001', '9:16')">
+            <div class="vimeo-wrapper" data-ratio="9:16" data-vimeo-id="1144689001" onclick="openModal('1144689001','9:16')">
                 <img src="https://vumbnail.com/1144689001.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689403" data-ratio="16:9" onclick="openModal('1144689403', '16:9')">
+            <div class="vimeo-wrapper" data-ratio="16:9" data-vimeo-id="1144689403" onclick="openModal('1144689403','16:9')">
                 <img src="https://vumbnail.com/1144689403.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689168" data-ratio="16:9" onclick="openModal('1144689168', '16:9')">
+            <div class="vimeo-wrapper" data-ratio="16:9" data-vimeo-id="1144689168" onclick="openModal('1144689168','16:9')">
                 <img src="https://vumbnail.com/1144689168.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" data-vimeo-id="1144689290" data-ratio="9:16" onclick="openModal('1144689290', '9:16')">
+            <div class="vimeo-wrapper" data-ratio="9:16" data-vimeo-id="1144689290" onclick="openModal('1144689290','9:16')">
                 <img src="https://vumbnail.com/1144689290.jpg" alt="Video Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
-            
         </div>
 
         <h2 class="sub-title">Program Ekran Görüntüleri</h2>
         <div class="image-grid">
-            <img src="images/ss1.jpg">
-            <img src="images/ss2.jpg">
+            <img src="images/ss1.jpg" alt="ss1">
+            <img src="images/ss2.jpg" alt="ss2">
         </div>
     </div>
 
     <div id="images" class="page-section">
         <div class="back-btn" onclick="goHome()">← Geri</div>
-        <h1>Görsel Çalışmalarım</h1>
+        <h1 style="color:var(--white)">Görsel Çalışmalarım</h1>
 
         <div class="image-grid">
-            <img src="images/img1.jpg">
-            <img src="images/img2.jpg">
-            <img src="images/img3.jpg">
+            <img src="images/img1.jpg" alt="img1">
+            <img src="images/img2.jpg" alt="img2">
+            <img src="images/img3.jpg" alt="img3">
         </div>
     </div>
 
     <script>
-    
-    // --- YENİ MODAL FONKSİYONLARI ---
-    const modal = document.getElementById('video-modal');
-    const iframeContainer = document.getElementById('modal-iframe-container');
-
-    /**
-     * Verilen oran string'ini kullanarak (örn: '16:9') padding-bottom yüzdesini hesaplar.
-     * Bu, modalın videonun oranında açılmasını sağlar.
-     * Hesaplama: (Yükseklik / Genişlik) * 100
-     */
-    function getPaddingPercentage(ratioString) {
-        const parts = ratioString.split(':');
-        if (parts.length === 2) {
-            const width = parseFloat(parts[0]);
-            const height = parseFloat(parts[1]);
-            if (!isNaN(width) && !isNaN(height) && width > 0) {
-                return (height / width) * 100;
-            }
-        }
-        // Geçersiz oran durumunda varsayılan 16:9
-        return (9 / 16) * 100; 
+    // --- SAYFA GEÇİŞLERİ ---
+    function goToVideos() {
+        const home = document.getElementById("home");
+        const videos = document.getElementById("videos");
+        home.classList.add("slide-out-right");
+        videos.classList.add("active");
+        window.scrollTo(0,0);
+    }
+    function goToImages() {
+        const home = document.getElementById("home");
+        const images = document.getElementById("images");
+        home.classList.add("slide-out-left");
+        images.classList.add("active");
+        window.scrollTo(0,0);
+    }
+    function goHome() {
+        const home = document.getElementById("home");
+        document.querySelectorAll('.page-section.active').forEach(sec => sec.classList.remove("active"));
+        home.classList.remove("slide-out-right");
+        home.classList.remove("slide-out-left");
     }
 
-    /**
-     * Video Modalını açar ve iframe içeriğini, videonun orijinal oranına göre ayarlar.
-     * @param {string} vimeoId - Vimeo video ID'si.
-     * @param {string} ratio - Video en-boy oranı (örn: '16:9', '9:16', '4:3').
-     */
-    function openModal(vimeoId, ratio) {
-        // Dinamik oranı hesapla ve modal içeriğine uygula
-        const ratioPercentage = getPaddingPercentage(ratio);
-        document.querySelector('.modal-content').style.paddingBottom = `${ratioPercentage}%`;
-        
-        // Iframe URL'si: Autoplay'i etkinleştirdik
-        const iframeSrc = `https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0&portrait=0&fullscreen=1`;
-        
-        iframeContainer.innerHTML = `
-            <iframe 
-                src="${iframeSrc}" 
-                frameborder="0" 
-                allow="autoplay; fullscreen; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
-        `;
-        modal.style.display = 'flex';
-        // Modal açılınca sayfanın kaymasını engelle
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-        modal.style.display = 'none';
-        // Iframe içeriğini temizle (Video oynamayı durdurur)
-        iframeContainer.innerHTML = '';
-        // Sayfa kaymasını geri aç
-        document.body.style.overflow = 'auto';
-        // Modal content padding'ini temizle (bir sonraki videoya hazırlan)
-        document.querySelector('.modal-content').style.paddingBottom = ``; 
-    }
-
-    // Modal'ı kapatma tuşuna veya ESC tuşuna basınca kapat
-    document.querySelector('.close-btn').addEventListener('click', closeModal);
-    document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape" && modal.style.display === 'flex') {
-            closeModal();
-        }
-    });
-
-    // --- DİĞER FONKSİYONLAR ---
-
-    // 3D KUTU EFEKTİ
+    // --- 3D KUTU EFEKTİ ---
     document.querySelectorAll(".big-box").forEach(card => {
         card.addEventListener("mousemove", e => {
             const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left; 
-            const y = e.clientY - rect.top;  
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             const rotateX = ((y - centerY) / 12) * -1;
@@ -421,33 +353,7 @@
         });
     });
 
-    // SAYFA GEÇİŞLERİ
-    function goToVideos() {
-        const home = document.getElementById("home");
-        const videos = document.getElementById("videos");
-        home.classList.add("slide-out-right");
-        videos.classList.add("active");
-        window.scrollTo(0,0);
-    }
-
-    function goToImages() {
-        const home = document.getElementById("home");
-        const images = document.getElementById("images");
-        home.classList.add("slide-out-left");
-        images.classList.add("active");
-        window.scrollTo(0,0);
-    }
-
-    function goHome() {
-        const home = document.getElementById("home");
-        document.querySelectorAll('.page-section.active').forEach(sec => {
-            sec.classList.remove("active");
-        });
-        home.classList.remove("slide-out-right");
-        home.classList.remove("slide-out-left");
-    }
-
-    // GÖRSEL BÜYÜTME (image-grid içindeki görseller için)
+    // --- GÖRSEL BÜYÜTME (image-grid içindeki görseller için) ---
     document.querySelectorAll(".image-grid img").forEach(img => {
         img.addEventListener("click", () => {
             const w = window.open("", "_blank");
@@ -457,6 +363,92 @@
                 </body>
             `);
         });
+    });
+
+    // --- İNİSİYAL: data-ratio okuyup aspect-ratio uygula ---
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('.vimeo-wrapper').forEach(wrapper => {
+            const ratio = wrapper.getAttribute('data-ratio') || '16:9';
+            const parts = ratio.split(':');
+            let w = parseFloat(parts[0]) || 16;
+            let h = parseFloat(parts[1]) || 9;
+            // aspect-ratio CSS
+            wrapper.style.aspectRatio = `${w} / ${h}`;
+            // fallback padding değişkeni (kullanılması gerekirse)
+            const paddingPercent = (h / w) * 100;
+            wrapper.style.setProperty('--fallback-padding', `${paddingPercent}%`);
+            // class ekle (görsel ayarları kolaylaştırmak için)
+            if (h > w) wrapper.classList.add('portrait');
+            else wrapper.classList.add('landscape');
+        });
+    });
+
+    // --- MODAL: Videoyu tam oranında, kenarda siyah bırakmadan açma ---
+    const modal = document.getElementById('video-modal');
+    const iframeContainer = document.getElementById('modal-iframe-container');
+    const modalContent = document.querySelector('.modal-content');
+
+    function openModal(vimeoId, ratio) {
+        const parts = (ratio || '16:9').split(':');
+        const videoW = parseFloat(parts[0]) || 16;
+        const videoH = parseFloat(parts[1]) || 9;
+        const videoRatio = videoW / videoH; // width / height
+
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+        // pencereye göre makul maksimumlar (biraz boşluk bırak)
+        const maxContainerWidth = vw * 0.94;
+        const maxContainerHeight = vh * 0.86;
+
+        let targetWidth = maxContainerWidth;
+        let targetHeight = targetWidth / videoRatio;
+
+        if (targetHeight > maxContainerHeight) {
+            targetHeight = maxContainerHeight;
+            targetWidth = targetHeight * videoRatio;
+        }
+
+        targetWidth = Math.floor(targetWidth);
+        targetHeight = Math.floor(targetHeight);
+
+        // responsive küçük ekran için ekstra güvenlik (telefonlarda yüksek dikey videolar)
+        if (targetWidth > vw * 0.98) targetWidth = Math.floor(vw * 0.98);
+        if (targetHeight > vh * 0.98) targetHeight = Math.floor(vh * 0.98);
+
+        modalContent.style.width = targetWidth + 'px';
+        modalContent.style.height = targetHeight + 'px';
+        modalContent.style.padding = '0';
+        modalContent.style.background = '#000';
+
+        const iframeSrc = `https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0&portrait=0&muted=0`;
+
+        iframeContainer.innerHTML = `
+            <iframe 
+                src="${iframeSrc}" 
+                frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                allowfullscreen
+                style="width:100%;height:100%;display:block;border:0;">
+            </iframe>
+        `;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        iframeContainer.innerHTML = '';
+        document.body.style.overflow = 'auto';
+        modalContent.style.width = '';
+        modalContent.style.height = '';
+        modalContent.style.padding = '';
+    }
+
+    // close button ve ESC tuşu
+    document.querySelectorAll('.close-btn').forEach(btn => btn.addEventListener('click', closeModal));
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape" && modal.style.display === 'flex') closeModal();
     });
     </script>
 
