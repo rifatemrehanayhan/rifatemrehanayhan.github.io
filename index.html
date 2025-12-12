@@ -26,18 +26,15 @@
 
         /* --- ARKAPLAN VİDEO --- */
         #bg-video {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: -1;
+            object-fit: cover; z-index: -1;
             filter: blur(1px) brightness(0.55);
         }
 
         /* --- SAYFA GEÇİŞ SİSTEMİ --- */
         .page-section {
-            position: absolute;
-            top: 0; left: 0;
+            position: absolute; top: 0; left: 0;
             width: 100%; min-height: 100vh;
             padding-bottom: 50px;
             box-sizing: border-box;
@@ -63,61 +60,90 @@
         .back-btn { font-size: 18px; margin-bottom: 20px; display: inline-block; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 2px solid rgba(255,255,255,0.2); }
         .back-btn:hover { background: var(--white); color: var(--dark-blue); }
 
-        /* --- 3x3 SIMETRIK GRID DÜZENİ --- */
+        /* --- GALERİ DUVARI GRID DÜZENİ (Referans Görsel Tarzı) --- */
         .video-grid {
             display: grid;
-            /* Mobilde 1, Masaüstünde tam 3 sütun */
-            grid-template-columns: repeat(1, 1fr);
-            gap: 20px;
-            max-width: 1200px; /* Çok geniş ekranlarda dağılmasın diye */
-            margin: 0 auto; /* Ortala */
+            grid-template-columns: repeat(1, 1fr); /* Mobil */
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+            grid-auto-flow: dense; /* Boşlukları akıllı doldur */
         }
 
         @media (min-width: 768px) {
             .video-grid {
-                /* 9 Video için tam 3x3 kare düzeni */
-                grid-template-columns: repeat(3, 1fr); 
+                /* Masaüstünde 4 Sütunlu Asimetrik Izgara */
+                grid-template-columns: repeat(4, 1fr); 
+            }
+            
+            /* -- ÖZEL BOYUTLAR -- */
+            
+            /* 'tall': Dikeyde 2 birim (1x2) */
+            .vimeo-wrapper.tall {
+                grid-row: span 2;
+                grid-column: span 1;
+            }
+
+            /* 'big': Hem yatay hem dikey 2 birim (2x2) */
+            .vimeo-wrapper.big {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+
+            /* 'wide': Yatayda 2 birim (2x1) */
+            .vimeo-wrapper.wide {
+                grid-column: span 2;
+                grid-row: span 1;
             }
         }
 
-        /* --- VİDEO KAPSAYICISI (KARE) --- */
+        /* --- VİDEO KAPSAYICISI VE YÜZME EFEKTİ --- */
         .vimeo-wrapper {
             position: relative;
             width: 100%;
-            height: 0;
-            /* Tam Kare Görünüm (1:1) */
-            padding-bottom: 100%; 
-            border-radius: 4px;
+            height: 100%;
+            min-height: 250px; 
+            border-radius: 8px; /* Tablo çerçevesi hissi */
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1); /* İnce, zarif çerçeve */
-            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            border: 2px solid rgba(255,255,255,0.15);
             background: #111;
             cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            
+            /* YÜZME EFEKTİ İÇİN TEMEL AYARLAR */
+            /* --tx ve --ty JS ile güncellenecek */
+            /* --s (scale) hover durumunda CSS ile güncellenecek */
+            --tx: 0px;
+            --ty: 0px;
+            --s: 1; 
+            
+            /* Transform'u CSS değişkenlerine bağladık */
+            transform: translate(var(--tx), var(--ty)) scale(var(--s));
+            
+            /* Yumuşak geçiş ayarları */
+            transition: transform 0.1s linear, box-shadow 0.3s ease, border-color 0.3s ease; 
+            /* Not: linear geçiş fare takibi için daha akıcıdır */
         }
 
         .vimeo-wrapper:hover {
-            transform: scale(1.03); /* Hafif büyüme */
-            z-index: 5;
+            --s: 1.05; /* Hover'da %5 büyüme */
+            z-index: 10;
             border-color: var(--white);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5); /* Derinlik hissi */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
         }
 
         .vimeo-thumbnail {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            object-fit: cover; /* Görseli kareye tam oturtur (ortadan kırparak) */
+            object-fit: cover;
             transition: transform 0.5s ease;
-        }
-
-        .vimeo-wrapper:hover .vimeo-thumbnail {
-            transform: scale(1.05);
         }
         
         /* Oynat İkonu */
         .play-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.0);
+            background: rgba(0, 0, 0, 0.1);
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transition: 0.3s;
         }
@@ -138,12 +164,11 @@
         }
         
         .modal-content {
-            position: relative; background: #000; border-radius: 8px; overflow: hidden;
+            position: relative; background: #000; border-radius: 12px; overflow: hidden;
             box-shadow: 0 0 60px rgba(0, 0, 0, 0.8); width: 100%; transition: all 0.3s ease;
             height: 0;
         }
 
-        /* Modal'da çerçeve oranları */
         .modal-content iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .close-btn {
             position: absolute; top: 20px; right: 40px; color: var(--white); font-size: 50px;
@@ -194,48 +219,48 @@
 
         <div class="video-grid">
             
-            <div class="vimeo-wrapper" onclick="openModal('1144689325', '16:9')">
-                <img src="https://vumbnail.com/1144689325.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
-            </div>
-
-            <div class="vimeo-wrapper" onclick="openModal('1144689354', '9:16')">
+            <div class="vimeo-wrapper tall float-item" onclick="openModal('1144689354', '9:16')" data-speed="1.2">
                 <img src="https://vumbnail.com/1144689354.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689244', '16:9')">
+            <div class="vimeo-wrapper big float-item" onclick="openModal('1144689325', '16:9')" data-speed="0.5">
+                <img src="https://vumbnail.com/1144689325.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                <div class="play-overlay"></div>
+            </div>
+
+            <div class="vimeo-wrapper tall float-item" onclick="openModal('1144689168', '9:16')" data-speed="1.5">
+                <img src="https://vumbnail.com/1144689168.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                <div class="play-overlay"></div>
+            </div>
+
+            <div class="vimeo-wrapper float-item" onclick="openModal('1144689244', '16:9')" data-speed="0.8">
                 <img src="https://vumbnail.com/1144689244.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689001', '9:16')">
-                <img src="https://vumbnail.com/1144689001.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
-            </div>
-
-            <div class="vimeo-wrapper" onclick="openModal('1144689113', '16:9')">
+            <div class="vimeo-wrapper wide float-item" onclick="openModal('1144689113', '16:9')" data-speed="0.6">
                 <img src="https://vumbnail.com/1144689113.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689373', '16:9')">
+            <div class="vimeo-wrapper float-item" onclick="openModal('1144689373', '16:9')" data-speed="0.9">
                 <img src="https://vumbnail.com/1144689373.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689290', '9:16')">
+            <div class="vimeo-wrapper tall float-item" onclick="openModal('1144689290', '9:16')" data-speed="1.3">
                 <img src="https://vumbnail.com/1144689290.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689403', '16:9')">
+            <div class="vimeo-wrapper float-item" onclick="openModal('1144689403', '16:9')" data-speed="0.7">
                 <img src="https://vumbnail.com/1144689403.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689168', '16:9')">
-                <img src="https://vumbnail.com/1144689168.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+            <div class="vimeo-wrapper float-item" onclick="openModal('1144689001', '9:16')" data-speed="1.0">
+                <img src="https://vumbnail.com/1144689001.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
             
@@ -265,20 +290,17 @@
     const iframeContainer = document.getElementById('modal-iframe-container');
 
     function openModal(vimeoId, ratioString) {
-        // Modalın genişlik ve yüksekliğini videonun oranına göre ayarla
-        let paddingPercentage = 56.25; // Varsayılan 16:9
-
+        let paddingPercentage = 56.25; 
         if (ratioString === '9:16') {
-            paddingPercentage = 177.77; // Dikey
-            modalBox.style.maxWidth = '450px'; // Telefon genişliği
+            paddingPercentage = 177.77; 
+            modalBox.style.maxWidth = '450px'; 
         } else if (ratioString === '4:5') {
-            paddingPercentage = 125; // Instagram Dikey
+            paddingPercentage = 125;
             modalBox.style.maxWidth = '500px';
         } else if (ratioString === '1:1') {
-            paddingPercentage = 100; // Kare
+            paddingPercentage = 100;
             modalBox.style.maxWidth = '600px';
         } else {
-            // 16:9 Yatay
             paddingPercentage = 56.25;
             modalBox.style.maxWidth = '1100px';
         }
@@ -301,7 +323,27 @@
         if (event.key === "Escape" && modal.style.display === 'flex') closeModal();
     });
 
-    // --- EFEKTLER ---
+    // --- YÜZME (FLOATING) EFEKTİ ---
+    document.addEventListener('mousemove', (e) => {
+        // Fare konumunu ekran merkezine göre hesapla (-1 ile 1 arasında)
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+        document.querySelectorAll('.float-item').forEach(item => {
+            // Her elemanın kendine özel hızını (data-speed) al, yoksa 1 kullan
+            const speed = parseFloat(item.getAttribute('data-speed')) || 1;
+            
+            // Hareketi hesapla (Tersi yönde hareket derinlik hissi verir)
+            const moveX = x * 15 * speed; // 15px maksimum hareket
+            const moveY = y * 15 * speed;
+
+            // CSS değişkenlerini güncelle (CSS'teki transform bunları kullanır)
+            item.style.setProperty('--tx', `${-moveX}px`);
+            item.style.setProperty('--ty', `${-moveY}px`);
+        });
+    });
+
+    // --- DİĞER EFEKTLER ---
     document.querySelectorAll(".big-box").forEach(card => {
         card.addEventListener("mousemove", e => {
             const rect = card.getBoundingClientRect();
