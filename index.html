@@ -63,70 +63,50 @@
         .back-btn { font-size: 18px; margin-bottom: 20px; display: inline-block; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 2px solid rgba(255,255,255,0.2); }
         .back-btn:hover { background: var(--white); color: var(--dark-blue); }
 
-        /* --- GALERİ DUVARI GRID DÜZENİ (Referans Görsele Uygun) --- */
+        /* --- 3x3 SIMETRIK GRID DÜZENİ --- */
         .video-grid {
             display: grid;
-            /* Mobilde 1, Masaüstünde 4 sütun */
+            /* Mobilde 1, Masaüstünde tam 3 sütun */
             grid-template-columns: repeat(1, 1fr);
             gap: 20px;
-            grid-auto-flow: dense; /* Boşlukları otomatik doldur */
+            max-width: 1200px; /* Çok geniş ekranlarda dağılmasın diye */
+            margin: 0 auto; /* Ortala */
         }
 
         @media (min-width: 768px) {
             .video-grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 Sütunlu Izgara */
+                /* 9 Video için tam 3x3 kare düzeni */
+                grid-template-columns: repeat(3, 1fr); 
             }
-            
-            /* -- GALERİ DUVARI SINIFLARI -- */
-            
-            /* 'gallery-tall': Dikeyde 2 birim (Tablo görselindeki sol ve sağdaki uzun tablolar gibi) */
-            .vimeo-wrapper.gallery-tall {
-                grid-row: span 2;
-                grid-column: span 1;
-            }
-
-            /* 'gallery-big': Hem yatay hem dikey 2 birim (Ortadaki büyük tablo gibi) */
-            .vimeo-wrapper.gallery-big {
-                grid-column: span 2;
-                grid-row: span 2;
-            }
-
-            /* 'gallery-wide': Yatayda 2 birim (Yatay tablolar gibi) */
-            .vimeo-wrapper.gallery-wide {
-                grid-column: span 2;
-                grid-row: span 1;
-            }
-            
-            /* Standart kutular (class eklenmemiş) 1x1 birim kaplar */
         }
 
-        /* --- VİDEO KAPSAYICISI --- */
+        /* --- VİDEO KAPSAYICISI (KARE) --- */
         .vimeo-wrapper {
             position: relative;
             width: 100%;
-            height: 100%;
-            min-height: 250px; 
-            border-radius: 4px; /* Tablo çerçevesi hissi için daha keskin köşe */
+            height: 0;
+            /* Tam Kare Görünüm (1:1) */
+            padding-bottom: 100%; 
+            border-radius: 4px;
             overflow: hidden;
-            border: 4px solid #fff; /* Tablo çerçevesi efekti */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5); /* Duvarda asılı hissi için gölge */
+            border: 1px solid rgba(255,255,255,0.1); /* İnce, zarif çerçeve */
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             background: #111;
             cursor: pointer;
         }
 
         .vimeo-wrapper:hover {
-            transform: scale(1.02);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            transform: scale(1.03); /* Hafif büyüme */
             z-index: 5;
-            border-color: var(--accent-color); /* Hover'da çerçeve parlar */
+            border-color: var(--white);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5); /* Derinlik hissi */
         }
 
         .vimeo-thumbnail {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            object-fit: cover; /* Görseli çerçeveye tam oturtur */
+            object-fit: cover; /* Görseli kareye tam oturtur (ortadan kırparak) */
             transition: transform 0.5s ease;
         }
 
@@ -137,7 +117,7 @@
         /* Oynat İkonu */
         .play-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.0);
             display: flex; align-items: center; justify-content: center;
             opacity: 0; transition: 0.3s;
         }
@@ -160,9 +140,10 @@
         .modal-content {
             position: relative; background: #000; border-radius: 8px; overflow: hidden;
             box-shadow: 0 0 60px rgba(0, 0, 0, 0.8); width: 100%; transition: all 0.3s ease;
-            height: 0; /* Padding ile yükseklik verilecek */
+            height: 0;
         }
 
+        /* Modal'da çerçeve oranları */
         .modal-content iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         .close-btn {
             position: absolute; top: 20px; right: 40px; color: var(--white); font-size: 50px;
@@ -213,13 +194,13 @@
 
         <div class="video-grid">
             
-            <div class="vimeo-wrapper gallery-tall" onclick="openModal('1144689354', '9:16')">
-                <img src="https://vumbnail.com/1144689354.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+            <div class="vimeo-wrapper" onclick="openModal('1144689325', '16:9')">
+                <img src="https://vumbnail.com/1144689325.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper gallery-big" onclick="openModal('1144689325', '16:9')">
-                <img src="https://vumbnail.com/1144689325.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+            <div class="vimeo-wrapper" onclick="openModal('1144689354', '9:16')">
+                <img src="https://vumbnail.com/1144689354.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
 
@@ -233,7 +214,7 @@
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper gallery-wide" onclick="openModal('1144689113', '16:9')">
+            <div class="vimeo-wrapper" onclick="openModal('1144689113', '16:9')">
                 <img src="https://vumbnail.com/1144689113.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
@@ -243,7 +224,7 @@
                 <div class="play-overlay"></div>
             </div>
 
-            <div class="vimeo-wrapper gallery-tall" onclick="openModal('1144689290', '9:16')">
+            <div class="vimeo-wrapper" onclick="openModal('1144689290', '9:16')">
                 <img src="https://vumbnail.com/1144689290.jpg" alt="Thumbnail" class="vimeo-thumbnail">
                 <div class="play-overlay"></div>
             </div>
