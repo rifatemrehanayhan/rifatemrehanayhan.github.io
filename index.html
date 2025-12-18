@@ -70,68 +70,76 @@
             .grid-3x3 { grid-template-columns: repeat(3, 1fr); }
         }
 
-        /* --- YENİ VİDEO KUTUSU TASARIMI --- */
-        /* Ana Taşıyıcı (Referans görsele göre şekillendirildi) */
+        /* --- VİDEO KUTUSU TASARIMI --- */
         .vimeo-wrapper {
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 125%; /* 4:5 Dikey Oran */
-            border-radius: 30px; /* Daha yuvarlak köşeler */
+            padding-bottom: 135%; /* 4:5 oranından biraz daha uzun (yazı alanı için) */
+            border-radius: 35px;
             overflow: hidden;
             cursor: pointer;
-            transform: translateZ(0); /* Safari için render düzeltmesi */
-            transition: transform 0.3s ease;
+            background: #111;
+            /* YÜZME EFEKTİ */
+            animation: floatAnim 6s ease-in-out infinite;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .vimeo-wrapper:hover {
-            transform: scale(1.02); /* Hover'da hafif büyüme */
+            transform: scale(1.03) !important;
+            animation-play-state: paused;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
 
-        /* Bulanık Arka Plan Görseli */
+        @keyframes floatAnim {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Animasyon Gecikmeleri */
+        .delay-1 { animation-delay: 0s; } .delay-2 { animation-delay: 1.5s; } .delay-3 { animation-delay: 3s; }
+
+        /* Bulanık Arka Plan */
         .blur-background {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
-            filter: blur(25px) brightness(0.7); /* Şiddetli blur ve karartma */
-            transform: scale(1.2); /* Kenar taşmalarını önlemek için büyütme */
+            filter: blur(25px) brightness(0.65);
+            transform: scale(1.3);
             z-index: 1;
         }
 
-        /* Net Ön Plan Görseli */
+        /* Ön Plan Görseli (Hizalama Revize Edildi) */
         .foreground-image {
             position: absolute;
-            top: 8%; /* Üstten boşluk */
+            top: 5%; /* Referans görseldeki gibi daha yukarı çekildi */
             left: 50%;
-            width: 84%; /* Kutudan daha küçük */
-            height: auto;
-            aspect-ratio: 4/5; /* Kendi içinde de dikey oran */
+            width: 88%;
+            aspect-ratio: 4/5;
             object-fit: cover;
-            border-radius: 20px;
-            transform: translateX(-50%); /* Ortalamak için */
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5); /* Öne çıkaran gölge */
+            border-radius: 25px;
+            transform: translateX(-50%);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             z-index: 2;
-            transition: transform 0.3s ease;
-        }
-        
-        .vimeo-wrapper:hover .foreground-image {
-            transform: translateX(-50%) scale(1.03); /* Hover'da görsel de hafif büyüsün */
         }
 
-        /* Video Başlığı */
+        /* Video Başlığı (Hizalama Revize Edildi) */
         .video-title {
             position: absolute;
-            bottom: 8%; /* Alttan boşluk */
+            bottom: 7%; /* Yazı alanı görselin altında netleşti */
             left: 0;
             width: 100%;
             text-align: center;
             color: var(--white);
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            text-transform: uppercase;
+            text-transform: none; /* 'Başlıksız-1.jpg'deki gibi doğal bırakıldı */
             text-shadow: 0 2px 10px rgba(0,0,0,0.8);
             z-index: 3;
+            padding: 0 10px;
+            box-sizing: border-box;
         }
 
         /* --- MODAL --- */
@@ -159,7 +167,7 @@
         @media (max-width: 768px) {
             .section-boxes { flex-direction: column; align-items: center; }
             .hero h1 { font-size: 36px; }
-            .video-title { font-size: 20px; bottom: 6%; } /* Mobilde başlık ayarı */
+            .video-title { font-size: 18px; bottom: 5%; }
         }
     </style>
 </head>
@@ -193,58 +201,58 @@
 
         <div class="grid-3x3">
             
-            <div class="vimeo-wrapper" onclick="openModal('1144689354', '16:9')">
-                <img src="https://vumbnail.com/1144689354.jpg" alt="Background Blur" class="blur-background">
-                <img src="https://vumbnail.com/1144689354.jpg" alt="Foreground" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 1</div>
+            <div class="vimeo-wrapper delay-1" onclick="openModal('1144689354', '16:9')">
+                <img src="https://vumbnail.com/1144689354.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689354.jpg" class="foreground-image">
+                <div class="video-title">Evet Mi Hayır Mı?</div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689325', '16:9')">
+            <div class="vimeo-wrapper delay-2" onclick="openModal('1144689325', '16:9')">
                 <img src="https://vumbnail.com/1144689325.jpg" class="blur-background">
                 <img src="https://vumbnail.com/1144689325.jpg" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 2</div>
+                <div class="video-title">Video Başlığı 2</div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689168', '9:16')">
+            <div class="vimeo-wrapper delay-3" onclick="openModal('1144689168', '9:16')">
                 <img src="https://vumbnail.com/1144689168.jpg" class="blur-background">
                 <img src="https://vumbnail.com/1144689168.jpg" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 3</div>
+                <div class="video-title">Video Başlığı 3</div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689244', '16:9')">
+            <div class="vimeo-wrapper delay-2" onclick="openModal('1144689244', '16:9')">
                 <img src="https://vumbnail.com/1144689244.jpg" class="blur-background">
                 <img src="https://vumbnail.com/1144689244.jpg" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 4</div>
+                <div class="video-title">Video Başlığı 4</div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689113', '16:9')">
+            <div class="vimeo-wrapper delay-1" onclick="openModal('1144689113', '16:9')">
                 <img src="https://vumbnail.com/1144689113.jpg" class="blur-background">
                 <img src="https://vumbnail.com/1144689113.jpg" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 5</div>
+                <div class="video-title">Video Başlığı 5</div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689373', '9:16')">
+            <div class="vimeo-wrapper delay-3" onclick="openModal('1144689373', '9:16')">
                 <img src="https://vumbnail.com/1144689373.jpg" class="blur-background">
                 <img src="https://vumbnail.com/1144689373.jpg" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 6</div>
+                <div class="video-title">Video Başlığı 6</div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689290', '9:16')">
+            <div class="vimeo-wrapper delay-1" onclick="openModal('1144689290', '9:16')">
                 <img src="https://vumbnail.com/1144689290.jpg" class="blur-background">
                 <img src="https://vumbnail.com/1144689290.jpg" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 7</div>
+                <div class="video-title">Video Başlığı 7</div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689403', '9:16')">
+            <div class="vimeo-wrapper delay-3" onclick="openModal('1144689403', '9:16')">
                 <img src="https://vumbnail.com/1144689403.jpg" class="blur-background">
                 <img src="https://vumbnail.com/1144689403.jpg" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 8</div>
+                <div class="video-title">Video Başlığı 8</div>
             </div>
 
-            <div class="vimeo-wrapper" onclick="openModal('1144689001', '9:16')">
+            <div class="vimeo-wrapper delay-2" onclick="openModal('1144689001', '9:16')">
                 <img src="https://vumbnail.com/1144689001.jpg" class="blur-background">
                 <img src="https://vumbnail.com/1144689001.jpg" class="foreground-image">
-                <div class="video-title">VIDEO BAŞLIĞI 9</div>
+                <div class="video-title">Video Başlığı 9</div>
             </div>
             
         </div>
@@ -267,7 +275,6 @@
     </div>
 
     <script>
-    // --- AKILLI MODAL ---
     const modal = document.getElementById('video-modal');
     const modalBox = document.getElementById('modal-box');
     const iframeContainer = document.getElementById('modal-iframe-container');
@@ -294,9 +301,6 @@
     }
     document.addEventListener('keydown', function(event) { if (event.key === "Escape" && modal.style.display === 'flex') closeModal(); });
 
-    // --- FARE HAREKETİ İLE YÜZME (PARALLAX) VE GLOW EFEKTLERİ KALDIRILDI ---
-
-    // --- DİĞER FONKSİYONLAR ---
     document.querySelectorAll(".big-box").forEach(card => {
         card.addEventListener("mousemove", e => {
             const rect = card.getBoundingClientRect();
