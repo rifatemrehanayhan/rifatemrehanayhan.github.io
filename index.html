@@ -9,9 +9,6 @@
 
     <style>
         :root {
-            --dark-blue: #1C2D4A;
-            --mid-blue: #2F4E7B;
-            --light-bg: #F4F6FA;
             --white: #ffffff;
             --accent-color: #ffffff;
         }
@@ -19,7 +16,7 @@
         body {
             margin: 0;
             font-family: 'SF Pro Display', sans-serif;
-            color: var(--light-bg);
+            color: #F4F6FA;
             overflow-x: hidden;
             background-color: #000;
         }
@@ -55,36 +52,30 @@
         .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.9; margin-top: 10px; color: var(--white); }
         .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; padding: 20px; perspective: 1200px; }
         .big-box { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); padding: 50px 80px; border-radius: 20px; font-size: 32px; border: none; box-shadow: 0 0 18px rgba(255, 255, 255, 0.25); color: var(--white); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s; user-select: none; font-weight: 500; transform-style: preserve-3d; }
-        .big-box:hover { background: var(--white); color: var(--dark-blue); transform: scale(1.06); box-shadow: 0 0 28px rgba(255, 255, 255, 0.45); }
+        .big-box:hover { background: var(--white); color: #1C2D4A; transform: scale(1.06); box-shadow: 0 0 28px rgba(255, 255, 255, 0.45); }
         #videos, #images { padding-top: 40px; padding-left: 10%; padding-right: 10%; }
         .back-btn { font-size: 18px; margin-bottom: 20px; display: inline-block; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 2px solid rgba(255,255,255,0.2); }
-        .back-btn:hover { background: var(--white); color: var(--dark-blue); }
+        .back-btn:hover { background: var(--white); color: #1C2D4A; }
 
         /* --- 3x3 SİMETRİK IZGARA --- */
         .grid-3x3 {
             display: grid;
-            gap: 35px;
+            gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
-            /* Mobilde Tek Sütun */
             grid-template-columns: 1fr; 
         }
 
         @media (min-width: 768px) {
-            .grid-3x3 {
-                /* Masaüstünde Tam 3 Sütun */
-                grid-template-columns: repeat(3, 1fr);
-            }
+            .grid-3x3 { grid-template-columns: repeat(3, 1fr); }
         }
 
-        /* --- VİDEO KAPSAYICISI (FLOATING İÇİN) --- */
+        /* --- VİDEO KAPSAYICISI (FLOATING) --- */
         .video-item-container {
             display: block;
-            /* YÜZME EFEKTİ DEĞİŞKENLERİ */
             --tx: 0px; --ty: 0px; --s: 1;
             transform: translate(var(--tx), var(--ty)) scale(var(--s));
             transition: transform 0.1s linear;
-            /* Kendi kendine süzülme animasyonu */
             animation: floatAnim 6s ease-in-out infinite;
             cursor: pointer;
         }
@@ -95,13 +86,20 @@
             animation-play-state: paused;
         }
 
+        @keyframes floatAnim {
+            0% { transform: translate(var(--tx), var(--ty)) translateY(0px) scale(var(--s)); }
+            50% { transform: translate(var(--tx), var(--ty)) translateY(-8px) scale(var(--s)); }
+            100% { transform: translate(var(--tx), var(--ty)) translateY(0px) scale(var(--s)); }
+        }
+
+        .delay-1 { animation-delay: 0s; } .delay-2 { animation-delay: 1s; } .delay-3 { animation-delay: 2s; }
+
         /* --- VİDEO KUTUSU (4:5 ORANI) --- */
         .vimeo-wrapper {
             position: relative;
             width: 100%;
             height: 0;
-            /* 4:5 Oranı (5 / 4 * 100 = 125%) */
-            padding-bottom: 125%; 
+            padding-bottom: 125%; /* 4:5 Oranı */
             border-radius: 16px;
             overflow: hidden;
             border: 2px solid rgba(255,255,255,0.15);
@@ -110,20 +108,10 @@
             transition: box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Hover: Parlama (Glow) */
         .video-item-container:hover .vimeo-wrapper {
             border-color: var(--white);
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255,255,255,0.5);
         }
-
-        @keyframes floatAnim {
-            0% { transform: translate(var(--tx), var(--ty)) translateY(0px) scale(var(--s)); }
-            50% { transform: translate(var(--tx), var(--ty)) translateY(-8px) scale(var(--s)); }
-            100% { transform: translate(var(--tx), var(--ty)) translateY(0px) scale(var(--s)); }
-        }
-
-        /* Animasyon gecikmeleri */
-        .delay-1 { animation-delay: 0s; } .delay-2 { animation-delay: 1s; } .delay-3 { animation-delay: 2s; }
 
         .vimeo-thumbnail {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -132,40 +120,33 @@
         }
         .video-item-container:hover .vimeo-thumbnail { transform: scale(1.05); }
 
-        /* --- GÜNCELLENMİŞ DEGRADELİ BLUR EFEKTİ (Overlay) --- */
+        /* --- YUMUŞAK DEGRADELİ BLUR (MASKELEME TEKNİĞİ) --- */
         .gradient-blur-overlay {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            /* Yüksekliği artırdık, böylece ortadan başlıyor */
-            height: 55%; 
-            /* Daha belirgin ve yumuşak geçişli bir gradient */
-            background: linear-gradient(to bottom, 
-                rgba(0,0,0,0) 0%, 
-                rgba(0,0,0,0.6) 40%, /* Ortada hafif kararma */
-                rgba(0,0,0,0.9) 100%);
-            /* Blur efektini güçlendirdik */
-            backdrop-filter: blur(6px); 
-            -webkit-backdrop-filter: blur(6px);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 2;
+            /* Maske sayesinde blur keskin bir çizgiyle değil, yumuşakça başlar */
+            -webkit-mask-image: linear-gradient(to bottom, transparent 40%, black 100%);
+            mask-image: linear-gradient(to bottom, transparent 40%, black 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            /* Kararma degrade geçişi */
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.9) 100%);
         }
 
-        /* --- BAŞLIK YAZISI (Konumu ayarlandı) --- */
+        /* --- BAŞLIK YAZISI --- */
         .thumbnail-title-overlay {
             position: absolute;
-            /* Blur alanının içine denk gelecek şekilde ayarladık */
-            bottom: 25px; 
-            left: 0;
+            bottom: 30px; left: 0;
             width: 100%;
             text-align: center;
             color: var(--white);
-            font-size: 26px;
-            font-weight: 700;
+            font-size: 26px; font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.7); /* Gölgeyi biraz daha belirginleştirdik */
+            text-shadow: 0 2px 15px rgba(0,0,0,0.8);
             z-index: 3;
             pointer-events: none;
         }
@@ -184,7 +165,7 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- MODAL (POPUP) --- */
+        /* --- MODAL --- */
         #video-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.95); z-index: 10000;
@@ -208,7 +189,6 @@
         .sub-title { margin-top: 40px; font-size: 28px; font-weight: 500; }
         @media (max-width: 768px) {
             .section-boxes { flex-direction: column; align-items: center; }
-            .page-section { padding-left: 20px; padding-right: 20px; }
             .hero h1 { font-size: 36px; }
         }
     </style>
@@ -346,7 +326,7 @@
     </div>
 
     <script>
-    // --- AKILLI MODAL (ORIJINAL BOYUT) ---
+    // --- AKILLI MODAL ---
     const modal = document.getElementById('video-modal');
     const modalBox = document.getElementById('modal-box');
     const iframeContainer = document.getElementById('modal-iframe-container');
@@ -354,21 +334,15 @@
     function openModal(vimeoId, ratioString) {
         let paddingPercentage = 56.25; 
         if (ratioString === '9:16') {
-            paddingPercentage = 177.77; // Dikey Video
-            modalBox.style.maxWidth = '450px'; // Telefon Genişliği
+            paddingPercentage = 177.77; modalBox.style.maxWidth = '450px'; 
         } else if (ratioString === '4:5') {
-            paddingPercentage = 125; 
-            modalBox.style.maxWidth = '500px';
+            paddingPercentage = 125; modalBox.style.maxWidth = '500px';
         } else if (ratioString === '1:1') {
-            paddingPercentage = 100;
-            modalBox.style.maxWidth = '600px';
+            paddingPercentage = 100; modalBox.style.maxWidth = '600px';
         } else {
-            // Varsayılan: 16:9 Yatay
-            paddingPercentage = 56.25;
-            modalBox.style.maxWidth = '1100px';
+            paddingPercentage = 56.25; modalBox.style.maxWidth = '1100px';
         }
         modalBox.style.paddingBottom = paddingPercentage + '%';
-        
         const iframeSrc = `https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0&portrait=0`;
         iframeContainer.innerHTML = `<iframe src="${iframeSrc}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
         modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
@@ -383,7 +357,6 @@
     document.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth - 0.5) * 2;
         const y = (e.clientY / window.innerHeight - 0.5) * 2;
-        // Float item container'ı hedefle
         document.querySelectorAll('.video-item-container.float-item').forEach(item => {
             const speed = 1.0; 
             const moveX = x * 10 * speed;
