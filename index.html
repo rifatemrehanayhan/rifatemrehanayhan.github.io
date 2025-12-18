@@ -70,107 +70,68 @@
             .grid-3x3 { grid-template-columns: repeat(3, 1fr); }
         }
 
-        /* --- VİDEO KAPSAYICISI (FLOATING) --- */
-        .video-item-container {
-            display: block;
-            --tx: 0px; --ty: 0px; --s: 1;
-            transform: translate(var(--tx), var(--ty)) scale(var(--s));
-            transition: transform 0.1s linear;
-            animation: floatAnim 6s ease-in-out infinite;
-            cursor: pointer;
-        }
-
-        .video-item-container:hover {
-            --s: 1.03 !important;
-            z-index: 10;
-            animation-play-state: paused;
-        }
-
-        @keyframes floatAnim {
-            0% { transform: translate(var(--tx), var(--ty)) translateY(0px) scale(var(--s)); }
-            50% { transform: translate(var(--tx), var(--ty)) translateY(-8px) scale(var(--s)); }
-            100% { transform: translate(var(--tx), var(--ty)) translateY(0px) scale(var(--s)); }
-        }
-
-        .delay-1 { animation-delay: 0s; } .delay-2 { animation-delay: 1s; } .delay-3 { animation-delay: 2s; }
-
-        /* --- VİDEO KUTUSU (4:5 PORTRAIT ORANI) --- */
+        /* --- YENİ VİDEO KUTUSU TASARIMI --- */
+        /* Ana Taşıyıcı (Referans görsele göre şekillendirildi) */
         .vimeo-wrapper {
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 125%; 
-            border-radius: 16px;
+            padding-bottom: 125%; /* 4:5 Dikey Oran */
+            border-radius: 30px; /* Daha yuvarlak köşeler */
             overflow: hidden;
-            border: 2px solid rgba(255,255,255,0.15);
-            background: #111;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            transform: translateZ(0); /* Safari için render düzeltmesi */
+            transition: transform 0.3s ease;
         }
 
-        .video-item-container:hover .vimeo-wrapper {
-            border-color: var(--white);
-            box-shadow: 0 0 35px rgba(255, 255, 255, 0.7);
+        .vimeo-wrapper:hover {
+            transform: scale(1.02); /* Hover'da hafif büyüme */
         }
 
-        .vimeo-thumbnail {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-        .video-item-container:hover .vimeo-thumbnail { transform: scale(1.05); }
-
-        /* --- ŞİDDETLİ VE YUMUŞAK DEGRADELİ BLUR --- */
-        .gradient-blur-overlay {
+        /* Bulanık Arka Plan Görseli */
+        .blur-background {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 2;
-
-            /* Maske: %30'dan itibaren blur süzülmeye başlar */
-            -webkit-mask-image: linear-gradient(to bottom, transparent 30%, black 100%);
-            mask-image: linear-gradient(to bottom, transparent 30%, black 100%);
-            
-            /* Şiddetli 30px Gauss Blur */
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-
-            /* Alt karartma degrade */
-            background: linear-gradient(to bottom, 
-                rgba(0,0,0,0) 40%, 
-                rgba(0,0,0,0.4) 70%, 
-                rgba(0,0,0,0.95) 100%);
+            object-fit: cover;
+            filter: blur(25px) brightness(0.7); /* Şiddetli blur ve karartma */
+            transform: scale(1.2); /* Kenar taşmalarını önlemek için büyütme */
+            z-index: 1;
         }
 
-        /* --- BAŞLIK YAZISI --- */
-        .thumbnail-title-overlay {
+        /* Net Ön Plan Görseli */
+        .foreground-image {
             position: absolute;
-            bottom: 30px; left: 0;
+            top: 8%; /* Üstten boşluk */
+            left: 50%;
+            width: 84%; /* Kutudan daha küçük */
+            height: auto;
+            aspect-ratio: 4/5; /* Kendi içinde de dikey oran */
+            object-fit: cover;
+            border-radius: 20px;
+            transform: translateX(-50%); /* Ortalamak için */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); /* Öne çıkaran gölge */
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+        
+        .vimeo-wrapper:hover .foreground-image {
+            transform: translateX(-50%) scale(1.03); /* Hover'da görsel de hafif büyüsün */
+        }
+
+        /* Video Başlığı */
+        .video-title {
+            position: absolute;
+            bottom: 8%; /* Alttan boşluk */
+            left: 0;
             width: 100%;
             text-align: center;
             color: var(--white);
-            font-size: 26px; 
-            font-weight: 800; /* Kalın font */
+            font-size: 24px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
             z-index: 3;
-            pointer-events: none;
-        }
-
-        /* Oynat İkonu */
-        .play-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.0); display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s; z-index: 4;
-        }
-        .video-item-container:hover .play-overlay { opacity: 1; background: rgba(0, 0, 0, 0.2); }
-        .play-overlay::after {
-            content: '▶'; font-size: 50px; color: var(--white);
-            width: 70px; height: 70px; background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
         }
 
         /* --- MODAL --- */
@@ -198,6 +159,7 @@
         @media (max-width: 768px) {
             .section-boxes { flex-direction: column; align-items: center; }
             .hero h1 { font-size: 36px; }
+            .video-title { font-size: 20px; bottom: 6%; } /* Mobilde başlık ayarı */
         }
     </style>
 </head>
@@ -209,8 +171,6 @@
             <div id="modal-iframe-container"></div>
         </div>
     </div>
-
-    <div id="cursor-orb"></div>
 
     <video id="bg-video" autoplay muted loop playsinline>
         <source src="videos/background.mp4" type="video/mp4">
@@ -233,85 +193,58 @@
 
         <div class="grid-3x3">
             
-            <div class="video-item-container float-item delay-1">
-                <div class="vimeo-wrapper" onclick="openModal('1144689354', '16:9')">
-                    <img src="https://vumbnail.com/1144689354.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 1</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689354', '16:9')">
+                <img src="https://vumbnail.com/1144689354.jpg" alt="Background Blur" class="blur-background">
+                <img src="https://vumbnail.com/1144689354.jpg" alt="Foreground" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 1</div>
             </div>
 
-            <div class="video-item-container float-item delay-2">
-                <div class="vimeo-wrapper" onclick="openModal('1144689325', '16:9')">
-                    <img src="https://vumbnail.com/1144689325.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 2</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689325', '16:9')">
+                <img src="https://vumbnail.com/1144689325.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689325.jpg" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 2</div>
             </div>
 
-            <div class="video-item-container float-item delay-3">
-                <div class="vimeo-wrapper" onclick="openModal('1144689168', '9:16')">
-                    <img src="https://vumbnail.com/1144689168.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 3</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689168', '9:16')">
+                <img src="https://vumbnail.com/1144689168.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689168.jpg" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 3</div>
             </div>
 
-            <div class="video-item-container float-item delay-2">
-                <div class="vimeo-wrapper" onclick="openModal('1144689244', '16:9')">
-                    <img src="https://vumbnail.com/1144689244.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 4</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689244', '16:9')">
+                <img src="https://vumbnail.com/1144689244.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689244.jpg" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 4</div>
             </div>
 
-            <div class="video-item-container float-item delay-1">
-                <div class="vimeo-wrapper" onclick="openModal('1144689113', '16:9')">
-                    <img src="https://vumbnail.com/1144689113.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 5</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689113', '16:9')">
+                <img src="https://vumbnail.com/1144689113.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689113.jpg" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 5</div>
             </div>
 
-            <div class="video-item-container float-item delay-3">
-                <div class="vimeo-wrapper" onclick="openModal('1144689373', '9:16')">
-                    <img src="https://vumbnail.com/1144689373.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 6</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689373', '9:16')">
+                <img src="https://vumbnail.com/1144689373.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689373.jpg" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 6</div>
             </div>
 
-            <div class="video-item-container float-item delay-1">
-                <div class="vimeo-wrapper" onclick="openModal('1144689290', '9:16')">
-                    <img src="https://vumbnail.com/1144689290.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 7</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689290', '9:16')">
+                <img src="https://vumbnail.com/1144689290.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689290.jpg" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 7</div>
             </div>
 
-            <div class="video-item-container float-item delay-3">
-                <div class="vimeo-wrapper" onclick="openModal('1144689403', '9:16')">
-                    <img src="https://vumbnail.com/1144689403.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 8</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689403', '9:16')">
+                <img src="https://vumbnail.com/1144689403.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689403.jpg" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 8</div>
             </div>
 
-            <div class="video-item-container float-item delay-2">
-                <div class="vimeo-wrapper" onclick="openModal('1144689001', '9:16')">
-                    <img src="https://vumbnail.com/1144689001.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                    <div class="gradient-blur-overlay"></div>
-                    <div class="thumbnail-title-overlay">VIDEO 9</div>
-                    <div class="play-overlay"></div>
-                </div>
+            <div class="vimeo-wrapper" onclick="openModal('1144689001', '9:16')">
+                <img src="https://vumbnail.com/1144689001.jpg" class="blur-background">
+                <img src="https://vumbnail.com/1144689001.jpg" class="foreground-image">
+                <div class="video-title">VIDEO BAŞLIĞI 9</div>
             </div>
             
         </div>
@@ -361,18 +294,7 @@
     }
     document.addEventListener('keydown', function(event) { if (event.key === "Escape" && modal.style.display === 'flex') closeModal(); });
 
-    // --- FARE HAREKETİ İLE YÜZME (PARALLAX) ---
-    document.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 2;
-        const y = (e.clientY / window.innerHeight - 0.5) * 2;
-        document.querySelectorAll('.video-item-container.float-item').forEach(item => {
-            const speed = 1.0; 
-            const moveX = x * 10 * speed;
-            const moveY = y * 10 * speed;
-            item.style.setProperty('--tx', `${-moveX}px`);
-            item.style.setProperty('--ty', `${-moveY}px`);
-        });
-    });
+    // --- FARE HAREKETİ İLE YÜZME (PARALLAX) VE GLOW EFEKTLERİ KALDIRILDI ---
 
     // --- DİĞER FONKSİYONLAR ---
     document.querySelectorAll(".big-box").forEach(card => {
@@ -392,16 +314,6 @@
         document.querySelectorAll('.page-section.active').forEach(sec => sec.classList.remove("active"));
         const home = document.getElementById("home"); home.classList.remove("slide-out-right"); home.classList.remove("slide-out-left");
     }
-
-    document.addEventListener('mousemove', (e) => {
-        const orb = document.getElementById('cursor-orb');
-        if (orb) {
-            orb.style.position = 'fixed'; orb.style.left = e.clientX + 'px'; orb.style.top = e.clientY + 'px';
-            orb.style.width = '30px'; orb.style.height = '30px'; orb.style.borderRadius = '50%';
-            orb.style.backgroundColor = 'rgba(255,255,255,0.1)'; orb.style.transform = 'translate(-50%, -50%)';
-            orb.style.pointerEvents = 'none'; orb.style.zIndex = '9999'; orb.style.filter = 'blur(5px)';
-        }
-    });
 
     document.querySelectorAll(".image-grid img").forEach(img => {
         img.addEventListener("click", () => {
