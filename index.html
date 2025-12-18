@@ -63,7 +63,7 @@
         /* --- 3x3 SİMETRİK KARE IZGARA --- */
         .grid-3x3 {
             display: grid;
-            gap: 25px;
+            gap: 35px; /* Alt yazılar için boşluğu biraz artırdık */
             max-width: 1200px;
             margin: 0 auto;
             /* Mobilde Tek Sütun */
@@ -77,35 +77,45 @@
             }
         }
 
-        /* --- VİDEO KAPSAYICISI (KARE) --- */
+        /* --- VİDEO VE ETİKET KAPSAYICISI (YENİ) --- */
+        /* Yüzme efekti artık bu kapsayıcıya uygulanacak */
+        .video-item-container {
+            display: flex;
+            flex-direction: column;
+            /* YÜZME EFEKTİ DEĞİŞKENLERİ */
+            --tx: 0px; --ty: 0px; --s: 1;
+            transform: translate(var(--tx), var(--ty)) scale(var(--s));
+            transition: transform 0.1s linear;
+            /* Kendi kendine süzülme animasyonu */
+            animation: floatAnim 6s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        /* Hover durumunda kapsayıcı davranışı */
+        .video-item-container:hover {
+            --s: 1.02 !important; /* Tüm blok hafifçe büyür */
+            z-index: 10;
+            animation-play-state: paused;
+        }
+
+        /* --- VİDEO KUTUSU (KARE) --- */
         .vimeo-wrapper {
             position: relative;
             width: 100%;
             height: 0;
             padding-bottom: 100%; /* 1:1 Tam Kare Oranı */
-            border-radius: 12px;
+            border-radius: 16px; /* Referans görseldeki gibi daha yuvarlak köşeler */
             overflow: hidden;
             border: 2px solid rgba(255,255,255,0.15);
             background: #111;
-            cursor: pointer;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            
-            /* YÜZME EFEKTİ DEĞİŞKENLERİ */
-            --tx: 0px; --ty: 0px; --s: 1;
-            transform: translate(var(--tx), var(--ty)) scale(var(--s));
-            transition: transform 0.1s linear, box-shadow 0.3s ease, border-color 0.3s ease;
-            
-            /* Kendi kendine süzülme animasyonu */
-            animation: floatAnim 6s ease-in-out infinite;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Hover: Büyüme ve Parlama (Glow) */
-        .vimeo-wrapper:hover {
-            --s: 1.05 !important; /* Hafif büyüme */
+        /* Hover: Parlama (Glow) Efekti sadece kutuya uygulanır */
+        .video-item-container:hover .vimeo-wrapper {
             border-color: var(--white);
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255,255,255,0.5); /* Beyaz Glow */
-            z-index: 10;
-            animation-play-state: paused;
         }
 
         @keyframes floatAnim {
@@ -114,25 +124,59 @@
             100% { transform: translate(var(--tx), var(--ty)) translateY(0px) scale(var(--s)); }
         }
 
-        /* Animasyon gecikmeleri (Doğallık için) */
+        /* Animasyon gecikmeleri */
         .delay-1 { animation-delay: 0s; } .delay-2 { animation-delay: 1s; } .delay-3 { animation-delay: 2s; }
 
         .vimeo-thumbnail {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; /* Kareye sığdırmak için kırpar */
+            object-fit: cover;
             transition: transform 0.5s ease;
+            filter: brightness(0.8); /* Yazının okunması için görseli biraz kararttık */
         }
-        .vimeo-wrapper:hover .vimeo-thumbnail { transform: scale(1.05); }
+        .video-item-container:hover .vimeo-thumbnail { transform: scale(1.05); filter: brightness(1); }
 
+        /* --- THUMBNAIL ÜZERİNDEKİ BAŞLIK (Referans Stil) --- */
+        .thumbnail-title-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 800; /* Kalın font */
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8); /* Güçlü gölge */
+            z-index: 2;
+            pointer-events: none; /* Tıklamayı engellemesin */
+        }
+
+        /* --- VİDEO ALTTAKİ ETİKETLER (YENİ) --- */
+        .video-label-below {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--white);
+            opacity: 0.7;
+            transition: opacity 0.3s ease, color 0.3s ease;
+        }
+        /* Hover durumunda etiket parlasın */
+        .video-item-container:hover .video-label-below {
+            opacity: 1;
+            color: var(--white);
+        }
+
+        /* Oynat İkonu (Artık başlığın üzerinde çıkacak) */
         .play-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.1); display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s;
+            opacity: 0; transition: 0.3s; z-index: 3;
         }
-        .vimeo-wrapper:hover .play-overlay { opacity: 1; background: rgba(0, 0, 0, 0.3); }
+        .video-item-container:hover .play-overlay { opacity: 1; background: rgba(0, 0, 0, 0.4); }
         .play-overlay::after {
-            content: '▶'; font-size: 40px; color: var(--white);
-            width: 60px; height: 60px; background: rgba(255,255,255,0.2);
+            content: '▶'; font-size: 50px; color: var(--white);
+            width: 70px; height: 70px; background: rgba(255,255,255,0.2);
             backdrop-filter: blur(5px); border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
         }
@@ -198,49 +242,85 @@
 
         <div class="grid-3x3">
             
-            <div class="vimeo-wrapper float-item delay-1" onclick="openModal('1144689325', '16:9')">
-                <img src="https://vumbnail.com/1144689354.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-1">
+                <div class="vimeo-wrapper" onclick="openModal('1144689354', '16:9')">
+                    <img src="https://vumbnail.com/1144689354.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 1</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 1</div>
             </div>
 
-            <div class="vimeo-wrapper float-item delay-2" onclick="openModal('1144689354', '16:9')">
-                <img src="https://vumbnail.com/1144689325.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-2">
+                <div class="vimeo-wrapper" onclick="openModal('1144689325', '16:9')">
+                    <img src="https://vumbnail.com/1144689325.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 2</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 2</div>
             </div>
 
-            <div class="vimeo-wrapper float-item delay-3" onclick="openModal('1144689168', '9:16')">
-                <img src="https://vumbnail.com/1144689168.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-3">
+                <div class="vimeo-wrapper" onclick="openModal('1144689168', '9:16')">
+                    <img src="https://vumbnail.com/1144689168.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 3</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 3</div>
             </div>
 
-            <div class="vimeo-wrapper float-item delay-2" onclick="openModal('1144689244', '16:9')">
-                <img src="https://vumbnail.com/1144689244.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-2">
+                <div class="vimeo-wrapper" onclick="openModal('1144689244', '16:9')">
+                    <img src="https://vumbnail.com/1144689244.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 4</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 4</div>
             </div>
 
-            <div class="vimeo-wrapper float-item delay-1" onclick="openModal('1144689113', '16:9')">
-                <img src="https://vumbnail.com/1144689113.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-1">
+                <div class="vimeo-wrapper" onclick="openModal('1144689113', '16:9')">
+                    <img src="https://vumbnail.com/1144689113.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 5</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 5</div>
             </div>
 
-            <div class="vimeo-wrapper float-item delay-3" onclick="openModal('1144689373', '9:16')">
-                <img src="https://vumbnail.com/1144689373.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-3">
+                <div class="vimeo-wrapper" onclick="openModal('1144689373', '9:16')">
+                    <img src="https://vumbnail.com/1144689373.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 6</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 6</div>
             </div>
 
-            <div class="vimeo-wrapper float-item delay-1" onclick="openModal('1144689290', '9:16')">
-                <img src="https://vumbnail.com/1144689290.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-1">
+                <div class="vimeo-wrapper" onclick="openModal('1144689290', '9:16')">
+                    <img src="https://vumbnail.com/1144689290.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 7</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 7</div>
             </div>
 
-            <div class="vimeo-wrapper float-item delay-3" onclick="openModal('1144689403', '9:16')">
-                <img src="https://vumbnail.com/1144689403.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-3">
+                <div class="vimeo-wrapper" onclick="openModal('1144689403', '9:16')">
+                    <img src="https://vumbnail.com/1144689403.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 8</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 8</div>
             </div>
 
-            <div class="vimeo-wrapper float-item delay-2" onclick="openModal('1144689001', '9:16')">
-                <img src="https://vumbnail.com/1144689001.jpg" alt="Thumbnail" class="vimeo-thumbnail">
-                <div class="play-overlay"></div>
+            <div class="video-item-container float-item delay-2">
+                <div class="vimeo-wrapper" onclick="openModal('1144689001', '9:16')">
+                    <img src="https://vumbnail.com/1144689001.jpg" alt="Thumbnail" class="vimeo-thumbnail">
+                    <div class="thumbnail-title-overlay">BAŞLIK 9</div>
+                    <div class="play-overlay"></div>
+                </div>
+                <div class="video-label-below">Video Çalışması 9</div>
             </div>
             
         </div>
@@ -300,7 +380,8 @@
     document.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth - 0.5) * 2;
         const y = (e.clientY / window.innerHeight - 0.5) * 2;
-        document.querySelectorAll('.float-item').forEach(item => {
+        // Artık .float-item sınıfı kapsayıcıda olduğu için onu hedefliyoruz
+        document.querySelectorAll('.video-item-container.float-item').forEach(item => {
             const speed = 1.0; // Hareket hızı
             const moveX = x * 10 * speed;
             const moveY = y * 10 * speed;
