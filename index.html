@@ -21,6 +21,7 @@
             background-color: #000;
         }
 
+        /* --- ARKAPLAN VİDEO --- */
         #bg-video {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
@@ -28,6 +29,7 @@
             filter: blur(1px) brightness(0.55);
         }
 
+        /* --- SAYFA GEÇİŞ SİSTEMİ --- */
         .page-section {
             position: absolute; top: 0; left: 0;
             width: 100%; min-height: 100vh;
@@ -44,38 +46,40 @@
         #images { transform: translateX(100%); }
         .page-section.active { opacity: 1; pointer-events: all; transform: translateX(0) !important; z-index: 20; }
 
+        /* --- TASARIM ÖGELERİ --- */
         .hero { text-align: center; padding-top: 100px; }
         .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); text-shadow: 0px 2px 6px rgba(0,0,0,0.4); }
         .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.9; margin-top: 10px; color: var(--white); }
         .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; padding: 20px; perspective: 1200px; }
         .big-box { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); padding: 50px 80px; border-radius: 20px; font-size: 32px; border: none; box-shadow: 0 0 18px rgba(255, 255, 255, 0.25); color: var(--white); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s; user-select: none; font-weight: 500; transform-style: preserve-3d; }
         .big-box:hover { background: var(--white); color: #1C2D4A; transform: scale(1.06); box-shadow: 0 0 28px rgba(255, 255, 255, 0.45); }
-        #videos, #images { padding-top: 40px; padding-left: 5%; padding-right: 5%; } /* Boşlukları 5 sütun için biraz daralttım */
+        #videos, #images { padding-top: 40px; padding-left: 5%; padding-right: 5%; }
         .back-btn { font-size: 18px; margin-bottom: 20px; display: inline-block; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 2px solid rgba(255,255,255,0.2); }
         .back-btn:hover { background: var(--white); color: #1C2D4A; }
 
-        /* --- 5x2 ESNEK IZGARA --- */
+        /* --- 5x2 ESNEK IZGARA (GÜNCELLENDİ) --- */
         .video-grid {
             display: grid;
             gap: 20px;
-            max-width: 1400px; /* 5 video için alanı biraz genişlettim */
+            max-width: 1500px; /* 5 video için alanı ferahlattım */
             margin: 0 auto;
-            grid-template-columns: 1fr; /* Mobil: Tek Sütun */
+            grid-template-columns: 1fr; 
         }
 
         @media (min-width: 600px) {
-            .video-grid { grid-template-columns: repeat(2, 1fr); } /* Tablet: İki Sütun */
+            .video-grid { grid-template-columns: repeat(2, 1fr); } 
         }
 
         @media (min-width: 1024px) {
             .video-grid { grid-template-columns: repeat(5, 1fr); } /* Masaüstü: 5 Sütun (5x2) */
         }
 
+        /* --- VİDEO KUTUSU --- */
         .vimeo-wrapper {
             position: relative;
             width: 100%;
             height: 0;
-            padding-bottom: 125%; 
+            padding-bottom: 125%; /* 4:5 Oranı */
             border-radius: 20px;
             overflow: hidden;
             cursor: pointer;
@@ -106,6 +110,7 @@
             transform: scale(1.05);
         }
 
+        /* --- MODAL --- */
         #video-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.95); z-index: 10000;
@@ -123,8 +128,22 @@
         }
         .close-btn:hover { opacity: 1; transform: scale(1.1); color: #ff5555; }
 
+        /* --- GÖRSEL GALERİSİ VE EKRAN GÖRÜNTÜLERİ (16:9 FIX) --- */
         .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
-        .image-grid img { width: 100%; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 3px solid rgba(255,255,255,0.4); }
+        .image-grid img { 
+            width: 100%; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            border: 3px solid rgba(255,255,255,0.4); 
+            object-fit: cover;
+        }
+        
+        /* Ekran görüntüleri için özel oran sabitleme */
+        .screenshot-grid img {
+            aspect-ratio: 16 / 9;
+        }
+
         .image-grid img:hover { transform: scale(1.05); border-color: var(--white); }
         .sub-title { margin-top: 40px; font-size: 28px; font-weight: 500; }
         
@@ -206,7 +225,7 @@
         </div>
 
         <h2 class="sub-title">Program Ekran Görüntüleri</h2>
-        <div class="image-grid">
+        <div class="image-grid screenshot-grid">
             <img src="images/teknofestproje.jpg">
             <img src="images/sırtsırtaproje.jpg">
         </div>
@@ -247,6 +266,7 @@
     }
     document.addEventListener('keydown', function(event) { if (event.key === "Escape" && modal.style.display === 'flex') closeModal(); });
 
+    // PARALLAX EFEKTİ
     document.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth - 0.5) * 2;
         const y = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -258,6 +278,7 @@
         });
     });
 
+    // 3D BUTON EFEKTİ
     document.querySelectorAll(".big-box").forEach(card => {
         card.addEventListener("mousemove", e => {
             const rect = card.getBoundingClientRect();
@@ -269,6 +290,7 @@
         card.addEventListener("mouseleave", () => { card.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)"; });
     });
 
+    // NAVİGASYON
     function goToVideos() { document.getElementById("home").classList.add("slide-out-right"); document.getElementById("videos").classList.add("active"); window.scrollTo(0,0); }
     function goToImages() { document.getElementById("home").classList.add("slide-out-left"); document.getElementById("images").classList.add("active"); window.scrollTo(0,0); }
     function goHome() {
