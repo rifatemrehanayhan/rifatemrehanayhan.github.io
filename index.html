@@ -66,7 +66,16 @@
         }
 
         .video-grid { grid-template-columns: repeat(5, 1fr); }
-        .image-grid { grid-template-columns: repeat(3, 1fr); } /* Görseller için daha büyük 3'lü dizilim */
+        /* Görseller için temel 3'lü ızgara */
+        .image-grid { grid-template-columns: repeat(3, 1fr); } 
+
+        /* --- HERO + GRID HİBRİT MODELİ (Sadece Görseller İçin) --- */
+        /* Izgaradaki İLK elemanı seç ve tüm sütunlara yay */
+        .image-grid .item-wrapper:first-child {
+            grid-column: 1 / -1; /* Başlangıçtan sona kadar yayıl */
+            z-index: 2; /* Diğerlerinin üzerinde dursun */
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6); /* Hero olduğu için daha güçlü bir gölge */
+        }
 
         /* --- KUTUCUK TASARIMI --- */
         .item-wrapper {
@@ -204,6 +213,7 @@
         <h1>Görsel Çalışmalarım</h1>
         <div class="grid-layout image-grid">
             <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/1.jpg')"><img src="images/thumbnails/1.jpg" class="main-thumbnail"></div>
+            
             <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/2.jpg')"><img src="images/thumbnails/2.jpg" class="main-thumbnail"></div>
             <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/3.jpg')"><img src="images/thumbnails/3.jpg" class="main-thumbnail"></div>
             <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/4.jpg')"><img src="images/thumbnails/4.jpg" class="main-thumbnail"></div>
