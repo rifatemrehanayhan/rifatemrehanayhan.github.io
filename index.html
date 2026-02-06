@@ -8,6 +8,19 @@
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
 
     <style>
+
+        #particle-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(
+                circle at center,
+                #0a0a0a 0%,
+                #000 70%
+            );
+        }
+
+        
         :root {
             --white: #ffffff;
             --accent-color: #ffffff;
@@ -164,6 +177,8 @@
 </head>
 <body>
 
+    <canvas id="particle-bg"></canvas>
+    
     <div id="content-modal" onclick="closeModal()">
         <span class="close-btn">&times;</span>
         <div class="modal-content" id="modal-box" onclick="event.stopPropagation()">
@@ -171,10 +186,12 @@
         </div>
     </div>
 
+    <!--
     <video id="bg-video" autoplay muted loop playsinline>
         <source src="videos/background.mp4" type="video/mp4">
     </video>
-
+    -->
+    
     <div id="home" class="page-section">
         <div class="hero">
             <h1>Rıfat Emrehan Ayhan</h1>
@@ -308,6 +325,101 @@
         document.querySelectorAll('.page-section.active').forEach(sec => sec.classList.remove("active"));
         const home = document.getElementById("home"); home.classList.remove("slide-out-right", "slide-out-left");
     }
+
+        <script>
+/* ================================
+   INTERACTIVE PARTICLE BACKGROUND
+   ================================ */
+
+            const canvas = document.getElementById("particle-bg");
+            const ctx = canvas.getContext("2d");
+            
+            let w, h;
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener("resize", resize);
+            
+            const mouse = {
+                x: w / 2,
+                y: h / 2,
+                radius: 140
+            };
+            
+            window.addEventListener("mousemove", e => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            
+            class Particle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.ox = x;
+                    this.oy = y;
+                    this.vx = 0;
+                    this.vy = 0;
+                    this.size = Math.random() * 1.2 + 0.6;
+                }
+            
+                update() {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+            
+                    if (dist < mouse.radius) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        const angle = Math.atan2(dy, dx);
+                        this.vx -= Math.cos(angle) * force * 3;
+                        this.vy -= Math.sin(angle) * force * 3;
+                    }
+            
+                    // origin'e yumuşak dönüş
+                    this.vx += (this.ox - this.x) * 0.015;
+                    this.vy += (this.oy - this.y) * 0.015;
+            
+                    // sürtünme
+                    this.vx *= 0.92;
+                    this.vy *= 0.92;
+            
+                    this.x += this.vx;
+                    this.y += this.vy;
+                }
+            
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(255,255,255,0.75)";
+                    ctx.fill();
+                }
+            }
+            
+            const particles = [];
+            const GAP = 45;
+            
+            for (let y = 0; y < h; y += GAP) {
+                for (let x = 0; x < w; x += GAP) {
+                    particles.push(new Particle(x, y));
+                }
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+            
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+            
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+            </script>
+
+        
     </script>
 </body>
 </html>
