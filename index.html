@@ -12,11 +12,8 @@
             position: fixed;
             inset: 0;
             z-index: -1;
-            background: radial-gradient(
-                circle at center,
-                #0a0a0a 0%,
-                #000 70%
-            );
+            /* Videodaki derinlik hissi için koyu gradyan */
+            background: radial-gradient(circle at center, #0f0f0f 0%, #000 100%);
         }
 
         :root {
@@ -30,14 +27,6 @@
             color: #F4F6FA;
             overflow-x: hidden;
             background-color: #000;
-        }
-
-        /* --- ARKAPLAN VİDEO (İsteğe bağlı) --- */
-        #bg-video {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover; z-index: -1;
-            filter: blur(1px) brightness(0.55);
         }
 
         /* --- SAYFA GEÇİŞ SİSTEMİ --- */
@@ -59,112 +48,51 @@
 
         /* --- TASARIM ÖGELERİ --- */
         .hero { text-align: center; padding-top: 100px; }
-        .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); text-shadow: 0px 2px 6px rgba(0,0,0,0.4); }
+        .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); text-shadow: 0px 2px 10px rgba(0,0,0,0.8); }
         .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.9; margin-top: 10px; color: var(--white); }
         .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; padding: 20px; perspective: 1200px; }
-        .big-box { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); padding: 50px 80px; border-radius: 20px; font-size: 32px; border: none; box-shadow: 0 0 18px rgba(255, 255, 255, 0.25); color: var(--white); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s; user-select: none; font-weight: 500; transform-style: preserve-3d; }
-        .big-box:hover { background: var(--white); color: #1C2D4A; transform: scale(1.06); box-shadow: 0 0 28px rgba(255, 255, 255, 0.45); }
+        .big-box { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); padding: 50px 80px; border-radius: 20px; font-size: 32px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 18px rgba(255, 255, 255, 0.1); color: var(--white); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s; user-select: none; font-weight: 500; transform-style: preserve-3d; }
+        .big-box:hover { background: var(--white); color: #000; transform: scale(1.06); box-shadow: 0 0 28px rgba(255, 255, 255, 0.3); }
+        
         #videos, #images { padding-top: 40px; padding-left: 8%; padding-right: 8%; }
-        .back-btn { font-size: 18px; margin-bottom: 20px; display: inline-block; background: rgba(255,255,255,0.15); padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 2px solid rgba(255,255,255,0.2); }
-        .back-btn:hover { background: var(--white); color: #1C2D4A; }
+        .back-btn { font-size: 18px; margin-bottom: 20px; display: inline-block; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.2); }
+        .back-btn:hover { background: var(--white); color: #000; }
 
         /* --- IZGARA YAPISI --- */
-        .grid-layout {
-            display: grid;
-            gap: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
+        .grid-layout { display: grid; gap: 25px; max-width: 1400px; margin: 0 auto; }
         .video-grid { grid-template-columns: repeat(5, 1fr); }
         .image-grid { grid-template-columns: repeat(3, 1fr); } 
 
-        .image-grid .item-wrapper:first-child {
-            grid-column: 1 / -1;
-            z-index: 2;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
-        }
+        .image-grid .item-wrapper:first-child { grid-column: 1 / -1; z-index: 2; box-shadow: 0 15px 50px rgba(0,0,0,0.6); }
 
         .item-wrapper {
-            position: relative;
-            width: 100%;
-            height: 0;
-            border-radius: 22px;
-            overflow: hidden;
-            cursor: pointer;
-            background: #111;
-            border: 2px solid rgba(255,255,255,0.1);
-            --tx: 0px; --ty: 0px; 
-            transform: translate(var(--tx), var(--ty)) scale(1);
-            transition: transform 0.1s linear, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative; width: 100%; height: 0; border-radius: 22px; overflow: hidden; cursor: pointer; background: #111; border: 2px solid rgba(255,255,255,0.1);
+            --tx: 0px; --ty: 0px; transform: translate(var(--tx), var(--ty)) scale(1); transition: transform 0.1s linear, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-
         .video-item { padding-bottom: 125%; }
         .image-item { padding-bottom: 56.25%; }
 
-        .reveal {
-            opacity: 0;
-            transform: translateY(50px) scale(0.95);
-            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
+        .reveal { opacity: 0; transform: translateY(50px) scale(0.95); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
 
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        .item-wrapper:hover {
-            transform: translate(var(--tx), var(--ty)) scale(1.04) !important;
-            border-color: var(--white);
-            box-shadow: 0 0 35px rgba(255, 255, 255, 0.4);
-            z-index: 10;
-        }
-
-        .main-thumbnail {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: 1;
-            transition: transform 0.6s ease;
-        }
+        .item-wrapper:hover { transform: translate(var(--tx), var(--ty)) scale(1.04) !important; border-color: var(--white); box-shadow: 0 0 35px rgba(255, 255, 255, 0.4); z-index: 10; }
+        .main-thumbnail { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transition: transform 0.6s ease; }
         .item-wrapper:hover .main-thumbnail { transform: scale(1.06); }
 
         /* --- MODAL --- */
-        #content-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.95); z-index: 10000;
-            align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
-            backdrop-filter: blur(15px);
-        }
-        .modal-content {
-            position: relative; background: #000; border-radius: 12px; overflow: hidden;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8); width: 100%; transition: all 0.3s ease; height: 0;
-        }
+        #content-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); z-index: 10000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(15px); }
+        .modal-content { position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 0 60px rgba(0, 0, 0, 0.8); width: 100%; transition: all 0.3s ease; height: 0; }
         .modal-content iframe, .modal-content img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; }
-        
-        .close-btn {
-            position: absolute; top: 20px; right: 40px; color: var(--white); font-size: 50px;
-            font-weight: 300; cursor: pointer; opacity: 0.8; transition: 0.2s; z-index: 10001;
-        }
+        .close-btn { position: absolute; top: 20px; right: 40px; color: var(--white); font-size: 50px; font-weight: 300; cursor: pointer; opacity: 0.8; transition: 0.2s; z-index: 10001; }
         .close-btn:hover { opacity: 1; transform: scale(1.1); color: #ff5555; }
 
         .screenshot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 40px; }
-        .screenshot-grid img { 
-            width: 100%; border-radius: 12px; cursor: pointer; transition: 0.3s; 
-            border: 3px solid rgba(255,255,255,0.4); object-fit: cover;
-            aspect-ratio: 3584 / 2262;
-        }
+        .screenshot-grid img { width: 100%; border-radius: 12px; cursor: pointer; transition: 0.3s; border: 3px solid rgba(255,255,255,0.4); object-fit: cover; aspect-ratio: 3584 / 2262; }
         .screenshot-grid img:hover { transform: scale(1.05); border-color: var(--white); }
         .sub-title { margin-top: 40px; font-size: 28px; font-weight: 500; }
         
-        @media (max-width: 1024px) {
-            .video-grid { grid-template-columns: repeat(2, 1fr); }
-            .image-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 600px) {
-            .video-grid, .image-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1024px) { .video-grid { grid-template-columns: repeat(2, 1fr); } .image-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .video-grid, .image-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -220,26 +148,6 @@
             <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/3.jpg')"><img src="images/thumbnails/3.jpg" class="main-thumbnail"></div>
             <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/4.jpg')"><img src="images/thumbnails/4.jpg" class="main-thumbnail"></div>
             <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/5.jpg')"><img src="images/thumbnails/5.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/6.jpg')"><img src="images/thumbnails/6.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/7.jpg')"><img src="images/thumbnails/7.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/8.jpg')"><img src="images/thumbnails/8.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/9.jpg')"><img src="images/thumbnails/9.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/10.jpg')"><img src="images/thumbnails/10.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/11.jpg')"><img src="images/thumbnails/11.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/12.jpg')"><img src="images/thumbnails/12.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/13.jpg')"><img src="images/thumbnails/13.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/14.jpg')"><img src="images/thumbnails/14.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/15.jpg')"><img src="images/thumbnails/15.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/16.jpg')"><img src="images/thumbnails/16.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/17.jpg')"><img src="images/thumbnails/17.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/18.jpg')"><img src="images/thumbnails/18.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/19.jpg')"><img src="images/thumbnails/19.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/20.jpg')"><img src="images/thumbnails/20.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/21.jpg')"><img src="images/thumbnails/21.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/22.jpg')"><img src="images/thumbnails/22.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/23.jpg')"><img src="images/thumbnails/23.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/24.jpg')"><img src="images/thumbnails/24.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper image-item reveal" onclick="openImageModal('images/thumbnails/25.jpg')"><img src="images/thumbnails/25.jpg" class="main-thumbnail"></div>
         </div>
     </div>
 
@@ -260,7 +168,7 @@
 
     function openImageModal(imgSrc) {
         modalBox.style.maxWidth = '1200px';
-        modalBox.style.paddingBottom = '56.25%';
+        modalBox.style.paddingBottom = '56.25%'; 
         contentContainer.innerHTML = `<img src="${imgSrc}">`;
         modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
     }
@@ -268,6 +176,7 @@
     function closeModal() { modal.style.display = 'none'; contentContainer.innerHTML = ''; document.body.style.overflow = 'auto'; }
     document.addEventListener('keydown', (e) => { if (e.key === "Escape") closeModal(); });
 
+    // PARALLAX
     document.addEventListener('mousemove', (e) => {
         const x = (e.clientX / window.innerWidth - 0.5) * 2;
         const y = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -277,15 +186,9 @@
         });
     });
 
-    const observerOptions = { threshold: 0.15 };
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, observerOptions);
-
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     document.querySelectorAll(".big-box").forEach(card => {
@@ -305,25 +208,21 @@
         const home = document.getElementById("home"); home.classList.remove("slide-out-right", "slide-out-left");
     }
 
-    /* ========================================================
-       MODERN DYNAMIC PARTICLE BACKGROUND (VIDEO EFFECT)
-    ======================================================== */
+    /* ============================================================
+       VİDEODAKİ GİBİ GELİŞTİRİLMİŞ PARÇACIK SİSTEMİ (NODE-BASED)
+       ============================================================ */
 
     const canvas = document.getElementById("particle-bg");
     const ctx = canvas.getContext("2d");
-    let w, h, particles;
+    let w, h, particles = [];
 
-    const mouse = { x: null, y: null, radius: 150 };
-
-    window.addEventListener("mousemove", e => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-    });
-
-    window.addEventListener("mouseout", () => {
-        mouse.x = null;
-        mouse.y = null;
-    });
+    // Videodaki yoğunluğa göre ayarlar
+    const config = {
+        particleCount: 120, // Parçacık sayısı
+        connectionDist: 150, // Çizgi çekilme mesafesi
+        mouseRadius: 160,    // Fare etki alanı
+        pushForce: 0.5       // Fare itme gücü
+    };
 
     function resize() {
         w = canvas.width = window.innerWidth;
@@ -331,79 +230,71 @@
         initParticles();
     }
 
+    const mouse = { x: null, y: null };
+    window.addEventListener("mousemove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener("mouseout", () => { mouse.x = null; mouse.y = null; });
+
     class Particle {
         constructor() {
             this.x = Math.random() * w;
             this.y = Math.random() * h;
-            this.size = Math.random() * 2 + 1;
-            this.baseX = this.x;
-            this.baseY = this.y;
-            this.vx = (Math.random() - 0.5) * 0.6; // Hafif süzülme hızı
-            this.vy = (Math.random() - 0.5) * 0.6;
-            this.density = (Math.random() * 30) + 1;
-        }
-
-        draw() {
-            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.fill();
+            this.vx = (Math.random() - 0.5) * 0.8;
+            this.vy = (Math.random() - 0.5) * 0.8;
+            this.radius = Math.random() * 2 + 1;
         }
 
         update() {
-            // Fare etkileşimi (İtme efekti)
-            if (mouse.x != null) {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                let forceDirectionX = dx / distance;
-                let forceDirectionY = dy / distance;
-                let maxDistance = mouse.radius;
-                let force = (maxDistance - distance) / maxDistance;
-                let directionX = forceDirectionX * force * this.density;
-                let directionY = forceDirectionY * force * this.density;
-
-                if (distance < mouse.radius) {
-                    this.x -= directionX;
-                    this.y -= directionY;
+            // Fare etkileşimi (itme efekti)
+            if (mouse.x !== null) {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < config.mouseRadius) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (config.mouseRadius - dist) / config.mouseRadius;
+                    this.vx -= Math.cos(angle) * force * config.pushForce;
+                    this.vy -= Math.sin(angle) * force * config.pushForce;
                 }
             }
 
-            // Sürekli hareket
+            // Hareket ve Sürtünme
             this.x += this.vx;
             this.y += this.vy;
+            this.vx *= 0.98;
+            this.vy *= 0.98;
 
-            // Ekrandan çıkınca diğer taraftan girme
-            if (this.x > w) this.x = 0; else if (this.x < 0) this.x = w;
-            if (this.y > h) this.y = 0; else if (this.y < 0) this.y = h;
+            // Kenar kontrolü
+            if (this.x < 0 || this.x > w) this.vx *= -1;
+            if (this.y < 0 || this.y > h) this.vy *= -1;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+            ctx.fill();
         }
     }
 
     function initParticles() {
         particles = [];
-        // Parçacık yoğunluğu: Ekran boyutuna göre ayarlanır
-        const numberOfParticles = (w * h) / 9000; 
-        for (let i = 0; i < numberOfParticles; i++) {
-            particles.push(new Particle());
-        }
+        const count = (w * h) / 10000; // Ekrana göre dinamik sayı
+        for (let i = 0; i < count; i++) particles.push(new Particle());
     }
 
-    function connect() {
-        let opacityValue = 1;
-        for (let a = 0; a < particles.length; a++) {
-            for (let b = a; b < particles.length; b++) {
-                let dx = particles[a].x - particles[b].x;
-                let dy = particles[a].y - particles[b].y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
+    function drawLines() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < 150) {
-                    opacityValue = 1 - (distance / 150);
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${opacityValue * 0.3})`;
-                    ctx.lineWidth = 1;
+                if (dist < config.connectionDist) {
                     ctx.beginPath();
-                    ctx.moveTo(particles[a].x, particles[a].y);
-                    ctx.lineTo(particles[b].x, particles[b].y);
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${1 - dist / config.connectionDist - 0.2})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
                     ctx.stroke();
                 }
             }
@@ -412,17 +303,18 @@
 
     function animate() {
         ctx.clearRect(0, 0, w, h);
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update();
-            particles[i].draw();
-        }
-        connect();
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+        drawLines();
         requestAnimationFrame(animate);
     }
 
     resize();
     window.addEventListener("resize", resize);
     animate();
+
     </script>
 </body>
 </html>
