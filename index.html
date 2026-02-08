@@ -20,7 +20,7 @@
             font-family: 'SF Pro Display', sans-serif; color: #F4F6FA;
         }
 
-        #bg-canvas { position: fixed; inset: 0; z-index: -2; background-color: #000; }
+        #bg-canvas { position: fixed; inset: 0; z-index: -2; background-color: #000; pointer-events: none; }
 
         /* --- SAYFA GEÇİŞ SİSTEMİ --- */
         .page-section {
@@ -30,14 +30,14 @@
             opacity: 0; pointer-events: none;
         }
 
-        #home { opacity: 1; pointer-events: all; transform: translateX(0); display: flex; flex-direction: column; align-items: center; perspective: 2000px; }
+        #home { opacity: 1; pointer-events: all; transform: translateX(0); display: flex; flex-direction: column; align-items: center; perspective: 1000px; }
         #home.slide-out-right { transform: translateX(100%); opacity: 0; }
         #home.slide-out-left { transform: translateX(-100%); opacity: 0; }
         #videos { transform: translateX(-100%); }
         #images { transform: translateX(100%); }
         .page-section.active { opacity: 1; pointer-events: all; transform: translateX(0) !important; z-index: 20; }
 
-        /* --- ANA SAYFA 3D KUTULAR (Geliştirilmiş) --- */
+        /* --- ANA SAYFA 3D KUTULAR (Performans Optimize) --- */
         .hero { text-align: center; padding-top: 100px; pointer-events: none; }
         .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); }
         .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.8; margin-top: 10px; }
@@ -49,7 +49,6 @@
             border: 1px solid rgba(255,255,255,0.1); color: var(--white); 
             cursor: pointer; transition: background 0.3s, box-shadow 0.3s, border-color 0.3s, transform 0.1s ease-out;
             transform-style: preserve-3d; will-change: transform;
-            user-select: none;
         }
         .big-box:hover { background: rgba(255,255,255,0.15); border-color: var(--white); box-shadow: 0 0 50px var(--glow-color); }
 
@@ -80,37 +79,44 @@
         .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .screenshot-item:hover { border-color: var(--white); box-shadow: 0 0 40px var(--glow-color); transform: scale(1.02); }
 
-        /* --- MODAL (Kusursuz Hizalama ve Blur) --- */
+        /* --- MODAL (Kesin Çerçeve Çözümü) --- */
         #content-modal { 
             display: none; position: fixed; inset: 0; 
             background-color: rgba(0, 0, 0, 0.8); 
             z-index: 10000; align-items: center; justify-content: center; 
-            backdrop-filter: blur(25px); 
+            backdrop-filter: blur(30px); 
         }
         
+        /* Modal Wrapper: İçeriğe tam oturması için flex ayarı */
         .modal-wrapper {
             position: relative;
-            display: inline-flex; /* İçeriğe tam oturması için */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             max-width: 90vw;
             max-height: 85vh;
-            background: transparent;
         }
 
+        /* Container: Görselin sınırlarını belirleyen gölge alanı */
         #modal-content-container { 
-            display: flex;
             position: relative;
-            background: transparent;
+            display: inline-flex; /* Boşlukları yok eder */
+            border-radius: 12px;
+            box-shadow: 0 0 80px rgba(0,0,0,1); /* Gölge artık görselin tam sınırında */
+            overflow: hidden; /* Blur ve taşmaları engeller */
             line-height: 0; 
         }
 
         #modal-content-container img, #modal-content-container iframe { 
-            max-width: 90vw; max-height: 85vh; 
-            border-radius: 12px; 
-            box-shadow: 0 0 80px rgba(0,0,0,0.8); /* Gölge içeriğe odaklandı */
-            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 90vw; 
+            max-height: 85vh; 
+            width: auto; 
+            height: auto;
+            border: none;
+            display: block; /* Alt boşluğu engeller */
         }
 
-        /* Kapatma Butonu (Tam Merkeze Oturtulmuş X) */
+        /* Kapatma Butonu (Tam Ortalanmış) */
         .close-btn { 
             position: absolute; 
             top: -18px; right: -18px; 
@@ -126,7 +132,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             transition: transform 0.2s, background 0.2s;
         }
-        .close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 3; }
+        .close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 3; pointer-events: none; }
         .close-btn:hover { transform: scale(1.15); background: var(--accent-blue); }
         
         @media (max-width: 1024px) { .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); } .screenshot-grid { grid-template-columns: 1fr; } }
@@ -198,7 +204,7 @@
         imageGrid.appendChild(item);
     }
 
-    /* --- MODAL --- */
+    /* --- MODAL FONKSİYONLARI --- */
     const modal = document.getElementById('content-modal');
     const contentContainer = document.getElementById('modal-content-container');
 
@@ -219,31 +225,38 @@
     function goHome() { document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove("active", "slide-out-right", "slide-out-left")); }
 
     /* ============================================================
-       GELİŞTİRİLMİŞ 3D TILT (Hassasiyet Artırıldı)
+       OPTI-3D TILT EFEKTİ (Takılmalar İçin Optimize Edildi)
        ============================================================ */
     const boxes = document.querySelectorAll('.big-box');
+    let tiltRequest;
+
     boxes.forEach(box => {
         box.addEventListener('mousemove', (e) => {
-            const rect = box.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            // Sürekli hesaplama yerine RequestAnimationFrame ile FPS senkronize edildi
+            if (tiltRequest) cancelAnimationFrame(tiltRequest);
             
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            // Hassasiyet katsayıları
-            const rotateX = (centerY - y) / 5; 
-            const rotateY = (x - centerX) / 8;
-            
-            box.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+            tiltRequest = requestAnimationFrame(() => {
+                const rect = box.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (centerY - y) / 10; // Daha yumuşak eğim
+                const rotateY = (x - centerX) / 12;
+                
+                box.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+            });
         });
         
         box.addEventListener('mouseleave', () => {
-            box.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            if (tiltRequest) cancelAnimationFrame(tiltRequest);
+            box.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
         });
     });
 
-    /* --- ARKA PLAN (Grid) --- */
+    /* --- ARKA PLAN SİSTEMİ (Performans İyileştirmeli) --- */
     const canvas = document.getElementById("bg-canvas");
     const ctx = canvas.getContext("2d");
     let points = [];
@@ -264,30 +277,34 @@
 
     function drawGrid() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = "rgba(148, 179, 255, 0.2)";
+        ctx.strokeStyle = "rgba(148, 179, 255, 0.15)";
         ctx.lineWidth = 1;
         const rows = Math.floor((canvas.height + spacing * 2) / spacing) + 1;
 
-        points.forEach(p => {
+        for (let i = 0; i < points.length; i++) {
+            const p = points[i];
             const dx = mouse.x - p.originalX;
             const dy = mouse.y - p.originalY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 300) {
+            const distSq = dx * dx + dy * dy; // Math.sqrt yerine karesel mesafe (performans)
+            
+            if (distSq < 90000) { // 300px'in karesi
+                const dist = Math.sqrt(distSq);
                 const force = (300 - dist) / 300;
                 const mag = force * 45;
                 p.x = p.originalX - (dx / dist) * mag;
                 p.y = p.originalY - (dy / dist) * mag;
-            } else { p.x = p.originalX; p.y = p.originalY; }
-        });
+            } else {
+                p.x = p.originalX; p.y = p.originalY;
+            }
 
-        for (let i = 0; i < points.length; i++) {
+            // Çizim
             let next = points[i + 1];
-            if (next && next.originalX > points[i].originalX) {
-                ctx.beginPath(); ctx.moveTo(points[i].x, points[i].y); ctx.lineTo(next.x, next.y); ctx.stroke();
+            if (next && next.originalX > p.originalX) {
+                ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(next.x, next.y); ctx.stroke();
             }
             let below = points[i + rows];
             if (below) {
-                ctx.beginPath(); ctx.moveTo(points[i].x, points[i].y); ctx.lineTo(below.x, below.y); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(below.x, below.y); ctx.stroke();
             }
         }
         requestAnimationFrame(drawGrid);
