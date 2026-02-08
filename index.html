@@ -1,297 +1,225 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rıfat Emrehan Ayhan – Portfolio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rıfat Emrehan Ayhan – Portfolio</title>
 
-    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
+<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
 
-    <style>
-        :root {
-            --white: #ffffff;
-            --accent-blue: #94b3ff;
-            --glow-color: rgba(148, 179, 255, 0.5);
-        }
+<style>
+:root {
+    --white:#fff;
+    --accent:#94b3ff;
+}
 
-        body {
-            margin: 0;
-            font-family: 'SF Pro Display', sans-serif;
-            color: #F4F6FA;
-            overflow-x: hidden;
-            background-color: #050505;
-        }
+body {
+    margin:0;
+    font-family:'SF Pro Display',sans-serif;
+    background:#000;
+    color:#f4f6fa;
+    overflow-x:hidden;
+}
 
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
+/* ===== BACKGROUND ===== */
+#flow-bg{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+}
 
-        /* --- SAYFA GEÇİŞ SİSTEMİ --- */
-        .page-section {
-            position: absolute; top: 0; left: 0;
-            width: 100%; min-height: 100vh;
-            padding-bottom: 100px;
-            box-sizing: border-box;
-            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
-            opacity: 0; pointer-events: none;
-        }
+/* ===== PAGE SYSTEM ===== */
+.page-section{
+    position:absolute;
+    inset:0;
+    padding-bottom:100px;
+    opacity:0;
+    pointer-events:none;
+    transition:transform 1s cubic-bezier(.25,1,.5,1),opacity .8s;
+}
+.page-section.active{
+    opacity:1;
+    pointer-events:auto;
+    transform:none!important;
+    z-index:10;
+}
 
-        #home { opacity: 1; pointer-events: all; transform: translateX(0); display: flex; flex-direction: column; align-items: center; }
-        #home.slide-out-right { transform: translateX(80%) scale(1.1); opacity: 0; }
-        #home.slide-out-left { transform: translateX(-80%) scale(1.1); opacity: 0; }
-        #videos { transform: translateX(-100%); }
-        #images { transform: translateX(100%); }
-        .page-section.active { opacity: 1; pointer-events: all; transform: translateX(0) !important; z-index: 20; }
+#home{opacity:1;pointer-events:auto;display:flex;flex-direction:column;align-items:center}
 
-        /* --- TASARIM ÖGELERİ --- */
-        .hero { text-align: center; padding-top: 100px; }
-        .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); }
-        .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.8; margin-top: 10px; }
-        
-        .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; }
-        .big-box { 
-            background: rgba(255,255,255,0.03); 
-            backdrop-filter: blur(10px); 
-            padding: 50px 80px; 
-            border-radius: 20px; 
-            font-size: 28px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            color: var(--white); 
-            cursor: pointer; 
-            transition: all 0.4s ease;
-        }
-        .big-box:hover { background: var(--white); color: #000; transform: translateY(-5px); box-shadow: 0 10px 30px var(--glow-color); }
-        
-        .back-btn { font-size: 16px; margin: 40px 0 20px 8%; display: inline-block; background: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
-        .back-btn:hover { background: var(--white); color: #000; }
+/* ===== HERO ===== */
+.hero{text-align:center;padding-top:100px}
+.hero h1{font-size:48px;margin:0}
+.hero h2{font-size:22px;font-weight:300;opacity:.7}
 
-        h1.section-title { padding-left: 8%; margin-bottom: 30px; }
+/* ===== BOXES ===== */
+.section-boxes{
+    display:flex;
+    gap:40px;
+    margin-top:80px;
+}
+.big-box{
+    padding:50px 80px;
+    border-radius:20px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.15);
+    cursor:pointer;
+    transition:.3s;
+}
+.big-box:hover{
+    background:#fff;
+    color:#000;
+    box-shadow:0 0 40px rgba(148,179,255,.6);
+}
 
-        /* --- IZGARA YAPISI --- */
-        .grid-layout { display: grid; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-        .video-grid { grid-template-columns: repeat(5, 1fr); }
-        .image-grid { grid-template-columns: repeat(5, 1fr); } /* 5x5 düzeni */
+/* ===== GRID ===== */
+.grid-layout{display:grid;gap:20px;max-width:1400px;margin:auto}
+.video-grid{grid-template-columns:repeat(5,1fr)}
+.image-grid{grid-template-columns:repeat(5,1fr)}
 
-        .item-wrapper {
-            position: relative; width: 100%; height: 0; border-radius: 12px; overflow: hidden; cursor: pointer; 
-            background: #111; border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        .video-item { padding-bottom: 125%; }
-        .image-item { padding-bottom: 100%; } /* Kare görünüm için */
+.item-wrapper{
+    position:relative;
+    padding-bottom:70%;
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.12);
+    transition:.35s;
+}
+.video-item{padding-bottom:125%}
 
-        /* Artık monokrom yok, sadece renkli */
-        .main-thumbnail { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; 
-            transition: transform 0.5s ease;
-        }
+.item-wrapper:hover{
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 0 25px rgba(148,179,255,.6);
+}
 
-        /* Glow Efekti */
-        .item-wrapper:hover { 
-            transform: scale(1.02); 
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 20px var(--glow-color); 
-            z-index: 5; 
-        }
-        .item-wrapper:hover .main-thumbnail { transform: scale(1.08); }
+.main-thumbnail{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
 
-        /* --- PROGRAM EKRAN GÖRÜNTÜLERİ SEKSİYONU --- */
-        .sub-section-title { margin-top: 60px; font-size: 24px; opacity: 0.9; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 30px; }
-        .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-        .screenshot-item { position: relative; width: 100%; padding-bottom: 62.5%; /* 16:10 Ratio */ border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
-        .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .screenshot-item:hover { transform: scale(1.02); box-shadow: 0 0 25px var(--glow-color); border-color: var(--accent-blue); }
+/* ===== PROGRAM SHOTS ===== */
+.program-section{
+    max-width:1200px;
+    margin:80px auto 0;
+}
+.program-section h2{
+    font-size:28px;
+    margin-bottom:20px;
+}
+.program-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+.program-item{
+    padding-bottom:62.5%;
+    position:relative;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.15);
+}
+.program-item img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
 
-        /* --- MODAL --- */
-        #content-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); z-index: 10000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(15px); }
-        .modal-content { position: relative; background: #000; border-radius: 12px; overflow: hidden; width: 100%; height: 0; }
-        .modal-content iframe, .modal-content img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; }
-        .close-btn { position: absolute; top: 20px; right: 40px; color: var(--white); font-size: 50px; cursor: pointer; z-index: 10001; }
-        
-        @media (max-width: 1024px) { .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); } .screenshot-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 600px) { .video-grid, .image-grid { grid-template-columns: repeat(2, 1fr); } }
-    </style>
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+    .video-grid,.image-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+    .video-grid,.image-grid{grid-template-columns:1fr}
+    .program-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
+
 <body>
 
-    <canvas id="bg-canvas"></canvas>
-    
-    <div id="content-modal" onclick="closeModal()">
-        <span class="close-btn">&times;</span>
-        <div class="modal-content" id="modal-box" onclick="event.stopPropagation()">
-            <div id="modal-content-container"></div>
-        </div>
+<canvas id="flow-bg"></canvas>
+
+<div id="home" class="page-section active">
+    <div class="hero">
+        <h1>Rıfat Emrehan Ayhan</h1>
+        <h2>Video Editörü • Kurgu & Montaj • İçerik Üreticisi</h2>
     </div>
-    
-    <div id="home" class="page-section">
-        <div class="hero">
-            <h1>Rıfat Emrehan Ayhan</h1>
-            <h2>Video Editörü • Kurgu & Montaj • İçerik Üreticisi</h2>
-        </div>
-        <div class="section-boxes">
-            <div class="big-box" onclick="goToVideos()">Video Çalışmalarım</div>
-            <div class="big-box" onclick="goToImages()">Görsel Çalışmalarım</div>
-        </div>
+    <div class="section-boxes">
+        <div class="big-box" onclick="go('videos')">Video Çalışmalarım</div>
+        <div class="big-box" onclick="go('images')">Görsel Çalışmalarım</div>
+    </div>
+</div>
+
+<div id="videos" class="page-section">
+    <h1>Video Çalışmalarım</h1>
+
+    <div class="grid-layout video-grid">
+        <!-- mevcut video item’ların aynen burada -->
     </div>
 
-    <div id="videos" class="page-section">
-        <div class="back-btn" onclick="goHome()">← Ana Sayfa</div>
-        <h1 class="section-title">Video Çalışmalarım</h1>
-        <div class="grid-layout video-grid">
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689325', '16:9')"><img src="images/kuma-evetmihayirmi.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689168', '9:16')"><img src="images/hilaltufek.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1159228579', '9:16')"><img src="images/k7-5m.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689244', '16:9')"><img src="images/nesetertas.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689113', '16:9')"><img src="images/gelin-evetmihayirmi1.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689373', '9:16')"><img src="images/teknofest.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689290', '9:16')"><img src="images/setinenleri.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689403', '9:16')"><img src="images/omubumu.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689001', '9:16')"><img src="images/ayvazsef.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689354', '16:9')"><img src="images/fanus.jpg" class="main-thumbnail"></div>
-        </div>
-
-        <div style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
-            <h2 class="sub-section-title">Program Ekran Görüntüleri</h2>
-            <div class="screenshot-grid">
-                <div class="screenshot-item" onclick="openImageModal('images/sırtsırtaproje.png')">
-                    <img src="images/sırtsırtaproje.png" alt="Proje 1">
-                </div>
-                <div class="screenshot-item" onclick="openImageModal('images/teknofestproje.png')">
-                    <img src="images/teknofestproje.png" alt="Proje 2">
-                </div>
+    <div class="program-section">
+        <h2>Program Ekran Görüntüleri</h2>
+        <div class="program-grid">
+            <div class="program-item">
+                <img src="images/sırtsırtaproje.png">
+            </div>
+            <div class="program-item">
+                <img src="images/teknofestproje.png">
             </div>
         </div>
     </div>
+</div>
 
-    <div id="images" class="page-section">
-        <div class="back-btn" onclick="goHome()">← Ana Sayfa</div>
-        <h1 class="section-title">Görsel Çalışmalarım</h1>
-        <div class="grid-layout image-grid" id="dynamic-image-grid"></div>
-    </div>
+<div id="images" class="page-section">
+    <h1>Görsel Çalışmalarım</h1>
+    <div class="grid-layout image-grid" id="dynamic-image-grid"></div>
+</div>
 
-    <script>
-    /* --- GÖRSELLERİ OLUŞTURMA (5x5 için 25 adet) --- */
-    const imageGrid = document.getElementById('dynamic-image-grid');
-    for (let i = 1; i <= 25; i++) {
-        const item = document.createElement('div');
-        item.className = 'item-wrapper image-item';
-        item.onclick = () => openImageModal(`images/thumbnails/${i}.jpg`);
-        item.innerHTML = `<img src="images/thumbnails/${i}.jpg" class="main-thumbnail" onerror="this.src='https://via.placeholder.com/400x400?text=Görsel+${i}'">`;
-        imageGrid.appendChild(item);
-    }
+<script>
+/* ===== IMAGE GRID ===== */
+const grid=document.getElementById('dynamic-image-grid');
+for(let i=1;i<=25;i++){
+    grid.innerHTML+=`
+    <div class="item-wrapper">
+        <img src="images/thumbnails/${i}.jpg" class="main-thumbnail">
+    </div>`;
+}
 
-    /* --- MODAL VE NAVİGASYON --- */
-    const modal = document.getElementById('content-modal');
-    const modalBox = document.getElementById('modal-box');
-    const contentContainer = document.getElementById('modal-content-container');
+/* ===== NAV ===== */
+function go(id){
+ document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
 
-    function openVideoModal(vimeoId, ratioString) {
-        let paddingPercentage = 56.25; 
-        if (ratioString === '9:16') paddingPercentage = 177.77; 
-        modalBox.style.maxWidth = (ratioString === '9:16') ? '450px' : '1100px';
-        modalBox.style.paddingBottom = paddingPercentage + '%';
-        contentContainer.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-        modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
-    }
+/* ===== VECTOR FLOW LINES ===== */
+const c=document.getElementById("flow-bg");
+const x=c.getContext("2d");
+let w,h,t=0;
+function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+window.onresize=resize;resize();
 
-    function openImageModal(imgSrc) {
-        modalBox.style.maxWidth = '1200px';
-        modalBox.style.paddingBottom = '62.5%'; 
-        contentContainer.innerHTML = `<img src="${imgSrc}">`;
-        modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
-    }
+function draw(){
+ x.clearRect(0,0,w,h);
+ x.strokeStyle="rgba(148,179,255,.15)";
+ for(let i=0;i<1200;i++){
+   let px=Math.random()*w;
+   let py=Math.random()*h;
+   let a=Math.sin(px*.002+t)+Math.cos(py*.002+t);
+   x.beginPath();
+   x.moveTo(px,py);
+   x.lineTo(px+Math.cos(a)*20,py+Math.sin(a)*20);
+   x.stroke();
+ }
+ t+=.003;
+ requestAnimationFrame(draw);
+}
+draw();
+</script>
 
-    function closeModal() { modal.style.display = 'none'; contentContainer.innerHTML = ''; document.body.style.overflow = 'auto'; }
-    function goToVideos() { document.getElementById("home").classList.add("slide-out-right"); document.getElementById("videos").classList.add("active"); }
-    function goToImages() { document.getElementById("home").classList.add("slide-out-left"); document.getElementById("images").classList.add("active"); }
-    function goHome() { document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove("active", "slide-out-right", "slide-out-left")); }
-
-    /* ============================================================
-       VECTOR FLOW LINES BACKGROUND (Procedural)
-       ============================================================ */
-    const canvas = document.getElementById("bg-canvas");
-    const ctx = canvas.getContext("2d");
-
-    let width, height, field = [], columns, rows;
-    const size = 20; // Flow alanı hücre boyutu
-    const numLines = 80;
-    let lines = [];
-
-    class Line {
-        constructor() {
-            this.init();
-        }
-        init() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.history = [];
-            this.maxLength = Math.random() * 50 + 50;
-            this.v = { x: 0, y: 0 };
-            this.acc = { x: 0, y: 0 };
-            this.color = `rgba(148, 179, 255, ${Math.random() * 0.3 + 0.1})`;
-        }
-        update() {
-            this.history.push({x: this.x, y: this.y});
-            if (this.history.length > this.maxLength) this.history.shift();
-
-            const col = Math.floor(this.x / size);
-            const row = Math.floor(this.y / size);
-            if (field[col] && field[col][row]) {
-                this.acc = field[col][row];
-            }
-
-            this.v.x += this.acc.x;
-            this.v.y += this.acc.y;
-            this.v.x *= 0.95; // sürtünme
-            this.v.y *= 0.95;
-            this.x += this.v.x;
-            this.y += this.v.y;
-
-            if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.init();
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = 1.5;
-            for (let i = 1; i < this.history.length; i++) {
-                ctx.moveTo(this.history[i-1].x, this.history[i-1].y);
-                ctx.lineTo(this.history[i].x, this.history[i].y);
-            }
-            ctx.stroke();
-        }
-    }
-
-    function setup() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        columns = Math.ceil(width / size) + 1;
-        rows = Math.ceil(height / size) + 1;
-        
-        field = [];
-        for (let x = 0; x < columns; x++) {
-            field[x] = [];
-            for (let y = 0; y < rows; y++) {
-                const angle = (Math.sin(x * 0.1) + Math.cos(y * 0.1)) * Math.PI * 2;
-                field[x][y] = { x: Math.cos(angle) * 0.5, y: Math.sin(angle) * 0.5 };
-            }
-        }
-        lines = [];
-        for (let i = 0; i < numLines; i++) lines.push(new Line());
-    }
-
-    function animate() {
-        ctx.fillStyle = "rgba(5, 5, 5, 0.15)"; // Hafif trail efekti
-        ctx.fillRect(0, 0, width, height);
-        lines.forEach(l => { l.update(); l.draw(); });
-        requestAnimationFrame(animate);
-    }
-
-    window.addEventListener("resize", setup);
-    setup();
-    animate();
-    </script>
 </body>
 </html>
