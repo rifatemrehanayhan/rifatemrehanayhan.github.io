@@ -30,14 +30,14 @@
             opacity: 0; pointer-events: none;
         }
 
-        #home { opacity: 1; pointer-events: all; transform: translateX(0); display: flex; flex-direction: column; align-items: center; perspective: 1500px; }
+        #home { opacity: 1; pointer-events: all; transform: translateX(0); display: flex; flex-direction: column; align-items: center; perspective: 2000px; }
         #home.slide-out-right { transform: translateX(100%); opacity: 0; }
         #home.slide-out-left { transform: translateX(-100%); opacity: 0; }
         #videos { transform: translateX(-100%); }
         #images { transform: translateX(100%); }
         .page-section.active { opacity: 1; pointer-events: all; transform: translateX(0) !important; z-index: 20; }
 
-        /* --- ANA SAYFA 3D KUTULAR --- */
+        /* --- ANA SAYFA 3D KUTULAR (Geliştirilmiş) --- */
         .hero { text-align: center; padding-top: 100px; pointer-events: none; }
         .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); }
         .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.8; margin-top: 10px; }
@@ -47,8 +47,9 @@
             background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); 
             padding: 55px 85px; border-radius: 20px; font-size: 28px; 
             border: 1px solid rgba(255,255,255,0.1); color: var(--white); 
-            cursor: pointer; transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
+            cursor: pointer; transition: background 0.3s, box-shadow 0.3s, border-color 0.3s, transform 0.1s ease-out;
             transform-style: preserve-3d; will-change: transform;
+            user-select: none;
         }
         .big-box:hover { background: rgba(255,255,255,0.15); border-color: var(--white); box-shadow: 0 0 50px var(--glow-color); }
 
@@ -77,52 +78,58 @@
         .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1400px; margin: 0 auto; padding-bottom: 50px; }
         .screenshot-item { position: relative; width: 100%; padding-bottom: 63.1%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; }
         .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .screenshot-item:hover { border-color: var(--white); box-shadow: 0 0 40px var(--glow-color); transform: scale(1.02); }
 
-        /* --- MODAL (Tam Düzeltilmiş) --- */
+        /* --- MODAL (Kusursuz Hizalama ve Blur) --- */
         #content-modal { 
             display: none; position: fixed; inset: 0; 
-            background-color: rgba(0, 0, 0, 0.85); /* Arka plan siyahlığı blur ile senkronize edildi */
+            background-color: rgba(0, 0, 0, 0.8); 
             z-index: 10000; align-items: center; justify-content: center; 
             backdrop-filter: blur(25px); 
         }
         
         .modal-wrapper {
             position: relative;
+            display: inline-flex; /* İçeriğe tam oturması için */
             max-width: 90vw;
             max-height: 85vh;
-            line-height: 0; /* Boşluk taşmalarını engeller */
+            background: transparent;
         }
 
-        #modal-content-container { display: inline-block; position: relative; }
+        #modal-content-container { 
+            display: flex;
+            position: relative;
+            background: transparent;
+            line-height: 0; 
+        }
 
         #modal-content-container img, #modal-content-container iframe { 
             max-width: 90vw; max-height: 85vh; 
             border-radius: 12px; 
-            box-shadow: 0 0 60px rgba(0,0,0,1); /* İçerik etrafındaki derinlik */
+            box-shadow: 0 0 80px rgba(0,0,0,0.8); /* Gölge içeriğe odaklandı */
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Kapatma Butonu (Tam Ortalanmış X) */
+        /* Kapatma Butonu (Tam Merkeze Oturtulmuş X) */
         .close-btn { 
             position: absolute; 
-            top: -15px; right: -15px; 
+            top: -18px; right: -18px; 
             width: 36px; height: 36px;
             background: var(--white);
             color: #000;
             border-radius: 50%;
             display: flex;
-            align-items: center; /* Dikey ortalama */
-            justify-content: center; /* Yatay ortalama */
+            align-items: center; 
+            justify-content: center; 
             cursor: pointer;
-            z-index: 10005;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            transition: transform 0.2s;
-            font-family: Arial, sans-serif; /* Simgenin kaymaması için standart font */
+            z-index: 10010;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s, background 0.2s;
         }
-        .close-btn span { position: relative; top: -1px; font-size: 20px; font-weight: 800; pointer-events: none; }
-        .close-btn:hover { transform: scale(1.15); }
+        .close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 3; }
+        .close-btn:hover { transform: scale(1.15); background: var(--accent-blue); }
         
         @media (max-width: 1024px) { .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); } .screenshot-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 600px) { .video-grid, .image-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
@@ -131,7 +138,9 @@
     
     <div id="content-modal" onclick="closeModal()">
         <div class="modal-wrapper" onclick="event.stopPropagation()">
-            <div class="close-btn" onclick="closeModal()"><span>&times;</span></div>
+            <div class="close-btn" onclick="closeModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
             <div id="modal-content-container"></div>
         </div>
     </div>
@@ -141,7 +150,7 @@
             <h1>Rıfat Emrehan Ayhan</h1>
             <h2>Video Editörü • Kurgu & Montaj • İçerik Üreticisi</h2>
         </div>
-        <div class="section-boxes" id="tilt-container">
+        <div class="section-boxes">
             <div class="big-box" onclick="goToVideos()">Video Çalışmalarım</div>
             <div class="big-box" onclick="goToImages()">Görsel Çalışmalarım</div>
         </div>
@@ -189,7 +198,7 @@
         imageGrid.appendChild(item);
     }
 
-    /* --- MODAL FONKSİYONLARI --- */
+    /* --- MODAL --- */
     const modal = document.getElementById('content-modal');
     const contentContainer = document.getElementById('modal-content-container');
 
@@ -210,7 +219,7 @@
     function goHome() { document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove("active", "slide-out-right", "slide-out-left")); }
 
     /* ============================================================
-       3D TILT EFEKTİ (Ana Sayfa Butonları İçin)
+       GELİŞTİRİLMİŞ 3D TILT (Hassasiyet Artırıldı)
        ============================================================ */
     const boxes = document.querySelectorAll('.big-box');
     boxes.forEach(box => {
@@ -222,14 +231,15 @@
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            const rotateX = (centerY - y) / 6;
-            const rotateY = (x - centerX) / 10;
+            // Hassasiyet katsayıları
+            const rotateX = (centerY - y) / 5; 
+            const rotateY = (x - centerX) / 8;
             
-            box.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            box.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
         });
         
         box.addEventListener('mouseleave', () => {
-            box.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+            box.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
         });
     });
 
