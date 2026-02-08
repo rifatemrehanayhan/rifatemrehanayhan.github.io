@@ -11,17 +11,16 @@
         :root {
             --white: #ffffff;
             --accent-blue: #94b3ff;
-            --glow-color: rgba(148, 179, 255, 0.9); /* Glow şiddeti daha da artırıldı */
+            --glow-color: rgba(148, 179, 255, 0.9);
         }
 
-        /* --- TEMEL AYARLAR (Siyah Katman Çözümü) --- */
         html, body {
             margin: 0;
             padding: 0;
             width: 100vw;
             min-height: 100vh;
-            overflow-x: hidden; /* Sağa kaymayı kesin olarak engeller */
-            background-color: transparent; /* Body artık şeffaf, arkadaki canvas görünür */
+            overflow-x: hidden;
+            background-color: transparent;
             font-family: 'SF Pro Display', sans-serif;
             color: #F4F6FA;
         }
@@ -29,8 +28,8 @@
         #bg-canvas {
             position: fixed;
             inset: 0;
-            z-index: -2; /* En arkaya, her şeyin altına */
-            background-color: #000; /* Siyahlık artık burada */
+            z-index: -2;
+            background-color: #000;
         }
 
         /* --- SAYFA GEÇİŞ SİSTEMİ --- */
@@ -45,7 +44,6 @@
             transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
             opacity: 0; 
             pointer-events: none;
-            background: transparent; /* Katman oluşmaması için şeffaf */
         }
 
         #home { opacity: 1; pointer-events: all; transform: translateX(0); display: flex; flex-direction: column; align-items: center; }
@@ -79,25 +77,23 @@
 
         h1.section-title { padding-left: 8%; margin-bottom: 30px; }
 
-        /* --- IZGARA YAPISI (16:9 DÜZENİ) --- */
+        /* --- IZGARA YAPISI --- */
         .grid-layout { display: grid; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
-        .video-grid { grid-template-columns: repeat(5, 1fr); }
-        .image-grid { grid-template-columns: repeat(5, 1fr); } 
+        .video-grid, .image-grid { grid-template-columns: repeat(5, 1fr); } 
 
         .item-wrapper {
             position: relative; width: 100%; height: 0; border-radius: 12px; overflow: hidden; cursor: pointer; 
             background: #111; border: 1px solid rgba(255,255,255,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-        .video-item { padding-bottom: 125%; } /* Video oranı dikey içerikler için aynı kaldı */
-        .image-item { padding-bottom: 56.25%; } /* Görseller artık tam 16:9 */
+        .video-item { padding-bottom: 125%; }
+        .image-item { padding-bottom: 56.25%; } /* 16:9 Oranı */
 
         .main-thumbnail { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; 
             transition: transform 0.5s ease;
         }
 
-        /* Tüm ögeler için artırılmış Glow Efekti */
         .item-wrapper:hover { 
             transform: scale(1.04); 
             border-color: var(--white);
@@ -107,31 +103,65 @@
         .item-wrapper:hover .main-thumbnail { transform: scale(1.1); }
 
         /* --- PROGRAM EKRAN GÖRÜNTÜLERİ --- */
-        .sub-section-title { margin-top: 60px; font-size: 24px; opacity: 0.9; padding-bottom: 10px; margin-bottom: 30px; border: none; }
-        .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1400px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
-        .screenshot-item { position: relative; width: 100%; padding-bottom: 62.5%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .sub-section-title { margin-top: 60px; font-size: 24px; opacity: 0.9; margin-bottom: 30px; padding-left: 0; }
+        .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1400px; margin: 0 auto; padding-bottom: 50px; }
+        .screenshot-item { position: relative; width: 100%; padding-bottom: 63.1%; /* 3584/2262 oranına göre tam ayar */ border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; }
         .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .screenshot-item:hover { transform: scale(1.02); box-shadow: 0 0 40px var(--glow-color); border-color: var(--white); }
 
-        /* --- MODAL (Şeffaf ve Temiz) --- */
+        /* --- MODAL (Hassas Köşe ve Blur Ayarı) --- */
         #content-modal { 
             display: none; position: fixed; inset: 0; 
-            background-color: rgba(0, 0, 0, 0.8); /* Çok hafif transparan siyah */
+            background-color: rgba(0, 0, 0, 0.7); 
             z-index: 10000; align-items: center; justify-content: center; 
-            box-sizing: border-box; backdrop-filter: blur(25px); 
+            backdrop-filter: blur(25px); 
         }
-        .modal-content { 
-            position: relative; background: transparent; 
-            width: 100%; max-width: 1200px; 
-            display: flex; align-items: center; justify-content: center;
+        
+        /* İçerik kapsayıcısı: Görselin gerçek boyutuna göre daralır */
+        .modal-wrapper {
+            position: relative;
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        #modal-content-container { width: 100%; display: flex; align-items: center; justify-content: center; }
+
+        #modal-content-container {
+            position: relative;
+            display: flex;
+            line-height: 0; /* Boşlukları öldürür */
+        }
+
         #modal-content-container img, #modal-content-container iframe { 
-            max-width: 90vw; max-height: 85vh; border-radius: 12px; 
-            box-shadow: 0 0 60px rgba(0,0,0,0.8);
-            background: transparent;
+            max-width: 90vw; 
+            max-height: 85vh; 
+            border-radius: 8px; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            object-fit: contain;
         }
-        .close-btn { position: absolute; top: -50px; right: 0; color: var(--white); font-size: 50px; cursor: pointer; }
+
+        /* Kapatma Butonu: Tam sağ üst köşeye hizalı */
+        .close-btn { 
+            position: absolute; 
+            top: -15px; 
+            right: -15px; 
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10002;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: 0.2s;
+        }
+        .close-btn:hover { transform: scale(1.1); background: var(--accent-blue); }
         
         @media (max-width: 1024px) { .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); } .screenshot-grid { grid-template-columns: 1fr; } }
         @media (max-width: 600px) { .video-grid, .image-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -142,7 +172,7 @@
     <canvas id="bg-canvas"></canvas>
     
     <div id="content-modal" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-wrapper" onclick="event.stopPropagation()">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <div id="modal-content-container"></div>
         </div>
@@ -175,7 +205,7 @@
             <div class="item-wrapper video-item" onclick="openVideoModal('1144689354', '16:9')"><img src="images/fanus.jpg" class="main-thumbnail"></div>
         </div>
 
-        <div style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
+        <div style="max-width: 1400px; margin: 60px auto 0; padding: 0 20px;">
             <h2 class="sub-section-title">Program Ekran Görüntüleri</h2>
             <div class="screenshot-grid">
                 <div class="screenshot-item" onclick="openImageModal('images/sırtsırtaproje.png')">
@@ -223,9 +253,7 @@
     function goToImages() { document.getElementById("home").classList.add("slide-out-left"); document.getElementById("images").classList.add("active"); }
     function goHome() { document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove("active", "slide-out-right", "slide-out-left")); }
 
-    /* ============================================================
-       DEPTH GRID + MAGNETIC DISTORTION (Arka Plan Sabitlendi)
-       ============================================================ */
+    /* --- ARKA PLAN SİSTEMİ --- */
     const canvas = document.getElementById("bg-canvas");
     const ctx = canvas.getContext("2d");
     let points = [];
@@ -249,7 +277,6 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = "rgba(148, 179, 255, 0.2)";
         ctx.lineWidth = 1;
-
         const maxDist = 300;
         const rows = Math.floor((canvas.height + spacing * 2) / spacing) + 1;
 
@@ -257,40 +284,31 @@
             const dx = mouse.x - p.originalX;
             const dy = mouse.y - p.originalY;
             const dist = Math.sqrt(dx * dx + dy * dy);
-
             if (dist < maxDist) {
                 const force = (maxDist - dist) / maxDist;
                 const mag = force * 45;
                 p.x = p.originalX - (dx / dist) * mag;
                 p.y = p.originalY - (dy / dist) * mag;
             } else {
-                p.x = p.originalX;
-                p.y = p.originalY;
+                p.x = p.originalX; p.y = p.originalY;
             }
         });
 
         for (let i = 0; i < points.length; i++) {
             let next = points[i + 1];
             if (next && next.originalX > points[i].originalX) {
-                ctx.beginPath();
-                ctx.moveTo(points[i].x, points[i].y);
-                ctx.lineTo(next.x, next.y);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(points[i].x, points[i].y); ctx.lineTo(next.x, next.y); ctx.stroke();
             }
             let below = points[i + rows];
             if (below) {
-                ctx.beginPath();
-                ctx.moveTo(points[i].x, points[i].y);
-                ctx.lineTo(below.x, below.y);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(points[i].x, points[i].y); ctx.lineTo(below.x, below.y); ctx.stroke();
             }
         }
         requestAnimationFrame(drawGrid);
     }
 
     window.addEventListener('resize', initGrid);
-    initGrid();
-    drawGrid();
+    initGrid(); drawGrid();
     </script>
 </body>
 </html>
