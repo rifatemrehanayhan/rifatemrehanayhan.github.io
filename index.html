@@ -20,7 +20,7 @@
             font-family: 'SF Pro Display', sans-serif; color: #F4F6FA;
         }
 
-        #bg-canvas { position: fixed; inset: 0; z-index: -2; background-color: #000; pointer-events: none; }
+        #bg-canvas { position: fixed; inset: 0; z-index: -2; background-color: #050508; /* Çok koyu mavi-siyah */ pointer-events: none; }
 
         /* --- SAYFA GEÇİŞ SİSTEMİ --- */
         .page-section {
@@ -37,19 +37,19 @@
         #images { transform: translateX(100%); }
         .page-section.active { opacity: 1; pointer-events: all; transform: translateX(0) !important; z-index: 20; }
 
-        /* --- ANA SAYFA BUTONLARI (3D Efekti Kaldırıldı) --- */
+        /* --- ANA SAYFA BUTONLARI --- */
         .hero { text-align: center; padding-top: 100px; pointer-events: none; }
         .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); }
         .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.8; margin-top: 10px; }
         
         .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; }
         .big-box { 
-            background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); 
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); 
             padding: 55px 85px; border-radius: 20px; font-size: 28px; 
             border: 1px solid rgba(255,255,255,0.1); color: var(--white); 
             cursor: pointer; transition: 0.3s ease;
         }
-        .big-box:hover { background: var(--white); color: #000; box-shadow: 0 0 50px var(--glow-color); transform: translateY(-5px); }
+        .big-box:hover { background: var(--white); color: #000; box-shadow: 0 0 60px var(--glow-color); transform: translateY(-5px); }
 
         .back-btn { font-size: 16px; margin: 40px 0 20px 8%; display: inline-block; background: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
         .back-btn:hover { background: var(--white); color: #000; }
@@ -78,51 +78,29 @@
         .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .screenshot-item:hover { border-color: var(--white); box-shadow: 0 0 40px var(--glow-color); transform: scale(1.02); }
 
-        /* --- MODAL (Milimetrik Çerçeve Fix) --- */
+        /* --- MODAL --- */
         #content-modal { 
             display: none; position: fixed; inset: 0; 
             background-color: rgba(0, 0, 0, 0.8); 
             z-index: 10000; align-items: center; justify-content: center; 
             backdrop-filter: blur(30px); 
         }
-        
         .modal-wrapper {
-            position: relative;
-            display: inline-block; /* Kapsayıcıyı içeriğin boyutuna hapseder */
-            max-width: 90vw;
-            max-height: 85vh;
-            line-height: 0; /* Alt boşlukları tamamen yok eder */
+            position: relative; display: inline-block;
+            max-width: 90vw; max-height: 85vh; line-height: 0;
         }
-
         #modal-content-container { 
-            position: relative;
-            display: block;
+            position: relative; display: block;
         }
-
         #modal-content-container img, #modal-content-container iframe { 
-            max-width: 90vw; 
-            max-height: 85vh; 
-            border-radius: 8px; 
-            /* Gölge ve Blur artık doğrudan görsel sınırında */
-            box-shadow: 0 0 60px rgba(0,0,0,0.9), 0 0 20px rgba(255,255,255,0.05);
+            max-width: 90vw; max-height: 85vh; 
+            border-radius: 8px; display: block;
+            box-shadow: 0 0 60px rgba(0,0,0,0.9), 0 0 30px rgba(148, 179, 255, 0.2);
             border: 1px solid rgba(255,255,255,0.15);
-            display: block; 
         }
-
         .close-btn { 
-            position: absolute; 
-            top: -18px; right: -18px; 
-            width: 36px; height: 36px;
-            background: var(--white);
-            color: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer;
-            z-index: 10010;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: 0.2s;
+            position: absolute; top: -18px; right: -18px; 
+            width: 36px; height: 36px; background: var(--white); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10010; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: 0.2s;
         }
         .close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 3; pointer-events: none; }
         .close-btn:hover { transform: scale(1.15); background: var(--accent-blue); }
@@ -214,58 +192,88 @@
     function goToImages() { document.getElementById("home").classList.add("slide-out-left"); document.getElementById("images").classList.add("active"); }
     function goHome() { document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove("active", "slide-out-right", "slide-out-left")); }
 
-    /* --- ARKA PLAN (Grid) --- */
+    /* ============================================================
+       LIGHT FIELD / GLOW DUST BACKGROUND
+       ============================================================ */
     const canvas = document.getElementById("bg-canvas");
     const ctx = canvas.getContext("2d");
-    let points = [];
-    const spacing = 50;
-    let mouse = { x: -2000, y: -2000 };
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    let particles = [];
+    const particleCount = 180; // Parçacık yoğunluğu
 
-    function initGrid() {
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        points = [];
-        for (let x = -spacing; x <= canvas.width + spacing; x += spacing) {
-            for (let y = -spacing; y <= canvas.height + spacing; y += spacing) {
-                points.push({ x: x, y: y, originalX: x, originalY: y });
+    class Particle {
+        constructor() {
+            this.reset();
+            this.y = Math.random() * canvas.height; // İlk açılışta ekrana yayıl
+            this.fadeDelay = Math.random() * 100; // Yanıp sönme gecikmesi
+        }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + Math.random() * 100;
+            this.speed = Math.random() * 0.4 + 0.1; // Çok yavaş süzülme hızı
+            this.radius = Math.random() * 1.8 + 0.2; // Farklı boyutlarda tozlar
+            this.opacity = 0;
+            this.fadeDir = 1;
+            // Sitenin renk paletine uygun parlayan renkler
+            const colors = ['255, 255, 255', '148, 179, 255']; 
+            this.baseColor = colors[Math.floor(Math.random() * colors.length)];
+        }
+        update() {
+            this.y -= this.speed; // Yukarı doğru yavaşça hareket
+            this.x += Math.sin(this.y * 0.005) * 0.3; // Hafif rüzgar etkisi
+
+            if (this.fadeDelay > 0) {
+                this.fadeDelay--;
+            } else {
+                this.opacity += this.fadeDir * 0.008; // Yavaşça yanıp sönme
+                if (this.opacity >= 0.6) this.fadeDir = -1;
+                if (this.opacity <= 0) {
+                    this.reset();
+                    this.fadeDelay = Math.random() * 50;
+                }
             }
+            if (this.y < -10) this.reset();
+        }
+        draw() {
+            // Parlama efekti için Radial Gradient kullanımı
+            const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 6);
+            gradient.addColorStop(0, `rgba(${this.baseColor}, ${this.opacity})`); // Merkez parlak
+            gradient.addColorStop(0.5, `rgba(${this.baseColor}, ${this.opacity * 0.3})`); // Orta hare
+            gradient.addColorStop(1, `rgba(${this.baseColor}, 0)`); // Dış sönümleme
+
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius * 6, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
         }
     }
 
-    function drawGrid() {
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+    }
+
+    function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = "rgba(148, 179, 255, 0.15)";
-        ctx.lineWidth = 1;
-        const rows = Math.floor((canvas.height + spacing * 2) / spacing) + 1;
-
-        points.forEach(p => {
-            const dx = mouse.x - p.originalX;
-            const dy = mouse.y - p.originalY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 300) {
-                const force = (300 - dist) / 300;
-                const mag = force * 45;
-                p.x = p.originalX - (dx / dist) * mag;
-                p.y = p.originalY - (dy / dist) * mag;
-            } else { p.x = p.originalX; p.y = p.originalY; }
+        particles.forEach(p => {
+            p.update();
+            p.draw();
         });
-
-        for (let i = 0; i < points.length; i++) {
-            let next = points[i + 1];
-            if (next && next.originalX > points[i].originalX) {
-                ctx.beginPath(); ctx.moveTo(points[i].x, points[i].y); ctx.lineTo(next.x, next.y); ctx.stroke();
-            }
-            let below = points[i + rows];
-            if (below) {
-                ctx.beginPath(); ctx.moveTo(points[i].x, points[i].y); ctx.lineTo(below.x, below.y); ctx.stroke();
-            }
-        }
-        requestAnimationFrame(drawGrid);
+        requestAnimationFrame(animate);
     }
 
-    window.addEventListener('resize', initGrid);
-    initGrid(); drawGrid();
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initParticles();
+    });
+
+    initParticles();
+    animate();
     </script>
 </body>
 </html>
