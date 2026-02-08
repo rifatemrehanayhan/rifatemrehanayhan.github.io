@@ -11,37 +11,44 @@
         :root {
             --white: #ffffff;
             --accent-blue: #94b3ff;
-            --glow-color: rgba(148, 179, 255, 0.5);
+            --glow-color: rgba(148, 179, 255, 0.8); /* Glow şiddeti artırıldı */
         }
 
-        body {
+        html, body {
             margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden; /* Sağdaki o boşluğu ve kaymayı engeller */
+            background-color: #000;
             font-family: 'SF Pro Display', sans-serif;
             color: #F4F6FA;
-            overflow-x: hidden;
-            background-color: #050505;
         }
 
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
+            inset: 0;
             z-index: -1;
         }
 
         /* --- SAYFA GEÇİŞ SİSTEMİ --- */
         .page-section {
-            position: absolute; top: 0; left: 0;
-            width: 100%; min-height: 100vh;
+            position: absolute; 
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            min-height: 100vh;
             padding-bottom: 100px;
             box-sizing: border-box;
-            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
-            opacity: 0; pointer-events: none;
+            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
+            opacity: 0; 
+            pointer-events: none;
+            overflow-x: hidden; /* Bölüm bazlı taşmaları engeller */
         }
 
         #home { opacity: 1; pointer-events: all; transform: translateX(0); display: flex; flex-direction: column; align-items: center; }
-        #home.slide-out-right { transform: translateX(80%) scale(1.1); opacity: 0; }
-        #home.slide-out-left { transform: translateX(-80%) scale(1.1); opacity: 0; }
+        #home.slide-out-right { transform: translateX(100%); opacity: 0; }
+        #home.slide-out-left { transform: translateX(-100%); opacity: 0; }
         #videos { transform: translateX(-100%); }
         #images { transform: translateX(100%); }
         .page-section.active { opacity: 1; pointer-events: all; transform: translateX(0) !important; z-index: 20; }
@@ -53,8 +60,8 @@
         
         .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; }
         .big-box { 
-            background: rgba(255,255,255,0.03); 
-            backdrop-filter: blur(10px); 
+            background: rgba(255,255,255,0.05); 
+            backdrop-filter: blur(15px); 
             padding: 50px 80px; 
             border-radius: 20px; 
             font-size: 28px; 
@@ -63,7 +70,7 @@
             cursor: pointer; 
             transition: all 0.4s ease;
         }
-        .big-box:hover { background: var(--white); color: #000; transform: translateY(-5px); box-shadow: 0 10px 30px var(--glow-color); }
+        .big-box:hover { background: var(--white); color: #000; box-shadow: 0 0 40px var(--glow-color); }
         
         .back-btn { font-size: 16px; margin: 40px 0 20px 8%; display: inline-block; background: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
         .back-btn:hover { background: var(--white); color: #000; }
@@ -73,46 +80,57 @@
         /* --- IZGARA YAPISI --- */
         .grid-layout { display: grid; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
         .video-grid { grid-template-columns: repeat(5, 1fr); }
-        .image-grid { grid-template-columns: repeat(5, 1fr); } /* 5x5 düzeni */
+        .image-grid { grid-template-columns: repeat(5, 1fr); } 
 
         .item-wrapper {
             position: relative; width: 100%; height: 0; border-radius: 12px; overflow: hidden; cursor: pointer; 
             background: #111; border: 1px solid rgba(255,255,255,0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-        .video-item { padding-bottom: 125%; }
-        .image-item { padding-bottom: 100%; } /* Kare görünüm için */
+        .video-item { padding-bottom: 125%; } /* Video oranı aynı kaldı */
+        .image-item { padding-bottom: 56.25%; } /* Görseller artık 16:9 */
 
-        /* Artık monokrom yok, sadece renkli */
         .main-thumbnail { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; 
             transition: transform 0.5s ease;
         }
 
-        /* Glow Efekti */
+        /* Tüm ögeler için artırılmış Glow Efekti */
         .item-wrapper:hover { 
-            transform: scale(1.02); 
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 20px var(--glow-color); 
+            transform: scale(1.04); 
+            border-color: var(--white);
+            box-shadow: 0 0 35px var(--glow-color); 
             z-index: 5; 
         }
-        .item-wrapper:hover .main-thumbnail { transform: scale(1.08); }
+        .item-wrapper:hover .main-thumbnail { transform: scale(1.1); }
 
-        /* --- PROGRAM EKRAN GÖRÜNTÜLERİ SEKSİYONU --- */
-        .sub-section-title { margin-top: 60px; font-size: 24px; opacity: 0.9; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 30px; }
+        /* --- PROGRAM EKRAN GÖRÜNTÜLERİ --- */
+        .sub-section-title { margin-top: 60px; font-size: 24px; opacity: 0.9; padding-bottom: 10px; margin-bottom: 30px; border: none; } /* İnce çizgi kaldırıldı */
         .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-        .screenshot-item { position: relative; width: 100%; padding-bottom: 62.5%; /* 16:10 Ratio */ border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .screenshot-item { position: relative; width: 100%; padding-bottom: 62.5%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
         .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .screenshot-item:hover { transform: scale(1.02); box-shadow: 0 0 25px var(--glow-color); border-color: var(--accent-blue); }
+        .screenshot-item:hover { transform: scale(1.02); box-shadow: 0 0 35px var(--glow-color); border-color: var(--white); }
 
-        /* --- MODAL --- */
-        #content-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); z-index: 10000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(15px); }
-        .modal-content { position: relative; background: #000; border-radius: 12px; overflow: hidden; width: 100%; height: 0; }
-        .modal-content iframe, .modal-content img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; object-fit: contain; }
-        .close-btn { position: absolute; top: 20px; right: 40px; color: var(--white); font-size: 50px; cursor: pointer; z-index: 10001; }
+        /* --- MODAL (Geliştirilmiş) --- */
+        #content-modal { 
+            display: none; position: fixed; inset: 0; 
+            background-color: rgba(0, 0, 0, 0.85); /* Siyahlık azaltıldı, daha transparan */
+            z-index: 10000; align-items: center; justify-content: center; 
+            padding: 40px; box-sizing: border-box; backdrop-filter: blur(20px); 
+        }
+        .modal-content { 
+            position: relative; background: transparent; /* Arka plan siyahlığı kaldırıldı */
+            width: 100%; max-width: 1200px; height: auto; 
+            display: flex; align-items: center; justify-content: center;
+        }
+        #modal-content-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        #modal-content-container img, #modal-content-container iframe { 
+            max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            background: transparent;
+        }
+        .close-btn { position: absolute; top: -20px; right: 0; color: var(--white); font-size: 40px; cursor: pointer; z-index: 10001; }
         
         @media (max-width: 1024px) { .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); } .screenshot-grid { grid-template-columns: 1fr; } }
-        @media (max-width: 600px) { .video-grid, .image-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
@@ -120,8 +138,8 @@
     <canvas id="bg-canvas"></canvas>
     
     <div id="content-modal" onclick="closeModal()">
-        <span class="close-btn">&times;</span>
-        <div class="modal-content" id="modal-box" onclick="event.stopPropagation()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
             <div id="modal-content-container"></div>
         </div>
     </div>
@@ -157,10 +175,10 @@
             <h2 class="sub-section-title">Program Ekran Görüntüleri</h2>
             <div class="screenshot-grid">
                 <div class="screenshot-item" onclick="openImageModal('images/sırtsırtaproje.png')">
-                    <img src="images/sırtsırtaproje.png" alt="Proje 1">
+                    <img src="images/sırtsırtaproje.png">
                 </div>
                 <div class="screenshot-item" onclick="openImageModal('images/teknofestproje.png')">
-                    <img src="images/teknofestproje.png" alt="Proje 2">
+                    <img src="images/teknofestproje.png">
                 </div>
             </div>
         </div>
@@ -173,34 +191,26 @@
     </div>
 
     <script>
-    /* --- GÖRSELLERİ OLUŞTURMA (5x5 için 25 adet) --- */
     const imageGrid = document.getElementById('dynamic-image-grid');
     for (let i = 1; i <= 25; i++) {
         const item = document.createElement('div');
         item.className = 'item-wrapper image-item';
         item.onclick = () => openImageModal(`images/thumbnails/${i}.jpg`);
-        item.innerHTML = `<img src="images/thumbnails/${i}.jpg" class="main-thumbnail" onerror="this.src='https://via.placeholder.com/400x400?text=Görsel+${i}'">`;
+        item.innerHTML = `<img src="images/thumbnails/${i}.jpg" class="main-thumbnail" onerror="this.src='https://via.placeholder.com/1600x900?text=16:9+Image+${i}'">`;
         imageGrid.appendChild(item);
     }
 
-    /* --- MODAL VE NAVİGASYON --- */
     const modal = document.getElementById('content-modal');
-    const modalBox = document.getElementById('modal-box');
     const contentContainer = document.getElementById('modal-content-container');
 
     function openVideoModal(vimeoId, ratioString) {
-        let paddingPercentage = 56.25; 
-        if (ratioString === '9:16') paddingPercentage = 177.77; 
-        modalBox.style.maxWidth = (ratioString === '9:16') ? '450px' : '1100px';
-        modalBox.style.paddingBottom = paddingPercentage + '%';
-        contentContainer.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+        let ratio = (ratioString === '9:16') ? 'aspect-ratio: 9/16; width: 400px;' : 'aspect-ratio: 16/9; width: 1000px;';
+        contentContainer.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=1" style="${ratio}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
         modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
     }
 
     function openImageModal(imgSrc) {
-        modalBox.style.maxWidth = '1200px';
-        modalBox.style.paddingBottom = '62.5%'; 
-        contentContainer.innerHTML = `<img src="${imgSrc}">`;
+        contentContainer.innerHTML = `<img src="${imgSrc}" style="width: auto; height: auto; max-width: 100%; max-height: 90vh;">`;
         modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
     }
 
@@ -210,88 +220,76 @@
     function goHome() { document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove("active", "slide-out-right", "slide-out-left")); }
 
     /* ============================================================
-       VECTOR FLOW LINES BACKGROUND (Procedural)
+       DEPTH GRID + MAGNETIC DISTORTION
        ============================================================ */
     const canvas = document.getElementById("bg-canvas");
     const ctx = canvas.getContext("2d");
+    let points = [];
+    const spacing = 45;
+    let mouse = { x: -1000, y: -1000 };
 
-    let width, height, field = [], columns, rows;
-    const size = 20; // Flow alanı hücre boyutu
-    const numLines = 80;
-    let lines = [];
+    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
-    class Line {
-        constructor() {
-            this.init();
-        }
-        init() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.history = [];
-            this.maxLength = Math.random() * 50 + 50;
-            this.v = { x: 0, y: 0 };
-            this.acc = { x: 0, y: 0 };
-            this.color = `rgba(148, 179, 255, ${Math.random() * 0.3 + 0.1})`;
-        }
-        update() {
-            this.history.push({x: this.x, y: this.y});
-            if (this.history.length > this.maxLength) this.history.shift();
-
-            const col = Math.floor(this.x / size);
-            const row = Math.floor(this.y / size);
-            if (field[col] && field[col][row]) {
-                this.acc = field[col][row];
+    function initGrid() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        points = [];
+        for (let x = 0; x <= canvas.width + spacing; x += spacing) {
+            for (let y = 0; y <= canvas.height + spacing; y += spacing) {
+                points.push({ x: x, y: y, originalX: x, originalY: y });
             }
-
-            this.v.x += this.acc.x;
-            this.v.y += this.acc.y;
-            this.v.x *= 0.95; // sürtünme
-            this.v.y *= 0.95;
-            this.x += this.v.x;
-            this.y += this.v.y;
-
-            if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.init();
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = 1.5;
-            for (let i = 1; i < this.history.length; i++) {
-                ctx.moveTo(this.history[i-1].x, this.history[i-1].y);
-                ctx.lineTo(this.history[i].x, this.history[i].y);
-            }
-            ctx.stroke();
         }
     }
 
-    function setup() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        columns = Math.ceil(width / size) + 1;
-        rows = Math.ceil(height / size) + 1;
-        
-        field = [];
-        for (let x = 0; x < columns; x++) {
-            field[x] = [];
-            for (let y = 0; y < rows; y++) {
-                const angle = (Math.sin(x * 0.1) + Math.cos(y * 0.1)) * Math.PI * 2;
-                field[x][y] = { x: Math.cos(angle) * 0.5, y: Math.sin(angle) * 0.5 };
+    function drawGrid() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "rgba(148, 179, 255, 0.15)";
+        ctx.lineWidth = 1;
+
+        points.forEach(p => {
+            const dx = mouse.x - p.originalX;
+            const dy = mouse.y - p.originalY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const maxDist = 250;
+
+            if (dist < maxDist) {
+                const force = (maxDist - dist) / maxDist;
+                const mag = force * 40; // Distortion gücü
+                p.x = p.originalX - (dx / dist) * mag;
+                p.y = p.originalY - (dy / dist) * mag;
+            } else {
+                p.x = p.originalX;
+                p.y = p.originalY;
+            }
+        });
+
+        // Yatay çizgiler
+        for (let i = 0; i < points.length; i++) {
+            let next = points[i + 1];
+            if (next && next.originalX > points[i].originalX) {
+                ctx.beginPath();
+                ctx.moveTo(points[i].x, points[i].y);
+                ctx.lineTo(next.x, next.y);
+                ctx.stroke();
             }
         }
-        lines = [];
-        for (let i = 0; i < numLines; i++) lines.push(new Line());
+        // Dikey çizgiler
+        const rows = Math.floor((canvas.height + spacing) / spacing) + 1;
+        for (let i = 0; i < points.length; i++) {
+            let below = points[i + rows];
+            if (below) {
+                ctx.beginPath();
+                ctx.moveTo(points[i].x, points[i].y);
+                ctx.lineTo(below.x, below.y);
+                ctx.stroke();
+            }
+        }
+        requestAnimationFrame(drawGrid);
     }
 
-    function animate() {
-        ctx.fillStyle = "rgba(5, 5, 5, 0.15)"; // Hafif trail efekti
-        ctx.fillRect(0, 0, width, height);
-        lines.forEach(l => { l.update(); l.draw(); });
-        requestAnimationFrame(animate);
-    }
-
-    window.addEventListener("resize", setup);
-    setup();
-    animate();
+    window.addEventListener('resize', initGrid);
+    initGrid();
+    drawGrid();
     </script>
 </body>
 </html>
