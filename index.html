@@ -1,279 +1,521 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rıfat Emrehan Ayhan – Portfolio</title>
-
     <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
-
     <style>
         :root {
             --white: #ffffff;
             --accent-blue: #94b3ff;
             --glow-color: rgba(148, 179, 255, 0.9);
         }
-
         html, body {
             margin: 0; padding: 0; width: 100vw; min-height: 100vh;
             overflow-x: hidden; background-color: transparent;
             font-family: 'SF Pro Display', sans-serif; color: #F4F6FA;
         }
-
-        #bg-canvas { position: fixed; inset: 0; z-index: -2; background-color: #050508; pointer-events: none; }
-
-        /* --- SAYFA GEÇİŞ SİSTEMİ --- */
+        #bg-canvas {
+            position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(ellipse at 40% 50%, #08090f 0%, #040408 60%, #020204 100%);
+            pointer-events: none;
+        }
         .page-section {
             position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh;
             padding-bottom: 100px; box-sizing: border-box;
             transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
             opacity: 0; pointer-events: none;
         }
-
         #home { opacity: 1; pointer-events: all; transform: translateX(0); display: flex; flex-direction: column; align-items: center; }
         #home.slide-out-right { transform: translateX(100%); opacity: 0; }
-        #home.slide-out-left { transform: translateX(-100%); opacity: 0; }
+        #home.slide-out-left  { transform: translateX(-100%); opacity: 0; }
         #videos { transform: translateX(-100%); }
         #images { transform: translateX(100%); }
         .page-section.active { opacity: 1; pointer-events: all; transform: translateX(0) !important; z-index: 20; }
 
-        /* --- ANA SAYFA BUTONLARI --- */
         .hero { text-align: center; padding-top: 100px; pointer-events: none; }
-        .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); }
-        .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.8; margin-top: 10px; }
-        
+        .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); letter-spacing: 2px; }
+        .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.7; margin-top: 12px; letter-spacing: 1px; }
+
         .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; }
-        .big-box { 
-            background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); 
-            padding: 55px 85px; border-radius: 20px; font-size: 28px; 
-            border: 1px solid rgba(255,255,255,0.1); color: var(--white); 
-            cursor: pointer; transition: 0.3s ease;
+        .big-box {
+            background: rgba(255,255,255,0.04); backdrop-filter: blur(20px);
+            padding: 55px 85px; border-radius: 20px; font-size: 28px;
+            border: 1px solid rgba(255,255,255,0.08); color: var(--white);
+            cursor: pointer; transition: 0.35s ease;
         }
-        .big-box:hover { background: var(--white); color: #000; box-shadow: 0 0 60px var(--glow-color); transform: translateY(-5px); }
+        .big-box:hover {
+            background: rgba(255,255,255,0.92); color: #000;
+            box-shadow: 0 0 80px rgba(200,215,255,0.3); transform: translateY(-5px);
+        }
 
-        .back-btn { font-size: 16px; margin: 40px 0 20px 8%; display: inline-block; background: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .back-btn { font-size: 16px; margin: 40px 0 20px 8%; display: inline-block; background: rgba(255,255,255,0.07); padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
         .back-btn:hover { background: var(--white); color: #000; }
-
         h1.section-title { padding-left: 8%; margin-bottom: 30px; }
 
-        /* --- IZGARA YAPISI --- */
         .grid-layout { display: grid; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
-        .video-grid, .image-grid { grid-template-columns: repeat(5, 1fr); } 
-
+        .video-grid, .image-grid { grid-template-columns: repeat(5, 1fr); }
         .item-wrapper {
-            position: relative; width: 100%; height: 0; border-radius: 12px; overflow: hidden; cursor: pointer; 
-            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            position: relative; width: 100%; height: 0; border-radius: 12px; overflow: hidden; cursor: pointer;
+            background: #0d0d12; border: 1px solid rgba(255,255,255,0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
-        .video-item { padding-bottom: 125%; }
-        .image-item { padding-bottom: 56.25%; } 
-
+        .video-item  { padding-bottom: 125%; }
+        .image-item  { padding-bottom: 56.25%; }
         .main-thumbnail { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .item-wrapper:hover { transform: scale(1.04); border-color: var(--white); box-shadow: 0 0 40px var(--glow-color); z-index: 5; }
+        .item-wrapper:hover { transform: scale(1.04); border-color: rgba(255,255,255,0.45); box-shadow: 0 0 40px rgba(200,215,255,0.12); z-index: 5; }
         .item-wrapper:hover .main-thumbnail { transform: scale(1.1); }
 
-        /* --- PROGRAM EKRAN GÖRÜNTÜLERİ --- */
         .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1400px; margin: 0 auto; padding-bottom: 50px; }
-        .screenshot-item { position: relative; width: 100%; padding-bottom: 63.1%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; cursor: pointer; }
+        .screenshot-item { position: relative; width: 100%; padding-bottom: 63.1%; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; cursor: pointer; }
         .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .screenshot-item:hover { border-color: var(--white); box-shadow: 0 0 40px var(--glow-color); transform: scale(1.02); }
+        .screenshot-item:hover { border-color: rgba(255,255,255,0.35); box-shadow: 0 0 40px rgba(200,215,255,0.1); transform: scale(1.02); }
 
-        /* --- MODAL --- */
-        #content-modal { 
-            display: none; position: fixed; inset: 0; 
-            background-color: rgba(0, 0, 0, 0.8); 
-            z-index: 10000; align-items: center; justify-content: center; 
-            backdrop-filter: blur(30px); 
+        #content-modal {
+            display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.85);
+            z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(30px);
         }
-        .modal-wrapper {
-            position: relative; display: inline-block;
-            max-width: 90vw; max-height: 85vh; line-height: 0;
+        .modal-wrapper { position: relative; display: inline-block; max-width: 90vw; max-height: 85vh; line-height: 0; }
+        #modal-content-container { position: relative; display: block; }
+        #modal-content-container img, #modal-content-container iframe {
+            max-width: 90vw; max-height: 85vh; border-radius: 8px; display: block;
+            box-shadow: 0 0 60px rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.12);
         }
-        #modal-content-container { 
-            position: relative; display: block;
-        }
-        #modal-content-container img, #modal-content-container iframe { 
-            max-width: 90vw; max-height: 85vh; 
-            border-radius: 8px; display: block;
-            box-shadow: 0 0 60px rgba(0,0,0,0.9);
-            border: 1px solid rgba(255,255,255,0.15);
-        }
-        .close-btn { 
-            position: absolute; top: -18px; right: -18px; 
-            width: 36px; height: 36px; background: var(--white); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10010; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: 0.2s;
+        .close-btn {
+            position: absolute; top: -18px; right: -18px; width: 36px; height: 36px;
+            background: var(--white); color: #000; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; cursor: pointer; z-index: 10010;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: 0.2s;
         }
         .close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 3; pointer-events: none; }
         .close-btn:hover { transform: scale(1.15); background: var(--accent-blue); }
-        
-        @media (max-width: 1024px) { .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); } .screenshot-grid { grid-template-columns: 1fr; } }
+
+        @media (max-width: 1024px) {
+            .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); }
+            .screenshot-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
+<canvas id="bg-canvas"></canvas>
 
-    <canvas id="bg-canvas"></canvas>
-    
-    <div id="content-modal" onclick="closeModal()">
-        <div class="modal-wrapper" onclick="event.stopPropagation()">
-            <div class="close-btn" onclick="closeModal()">
-                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </div>
-            <div id="modal-content-container"></div>
+<div id="content-modal" onclick="closeModal()">
+    <div class="modal-wrapper" onclick="event.stopPropagation()">
+        <div class="close-btn" onclick="closeModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <div id="modal-content-container"></div>
+    </div>
+</div>
+
+<div id="home" class="page-section">
+    <div class="hero">
+        <h1>Rıfat Emrehan Ayhan</h1>
+        <h2>Video Editörü • Kurgu & Montaj • İçerik Üreticisi</h2>
+    </div>
+    <div class="section-boxes">
+        <div class="big-box" onclick="goToVideos()">Video Çalışmalarım</div>
+        <div class="big-box" onclick="goToImages()">Görsel Çalışmalarım</div>
+    </div>
+</div>
+
+<div id="videos" class="page-section">
+    <div class="back-btn" onclick="goHome()">← Ana Sayfa</div>
+    <h1 class="section-title">Video Çalışmalarım</h1>
+    <div class="grid-layout video-grid">
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689325','16:9')"><img src="images/kuma-evetmihayirmi.jpg"    class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689168','9:16')"><img src="images/hilaltufek.jpg"           class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1159228579','9:16')"><img src="images/k7-5m.jpg"                class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689244','16:9')"><img src="images/nesetertas.jpg"           class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689113','16:9')"><img src="images/gelin-evetmihayirmi1.jpg"  class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689373','9:16')"><img src="images/teknofest.jpg"            class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689290','9:16')"><img src="images/setinenleri.jpg"          class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689403','9:16')"><img src="images/omubumu.jpg"              class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689001','9:16')"><img src="images/ayvazsef.jpg"             class="main-thumbnail"></div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689354','16:9')"><img src="images/fanus.jpg"               class="main-thumbnail"></div>
+    </div>
+    <div style="max-width:1400px;margin:60px auto 0;padding:0 20px;">
+        <h2 style="font-size:24px;opacity:0.9;margin-bottom:30px;">Program Ekran Görüntüleri</h2>
+        <div class="screenshot-grid">
+            <div class="screenshot-item" onclick="openImageModal('images/sırtsırtaproje.png')"><img src="images/sırtsırtaproje.png"></div>
+            <div class="screenshot-item" onclick="openImageModal('images/teknofestproje.png')"><img src="images/teknofestproje.png"></div>
         </div>
     </div>
-    
-    <div id="home" class="page-section">
-        <div class="hero">
-            <h1>Rıfat Emrehan Ayhan</h1>
-            <h2>Video Editörü • Kurgu & Montaj • İçerik Üreticisi</h2>
-        </div>
-        <div class="section-boxes">
-            <div class="big-box" onclick="goToVideos()">Video Çalışmalarım</div>
-            <div class="big-box" onclick="goToImages()">Görsel Çalışmalarım</div>
-        </div>
-    </div>
+</div>
 
-    <div id="videos" class="page-section">
-        <div class="back-btn" onclick="goHome()">← Ana Sayfa</div>
-        <h1 class="section-title">Video Çalışmalarım</h1>
-        <div class="grid-layout video-grid">
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689325', '16:9')"><img src="images/kuma-evetmihayirmi.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689168', '9:16')"><img src="images/hilaltufek.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1159228579', '9:16')"><img src="images/k7-5m.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689244', '16:9')"><img src="images/nesetertas.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689113', '16:9')"><img src="images/gelin-evetmihayirmi1.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689373', '9:16')"><img src="images/teknofest.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689290', '9:16')"><img src="images/setinenleri.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689403', '9:16')"><img src="images/omubumu.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689001', '9:16')"><img src="images/ayvazsef.jpg" class="main-thumbnail"></div>
-            <div class="item-wrapper video-item" onclick="openVideoModal('1144689354', '16:9')"><img src="images/fanus.jpg" class="main-thumbnail"></div>
-        </div>
+<div id="images" class="page-section">
+    <div class="back-btn" onclick="goHome()">← Ana Sayfa</div>
+    <h1 class="section-title">Görsel Çalışmalarım</h1>
+    <div class="grid-layout image-grid" id="dynamic-image-grid"></div>
+</div>
 
-        <div style="max-width: 1400px; margin: 60px auto 0; padding: 0 20px;">
-            <h2 style="font-size: 24px; opacity: 0.9; margin-bottom: 30px;">Program Ekran Görüntüleri</h2>
-            <div class="screenshot-grid">
-                <div class="screenshot-item" onclick="openImageModal('images/sırtsırtaproje.png')"><img src="images/sırtsırtaproje.png"></div>
-                <div class="screenshot-item" onclick="openImageModal('images/teknofestproje.png')"><img src="images/teknofestproje.png"></div>
-            </div>
-        </div>
-    </div>
+<script>
+/* ── Grid ─────────────────────────────────────────── */
+const imageGrid = document.getElementById('dynamic-image-grid');
+for (let i = 1; i <= 25; i++) {
+    const item = document.createElement('div');
+    item.className = 'item-wrapper image-item';
+    item.onclick   = () => openImageModal(`images/thumbnails/${i}.jpg`);
+    item.innerHTML = `<img src="images/thumbnails/${i}.jpg" class="main-thumbnail"
+        onerror="this.src='https://via.placeholder.com/1600x900?text=Görsel+${i}'">`;
+    imageGrid.appendChild(item);
+}
 
-    <div id="images" class="page-section">
-        <div class="back-btn" onclick="goHome()">← Ana Sayfa</div>
-        <h1 class="section-title">Görsel Çalışmalarım</h1>
-        <div class="grid-layout image-grid" id="dynamic-image-grid"></div>
-    </div>
+/* ── Modal / Nav ──────────────────────────────────── */
+const modal            = document.getElementById('content-modal');
+const contentContainer = document.getElementById('modal-content-container');
+function openVideoModal(id, ratio) {
+    const s = ratio === '9:16' ? 'aspect-ratio:9/16;width:400px;' : 'aspect-ratio:16/9;width:1000px;';
+    contentContainer.innerHTML = `<iframe src="https://player.vimeo.com/video/${id}?autoplay=1"
+        style="${s}" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>`;
+    modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
+}
+function openImageModal(src) {
+    contentContainer.innerHTML = `<img src="${src}">`;
+    modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
+}
+function closeModal()  { modal.style.display = 'none'; contentContainer.innerHTML = ''; document.body.style.overflow = 'auto'; }
+function goToVideos()  { document.getElementById('home').classList.add('slide-out-right'); document.getElementById('videos').classList.add('active'); }
+function goToImages()  { document.getElementById('home').classList.add('slide-out-left');  document.getElementById('images').classList.add('active'); }
+function goHome()      { document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active','slide-out-right','slide-out-left')); }
 
-    <script>
-    const imageGrid = document.getElementById('dynamic-image-grid');
-    for (let i = 1; i <= 25; i++) {
-        const item = document.createElement('div');
-        item.className = 'item-wrapper image-item';
-        item.onclick = () => openImageModal(`images/thumbnails/${i}.jpg`);
-        item.innerHTML = `<img src="images/thumbnails/${i}.jpg" class="main-thumbnail" onerror="this.src='https://via.placeholder.com/1600x900?text=Görsel+${i}'">`;
-        imageGrid.appendChild(item);
-    }
 
-    const modal = document.getElementById('content-modal');
-    const contentContainer = document.getElementById('modal-content-container');
 
-    function openVideoModal(vimeoId, ratioString) {
-        let style = (ratioString === '9:16') ? 'aspect-ratio: 9/16; width: 400px;' : 'aspect-ratio: 16/9; width: 1000px;';
-        contentContainer.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?autoplay=1" style="${style}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-        modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
-    }
+/* ════════════════════════════════════════════════════════════════
+   CANVAS SİSTEMİ
+   ─────────────────────────────────────────────────────────────
+   Tek Star sınıfı — homeX/Y (rastgele konum) + targetX/Y (ikon)
+   Hover'da mevcut yıldızlar doğrudan ikon noktalarına lerp eder.
+   Ekstra parçacık üretilmez.
+═══════════════════════════════════════════════════════════════ */
+const canvas = document.getElementById('bg-canvas');
+const ctx    = canvas.getContext('2d');
 
-    function openImageModal(imgSrc) {
-        contentContainer.innerHTML = `<img src="${imgSrc}">`;
-        modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
-    }
+const mouse = { x: -9999, y: -9999 };
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
-    function closeModal() { modal.style.display = 'none'; contentContainer.innerHTML = ''; document.body.style.overflow = 'auto'; }
-    function goToVideos() { document.getElementById("home").classList.add("slide-out-right"); document.getElementById("videos").classList.add("active"); }
-    function goToImages() { document.getElementById("home").classList.add("slide-out-left"); document.getElementById("images").classList.add("active"); }
-    function goHome() { document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove("active", "slide-out-right", "slide-out-left")); }
-
-    /* ============================================================
-       LIGHT FIELD / GLOW DUST (Ekranda Kalıcı Dağılım Fix)
-       ============================================================ */
-    const canvas = document.getElementById("bg-canvas");
-    const ctx = canvas.getContext("2d");
-    
-    let particles = [];
-    const particleCount = 200;
-
-    class Particle {
-        constructor(isInitial = false) {
-            this.reset(isInitial);
+/* ═══════════════════════════════════════════════
+   İKON NOKTA ÜRETICILER
+═══════════════════════════════════════════════ */
+function sampleRoundedRect(cx, cy, w, h, r, count) {
+    const pts = [];
+    const segments = [
+        { len: w-2*r, fn: t => [cx-w/2+r+t*(w-2*r),  cy-h/2] },
+        { len: Math.PI/2*r, fn: t => [cx+w/2-r + Math.cos(-Math.PI/2+t*Math.PI/2)*r, cy-h/2+r + Math.sin(-Math.PI/2+t*Math.PI/2)*r - r] },
+        { len: h-2*r, fn: t => [cx+w/2,               cy-h/2+r+t*(h-2*r)] },
+        { len: Math.PI/2*r, fn: t => [cx+w/2-r + Math.cos(t*Math.PI/2)*r, cy+h/2-r + Math.sin(t*Math.PI/2)*r] },
+        { len: w-2*r, fn: t => [cx+w/2-r-t*(w-2*r),  cy+h/2] },
+        { len: Math.PI/2*r, fn: t => [cx-w/2+r + Math.cos(Math.PI/2+t*Math.PI/2)*r, cy+h/2-r + Math.sin(Math.PI/2+t*Math.PI/2)*r] },
+        { len: h-2*r, fn: t => [cx-w/2,               cy+h/2-r-t*(h-2*r)] },
+        { len: Math.PI/2*r, fn: t => [cx-w/2+r + Math.cos(Math.PI+t*Math.PI/2)*r, cy-h/2+r + Math.sin(Math.PI+t*Math.PI/2)*r] },
+    ];
+    const total = segments.reduce((s,g) => s+g.len, 0);
+    const step  = total / count;
+    let rem = step / 2;
+    for (const seg of segments) {
+        let pos = 0;
+        while (pos < seg.len) {
+            if (pos >= rem) { pts.push(seg.fn(pos/seg.len)); rem = step; }
+            pos += Math.min(rem, seg.len - pos);
+            rem = Math.max(0, rem - (pos - (pos - rem)));
         }
-        
-        reset(isInitial = false) {
-            this.x = Math.random() * canvas.width;
-            // İlk açılışta tüm ekrana yay, sonrasında sadece alttan veya rastgele y'den doğur
-            this.y = isInitial ? Math.random() * canvas.height : canvas.height + Math.random() * 100;
-            
-            this.speed = Math.random() * 0.3 + 0.1;
-            this.radius = Math.random() * 1.5 + 0.3;
-            this.opacity = 0;
-            this.fadeDir = 1;
-            this.fadeSpeed = Math.random() * 0.005 + 0.002;
-            
-            const colors = ['255, 255, 255', '148, 179, 255'];
-            this.baseColor = colors[Math.floor(Math.random() * colors.length)];
+        rem -= seg.len - (pos - rem < 0 ? 0 : pos - rem);
+        if (rem < 0) rem = 0;
+    }
+    return pts.slice(0, count);
+}
+
+function sampleTriangle(x1,y1, x2,y2, x3,y3, count) {
+    const pts = [];
+    const sides = [[x1,y1,x2,y2],[x2,y2,x3,y3],[x3,y3,x1,y1]];
+    const lens  = sides.map(([ax,ay,bx,by]) => Math.hypot(bx-ax,by-ay));
+    const total = lens.reduce((a,b)=>a+b,0);
+    sides.forEach(([ax,ay,bx,by],i) => {
+        const n = Math.round(count * lens[i] / total);
+        for (let j=0;j<n;j++) { const t=j/n; pts.push([ax+(bx-ax)*t, ay+(by-ay)*t]); }
+    });
+    return pts;
+}
+
+function sampleCircle(cx, cy, r, count) {
+    return Array.from({length:count}, (_,i) => {
+        const a = (i/count)*Math.PI*2;
+        return [cx+Math.cos(a)*r, cy+Math.sin(a)*r];
+    });
+}
+
+function sampleMountains(cx, cy, w, h, count) {
+    const base = cy+h*0.35;
+    const path = [
+        [cx-w*0.45, base],
+        [cx-w*0.38, base],
+        [cx-w*0.18, cy-h*0.2],
+        [cx+w*0.02, base],
+        [cx+w*0.2,  cy-h*0.38],
+        [cx+w*0.45, base],
+    ];
+    const lens = path.map((_,i) => i===0?0:Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+    const total = lens.reduce((a,b)=>a+b,0);
+    const step  = total / count;
+    const pts   = [];
+    let dist    = step/2;
+    for (let i=1;i<path.length;i++) {
+        const [ax,ay]=path[i-1],[bx,by]=path[i];
+        const sLen = Math.hypot(bx-ax,by-ay);
+        let pos=0;
+        while (pos+dist<=sLen) { pos+=dist; const t=pos/sLen; pts.push([ax+(bx-ax)*t,ay+(by-ay)*t]); dist=step; }
+        dist-=(sLen-pos);
+    }
+    return pts.slice(0,count);
+}
+
+function buildIconPoints(W, H) {
+    const S = Math.min(W, H);
+
+    /* Video ikonu — sol yarı merkezi */
+    const vcx=W*0.25, vcy=H*0.5, vW=S*0.28, vH=S*0.20, vR=S*0.035;
+    const tSz=S*0.07;
+    const frame = sampleRoundedRect(vcx,vcy,vW,vH,vR, 280);
+    const tri   = sampleTriangle(
+        vcx-tSz*0.5, vcy-tSz*0.75,
+        vcx-tSz*0.5, vcy+tSz*0.75,
+        vcx+tSz,     vcy,  220);
+    let vPts = [...frame, ...tri];
+
+    /* Görsel ikonu — sağ yarı merkezi */
+    const icx=W*0.75, icy=H*0.5, iW=S*0.28, iH=S*0.22, iR=S*0.035;
+    const iFrame = sampleRoundedRect(icx,icy,iW,iH,iR, 200);
+    const mts    = sampleMountains(icx,icy, iW*0.8,iH*0.8, 180);
+    const sun    = sampleCircle(icx+iW*0.3, icy-iH*0.28, S*0.028, 120);
+    let iPts = [...iFrame, ...mts, ...sun];
+
+    return { vPts, iPts };
+}
+
+/* ═══════════════════════════════════════════════
+   STAR — tek sınıf, hem tavan hem morph
+═══════════════════════════════════════════════ */
+class Star {
+    constructor(side) {
+        /* side: 'left' | 'right' | 'none' */
+        this.side = side;
+        this.morphTarget = null;   // [tx, ty] — ikon noktası
+        this.progress    = 0;     // 0=home 1=target
+        this.phase       = Math.random() * Math.PI * 2;
+        this.twinkleSpeed= Math.random() * 0.010 + 0.003;
+        this.twinkleAmp  = Math.random() * 0.35  + 0.10;
+        this.place();
+    }
+
+    place() {
+        const W = canvas.width, H = canvas.height;
+        if (this.side === 'left')       { this.homeX = Math.random()*(W/2);         this.homeY = Math.random()*H; }
+        else if (this.side === 'right') { this.homeX = W/2+Math.random()*(W/2);     this.homeY = Math.random()*H; }
+        else                            { this.homeX = Math.random()*W;              this.homeY = Math.random()*H; }
+
+        this.x = this.homeX; this.y = this.homeY;
+
+        /* Boyut */
+        const tier = Math.random();
+        if (tier<0.72)      { this.baseR=Math.random()*0.55+0.15; this.baseLum=Math.random()*0.30+0.06; }
+        else if (tier<0.95) { this.baseR=Math.random()*0.75+0.45; this.baseLum=Math.random()*0.35+0.18; }
+        else                { this.baseR=Math.random()*1.1 +0.85; this.baseLum=Math.random()*0.25+0.55; }
+
+        const cr=Math.random();
+        this.color = cr<0.76?'255,255,255':cr<0.90?'210,228,255':'255,248,215';
+    }
+
+    update(t, hoverProgress) {
+        /* ── Morph lerp — hızlı ── */
+        const target = (this.morphTarget && hoverProgress > 0) ? hoverProgress : 0;
+        /* 0.12 = hızlı yaklaşma */
+        this.progress += (target - this.progress) * 0.12;
+
+        if (this.morphTarget && this.progress > 0.001) {
+            this.x = this.homeX + this.progress * (this.morphTarget[0] - this.homeX);
+            this.y = this.homeY + this.progress * (this.morphTarget[1] - this.homeY);
+        } else {
+            this.x = this.homeX;
+            this.y = this.homeY;
         }
 
-        update() {
-            this.y -= this.speed;
-            this.x += Math.sin(this.y * 0.01) * 0.2;
+        /* Titreşim (yalnızca home modunda) */
+        const flicker = Math.sin(t * this.twinkleSpeed + this.phase) * this.twinkleAmp;
+        const p = this.progress;
 
-            // Görünürlük kontrolü
-            this.opacity += this.fadeDir * this.fadeSpeed;
-            if (this.opacity >= 0.7) this.fadeDir = -1;
+        if (p > 0.5) {
+            /* İkon modunda: mavi nokta, sabit parlaklık */
+            this.lum       = 0.85;
+            this.drawColor = '148,179,255';
+            this.r         = this.baseR * 1.1;
+        } else {
+            /* Tavan modu: beyaz yıldız, titreşiyor */
+            this.lum       = Math.max(0.02, this.baseLum + flicker * (1-p));
+            this.drawColor = this.color;
+            this.r         = this.baseR;
 
-            // Ekranda her zaman parçacık olması için:
-            // 1. Eğer parçacık tamamen sönerse, ekranın HERHANGİ bir yerinde tekrar doğur (Field hissi için)
-            if (this.opacity <= 0) {
-                this.reset(true); // isInitial=true vererek ekranın rastgele yerinde doğmasını sağlıyoruz
+            /* Fare yakınlığı — sadece home modunda */
+            const dx=this.x-mouse.x, dy=this.y-mouse.y;
+            const dist=Math.sqrt(dx*dx+dy*dy);
+            if (dist<180) {
+                const prx=1-dist/180;
+                this.lum = Math.min(1, this.lum+prx*0.75);
+                this.r   = this.baseR*(1+prx*3.8);
             }
-
-            // 2. Eğer parçacık sönmeden ekranın üstünden çıkarsa, alttan tekrar başlat
-            if (this.y < -50) {
-                this.reset(false);
-            }
         }
+    }
 
-        draw() {
-            const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 6);
-            gradient.addColorStop(0, `rgba(${this.baseColor}, ${this.opacity})`);
-            gradient.addColorStop(1, `rgba(${this.baseColor}, 0)`);
-
+    draw() {
+        /* Morph sırasında glow yok — sadece sade nokta */
+        if (this.progress > 0.05) {
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius * 6, 0, Math.PI * 2);
-            ctx.fillStyle = gradient;
+            ctx.arc(this.x, this.y, this.r * 0.9, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(${this.drawColor},${Math.min(1, this.lum)})`;
             ctx.fill();
+            return;
         }
+
+        /* Normal yıldız — hafif hale */
+        const gR = this.r * 9;
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${this.drawColor||this.color},${Math.min(1,this.lum*1.8)})`; ctx.fill();
+        const g = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,gR);
+        g.addColorStop(0,   `rgba(${this.drawColor||this.color},${(this.lum||0.1)*0.55})`);
+        g.addColorStop(0.4, `rgba(${this.drawColor||this.color},${(this.lum||0.1)*0.12})`);
+        g.addColorStop(1,   `rgba(${this.drawColor||this.color},0)`);
+        ctx.beginPath(); ctx.arc(this.x,this.y,gR,0,Math.PI*2);
+        ctx.fillStyle=g; ctx.fill();
+    }
+}
+
+/* ═══════════════════════════════════════════════
+   KAYAN YILDIZ
+═══════════════════════════════════════════════ */
+class ShootingStar {
+    constructor() {
+        const edge=Math.floor(Math.random()*4);
+        if(edge===0){this.x=Math.random()*canvas.width;this.y=-10;}
+        else if(edge===1){this.x=canvas.width+10;this.y=Math.random()*canvas.height;}
+        else if(edge===2){this.x=Math.random()*canvas.width;this.y=canvas.height+10;}
+        else{this.x=-10;this.y=Math.random()*canvas.height;}
+        const a=Math.atan2(canvas.height/2-this.y,canvas.width/2-this.x)+(Math.random()-0.5)*0.8;
+        this.speed=Math.random()*6+3;
+        this.vx=Math.cos(a)*this.speed; this.vy=Math.sin(a)*this.speed;
+        this.len=Math.random()*200+80; this.width=Math.random()*1+0.3;
+        this.alpha=0; this.state='in'; this.life=0; this.maxLife=Math.random()*55+30;
+    }
+    update(){
+        this.x+=this.vx;this.y+=this.vy;this.life++;
+        if(this.state==='in'){this.alpha+=0.08;if(this.alpha>=0.9){this.alpha=0.9;this.state='on';}}
+        if(this.state==='on'&&this.life>this.maxLife)this.state='out';
+        if(this.state==='out'){this.alpha-=0.03;if(this.alpha<=0){this.alpha=0;this.state='dead';}}
+    }
+    get isDead(){return this.state==='dead';}
+    draw(){
+        if(this.alpha<=0)return;
+        const tx=this.x-(this.vx/this.speed)*this.len,ty=this.y-(this.vy/this.speed)*this.len;
+        const g=ctx.createLinearGradient(tx,ty,this.x,this.y);
+        g.addColorStop(0,'rgba(255,255,255,0)');
+        g.addColorStop(0.55,`rgba(200,215,255,${this.alpha*0.25})`);
+        g.addColorStop(1,`rgba(255,255,255,${this.alpha})`);
+        ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(this.x,this.y);
+        ctx.strokeStyle=g;ctx.lineWidth=this.width;ctx.lineCap='round';ctx.stroke();
+        const hg=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,7);
+        hg.addColorStop(0,`rgba(255,255,255,${this.alpha})`);
+        hg.addColorStop(1,'rgba(200,220,255,0)');
+        ctx.beginPath();ctx.arc(this.x,this.y,7,0,Math.PI*2);ctx.fillStyle=hg;ctx.fill();
+    }
+}
+
+/* ════════════════════════════
+   ANA DÖNGÜ
+════════════════════════════ */
+let stars         = [];
+let shootingStars = [];
+let t=0, shootTimer=240;
+let leftHover=0, rightHover=0;
+
+function init() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    /* İkon noktaları */
+    const { vPts, iPts } = buildIconPoints(canvas.width, canvas.height);
+
+    /* Yoğunluk: sol/sağ morph için yeterli yıldız olsun */
+    const totalStars = Math.max(
+        Math.floor((canvas.width * canvas.height) / 3200),
+        vPts.length + iPts.length + 100
+    );
+    const leftCount  = Math.max(vPts.length, Math.floor(totalStars * 0.35));
+    const rightCount = Math.max(iPts.length, Math.floor(totalStars * 0.35));
+    const restCount  = totalStars - leftCount - rightCount;
+
+    stars = [];
+
+    /* Sol yıldızlar — video ikonuna morph eder */
+    for (let i=0; i<leftCount; i++) {
+        const s = new Star('left');
+        if (i < vPts.length) s.morphTarget = vPts[i];
+        stars.push(s);
     }
 
-    function initParticles() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        particles = [];
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle(true)); // Başlangıçta tam ekran dağılım
-        }
+    /* Sağ yıldızlar — görsel ikonuna morph eder */
+    for (let i=0; i<rightCount; i++) {
+        const s = new Star('right');
+        if (i < iPts.length) s.morphTarget = iPts[i];
+        stars.push(s);
     }
 
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
-        requestAnimationFrame(animate);
+    /* Kalan — merkez/ekstra, morph yok */
+    for (let i=0; i<restCount; i++) stars.push(new Star('none'));
+
+    shootingStars = [];
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    t++;
+
+    const homeEl = document.getElementById('home');
+    const homeVisible = !homeEl.classList.contains('slide-out-right') &&
+                        !homeEl.classList.contains('slide-out-left') &&
+                        parseFloat(getComputedStyle(homeEl).opacity) > 0.1;
+
+    if (homeVisible) {
+        const inLeft  = mouse.x > 0 && mouse.x < canvas.width/2  && mouse.y > 0 && mouse.y < canvas.height;
+        const inRight = mouse.x >= canvas.width/2 && mouse.x < canvas.width && mouse.y > 0 && mouse.y < canvas.height;
+        leftHover  += ((inLeft  ? 1:0) - leftHover)  * 0.06;
+        rightHover += ((inRight ? 1:0) - rightHover) * 0.06;
+    } else {
+        leftHover  += (0-leftHover)  * 0.10;
+        rightHover += (0-rightHover) * 0.10;
     }
 
-    window.addEventListener('resize', initParticles);
-    initParticles();
-    animate();
-    </script>
+    stars.forEach(s => {
+        const hp = s.side==='left' ? leftHover : s.side==='right' ? rightHover : 0;
+        s.update(t, hp);
+        s.draw();
+    });
+
+    if (--shootTimer<=0) {
+        shootingStars.push(new ShootingStar());
+        if (Math.random()<0.2) setTimeout(()=>shootingStars.push(new ShootingStar()),800);
+        shootTimer=Math.floor(Math.random()*300+200);
+    }
+    shootingStars.forEach(s=>{s.update();s.draw();});
+    shootingStars=shootingStars.filter(s=>!s.isDead);
+
+    requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', init);
+init();
+animate();
+</script>
 </body>
 </html>
