@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -41,14 +40,22 @@
 
         .section-boxes { display: flex; justify-content: center; gap: 40px; margin-top: 80px; }
         .big-box {
-            background: rgba(255,255,255,0.04); backdrop-filter: blur(20px);
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
             padding: 55px 85px; border-radius: 20px; font-size: 28px;
-            border: 1px solid rgba(255,255,255,0.08); color: var(--white);
+            border: 1px solid rgba(255,255,255,0.18); color: var(--white);
             cursor: pointer; transition: 0.35s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35),
+                        inset 0 1px 0 rgba(255,255,255,0.15),
+                        inset 0 -1px 0 rgba(255,255,255,0.05);
         }
         .big-box:hover {
-            background: rgba(255,255,255,0.92); color: #000;
-            box-shadow: 0 0 80px rgba(200,215,255,0.3); transform: translateY(-5px);
+            background: rgba(255,255,255,0.18);
+            border-color: rgba(255,255,255,0.35);
+            box-shadow: 0 12px 48px rgba(148,179,255,0.2),
+                        inset 0 1px 0 rgba(255,255,255,0.25);
+            transform: translateY(-5px);
         }
 
         .back-btn { font-size: 16px; margin: 40px 0 20px 8%; display: inline-block; background: rgba(255,255,255,0.07); padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
@@ -186,11 +193,13 @@ function goHome()      { document.querySelectorAll('.page-section').forEach(s =>
 
 
 /* ════════════════════════════════════════════════════════════════
-   CANVAS SİSTEMİ
+   CANVAS SİSTEMİ  v4
    ─────────────────────────────────────────────────────────────
-   Tek Star sınıfı — homeX/Y (rastgele konum) + targetX/Y (ikon)
-   Hover'da mevcut yıldızlar doğrudan ikon noktalarına lerp eder.
-   Ekstra parçacık üretilmez.
+   • Yıldızlar merkezdEN dışa doğru yavaşça akar (warp/uzay efekti)
+   • Sol/sağ yıldızların bir kısmı hover'da ikon şekline morphlar
+   • Morphlayan yıldızlar kendi renklerini korur (mavi değil beyaz)
+   • Arka planda yeterli yıldız kalır (ikona sadece ~1/3'ü gider)
+   • Rounded rect köşe hatası düzeltildi (doğru parametrik yöntem)
 ═══════════════════════════════════════════════════════════════ */
 const canvas = document.getElementById('bg-canvas');
 const ctx    = canvas.getContext('2d');
@@ -198,209 +207,345 @@ const ctx    = canvas.getContext('2d');
 const mouse = { x: -9999, y: -9999 };
 window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
-/* ═══════════════════════════════════════════════
-   İKON NOKTA ÜRETICILER
-═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════
+   İKON NOKTA ÜRETİCİLER — düzeltilmiş rounded rect
+═══════════════════════════════════════════════════ */
+
+/* Doğru parametrik rounded rect: köşe yayları düzgün */
 function sampleRoundedRect(cx, cy, w, h, r, count) {
-    const pts = [];
-    const segments = [
-        { len: w-2*r, fn: t => [cx-w/2+r+t*(w-2*r),  cy-h/2] },
-        { len: Math.PI/2*r, fn: t => [cx+w/2-r + Math.cos(-Math.PI/2+t*Math.PI/2)*r, cy-h/2+r + Math.sin(-Math.PI/2+t*Math.PI/2)*r - r] },
-        { len: h-2*r, fn: t => [cx+w/2,               cy-h/2+r+t*(h-2*r)] },
-        { len: Math.PI/2*r, fn: t => [cx+w/2-r + Math.cos(t*Math.PI/2)*r, cy+h/2-r + Math.sin(t*Math.PI/2)*r] },
-        { len: w-2*r, fn: t => [cx+w/2-r-t*(w-2*r),  cy+h/2] },
-        { len: Math.PI/2*r, fn: t => [cx-w/2+r + Math.cos(Math.PI/2+t*Math.PI/2)*r, cy+h/2-r + Math.sin(Math.PI/2+t*Math.PI/2)*r] },
-        { len: h-2*r, fn: t => [cx-w/2,               cy+h/2-r-t*(h-2*r)] },
-        { len: Math.PI/2*r, fn: t => [cx-w/2+r + Math.cos(Math.PI+t*Math.PI/2)*r, cy-h/2+r + Math.sin(Math.PI+t*Math.PI/2)*r] },
+    const L = cx-w/2, R = cx+w/2, T = cy-h/2, B = cy+h/2;
+    const arcL = (Math.PI/2) * r;
+    const sw = w - 2*r, sh = h - 2*r;
+
+    const segs = [
+        { len:sw,   fn: t => [L+r+t*sw,  T] },                                           // üst
+        { len:arcL, fn: t => { const a=-Math.PI/2+t*Math.PI/2; return [R-r+Math.cos(a)*r, T+r+Math.sin(a)*r]; } }, // sağ üst
+        { len:sh,   fn: t => [R, T+r+t*sh] },                                            // sağ
+        { len:arcL, fn: t => { const a=t*Math.PI/2;             return [R-r+Math.cos(a)*r, B-r+Math.sin(a)*r]; } }, // sağ alt
+        { len:sw,   fn: t => [R-r-t*sw,  B] },                                           // alt
+        { len:arcL, fn: t => { const a=Math.PI/2+t*Math.PI/2;   return [L+r+Math.cos(a)*r, B-r+Math.sin(a)*r]; } }, // sol alt
+        { len:sh,   fn: t => [L, B-r-t*sh] },                                            // sol
+        { len:arcL, fn: t => { const a=Math.PI+t*Math.PI/2;     return [L+r+Math.cos(a)*r, T+r+Math.sin(a)*r]; } }, // sol üst
     ];
-    const total = segments.reduce((s,g) => s+g.len, 0);
+
+    const total = segs.reduce((s,g)=>s+g.len, 0);
     const step  = total / count;
-    let rem = step / 2;
-    for (const seg of segments) {
-        let pos = 0;
-        while (pos < seg.len) {
-            if (pos >= rem) { pts.push(seg.fn(pos/seg.len)); rem = step; }
-            pos += Math.min(rem, seg.len - pos);
-            rem = Math.max(0, rem - (pos - (pos - rem)));
+    const pts   = [];
+    let carry   = step * 0.5;
+
+    for (const seg of segs) {
+        let pos = carry;
+        while (pos <= seg.len) {
+            pts.push(seg.fn(pos / seg.len));
+            pos += step;
         }
-        rem -= seg.len - (pos - rem < 0 ? 0 : pos - rem);
-        if (rem < 0) rem = 0;
+        carry = pos - seg.len;
     }
     return pts.slice(0, count);
 }
 
 function sampleTriangle(x1,y1, x2,y2, x3,y3, count) {
-    const pts = [];
     const sides = [[x1,y1,x2,y2],[x2,y2,x3,y3],[x3,y3,x1,y1]];
-    const lens  = sides.map(([ax,ay,bx,by]) => Math.hypot(bx-ax,by-ay));
+    const lens  = sides.map(([ax,ay,bx,by])=>Math.hypot(bx-ax,by-ay));
     const total = lens.reduce((a,b)=>a+b,0);
-    sides.forEach(([ax,ay,bx,by],i) => {
-        const n = Math.round(count * lens[i] / total);
-        for (let j=0;j<n;j++) { const t=j/n; pts.push([ax+(bx-ax)*t, ay+(by-ay)*t]); }
+    const pts   = [];
+    sides.forEach(([ax,ay,bx,by],i)=>{
+        const n = Math.round(count*lens[i]/total);
+        for(let j=0;j<n;j++){const t=j/n; pts.push([ax+(bx-ax)*t, ay+(by-ay)*t]);}
     });
     return pts;
 }
 
-function sampleCircle(cx, cy, r, count) {
-    return Array.from({length:count}, (_,i) => {
-        const a = (i/count)*Math.PI*2;
+function sampleCircle(cx,cy,r,count) {
+    return Array.from({length:count},(_,i)=>{
+        const a=(i/count)*Math.PI*2;
         return [cx+Math.cos(a)*r, cy+Math.sin(a)*r];
     });
 }
 
-function sampleMountains(cx, cy, w, h, count) {
-    const base = cy+h*0.35;
-    const path = [
-        [cx-w*0.45, base],
-        [cx-w*0.38, base],
-        [cx-w*0.18, cy-h*0.2],
-        [cx+w*0.02, base],
-        [cx+w*0.2,  cy-h*0.38],
-        [cx+w*0.45, base],
-    ];
-    const lens = path.map((_,i) => i===0?0:Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
-    const total = lens.reduce((a,b)=>a+b,0);
-    const step  = total / count;
-    const pts   = [];
-    let dist    = step/2;
-    for (let i=1;i<path.length;i++) {
-        const [ax,ay]=path[i-1],[bx,by]=path[i];
-        const sLen = Math.hypot(bx-ax,by-ay);
-        let pos=0;
-        while (pos+dist<=sLen) { pos+=dist; const t=pos/sLen; pts.push([ax+(bx-ax)*t,ay+(by-ay)*t]); dist=step; }
+function sampleMountains(cx,cy,w,h,count) {
+    const base=cy+h*0.35;
+    const path=[[cx-w*0.45,base],[cx-w*0.18,cy-h*0.2],[cx+w*0.02,base],[cx+w*0.2,cy-h*0.38],[cx+w*0.45,base]];
+    const lens=path.map((_,i)=>i===0?0:Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+    const total=lens.reduce((a,b)=>a+b,0);
+    const step=total/count; const pts=[]; let dist=step/2;
+    for(let i=1;i<path.length;i++){
+        const[ax,ay]=path[i-1],[bx,by]=path[i];
+        const sLen=Math.hypot(bx-ax,by-ay); let pos=0;
+        while(pos+dist<=sLen){pos+=dist;const t=pos/sLen;pts.push([ax+(bx-ax)*t,ay+(by-ay)*t]);dist=step;}
         dist-=(sLen-pos);
     }
     return pts.slice(0,count);
 }
 
-function buildIconPoints(W, H) {
-    const S = Math.min(W, H);
+function buildIconPoints(W,H) {
 
-    /* Video ikonu — sol yarı merkezi */
-    const vcx=W*0.25, vcy=H*0.5, vW=S*0.28, vH=S*0.20, vR=S*0.035;
-    const tSz=S*0.07;
-    const frame = sampleRoundedRect(vcx,vcy,vW,vH,vR, 280);
-    const tri   = sampleTriangle(
-        vcx-tSz*0.5, vcy-tSz*0.75,
-        vcx-tSz*0.5, vcy+tSz*0.75,
-        vcx+tSz,     vcy,  220);
-    let vPts = [...frame, ...tri];
+    /* ══════════════════════════════════════════════════════
+       SOL — Büyük yuvarlak köşeli ">" şeridi (chevron)
+       Taslak: ekranın sol yarısında, dikey merkezde,
+       ucun sağa baktığı, kolların sola ve ekran dışına
+       uzandığı içi boş ok şekli.
+    ══════════════════════════════════════════════════════ */
+    const tipX  = W * 0.24;          // ucun X konumu
+    const tipY  = H * 0.50;          // ucun Y (ekran ortası)
+    const armH  = H * 0.42;          // kolun dikey uzunluğu
+    const thick = Math.min(W,H)*0.045; // şerit kalınlığı
+    const cr    = Math.min(W,H)*0.045; // köşe yuvarlaklığı
 
-    /* Görsel ikonu — sağ yarı merkezi */
-    const icx=W*0.75, icy=H*0.5, iW=S*0.28, iH=S*0.22, iR=S*0.035;
-    const iFrame = sampleRoundedRect(icx,icy,iW,iH,iR, 200);
-    const mts    = sampleMountains(icx,icy, iW*0.8,iH*0.8, 180);
-    const sun    = sampleCircle(icx+iW*0.3, icy-iH*0.28, S*0.028, 120);
-    let iPts = [...iFrame, ...mts, ...sun];
+    // Dış kontur noktaları (saat yönünde):
+    // Uç → üst kol → sol üst → sol alt → alt kol → uç (iç)
+    const outerTipX = tipX + thick * 0.5;
+    const innerTipX = tipX - thick * 0.5;
 
-    return { vPts, iPts };
-}
+    // Dış şevron path — samplePath ile örneklenecek
+    function sampleChevron(count) {
+        const pts = [];
+        // Dış kenar: üst kol dışı (sol→sağ), uç dışı, alt kol dışı (sağ→sol)
+        // İç kenar: alt kol içi (sol→sağ), iç uç, üst kol içi (sağ→sol)
 
-/* ═══════════════════════════════════════════════
-   STAR — tek sınıf, hem tavan hem morph
-═══════════════════════════════════════════════ */
-class Star {
-    constructor(side) {
-        /* side: 'left' | 'right' | 'none' */
-        this.side = side;
-        this.morphTarget = null;   // [tx, ty] — ikon noktası
-        this.progress    = 0;     // 0=home 1=target
-        this.phase       = Math.random() * Math.PI * 2;
-        this.twinkleSpeed= Math.random() * 0.010 + 0.003;
-        this.twinkleAmp  = Math.random() * 0.35  + 0.10;
-        this.place();
+        // Dış üst kol: (-offscreen, tipY-armH) → (tipX, tipY)
+        // Uç dışı: yuvarlak
+        // Dış alt kol: (tipX, tipY) → (-offscreen, tipY+armH)
+
+        const offX = -W * 0.06;  // ekran dışı başlangıç
+
+        // Üst dış kenar (sol→sağ yukarı eğimli)
+        const topStartX = offX, topStartY = tipY - armH;
+        // İç üst kenar (sol→sağ yukarı eğimli, thick kadar aşağıda)
+        const topInX = offX, topInY = tipY - armH + thick;
+
+        const n4 = Math.floor(count * 0.20); // her kol için
+        const nTip = Math.floor(count * 0.12);
+        const nFlat = Math.floor(count * 0.04);
+
+        // Dış üst kol
+        for(let i=0;i<n4;i++){
+            const t=i/n4;
+            pts.push([topStartX+(tipX-topStartX)*t, topStartY+(tipY-armH*0.15-topStartY)*t]);
+        }
+        // Dış uç yayı (üstten alta döner)
+        for(let i=0;i<=nTip;i++){
+            const t=i/nTip;
+            const a = -Math.PI*0.55 + t*Math.PI*1.1;
+            pts.push([tipX + thick*0.6*Math.cos(a)*0.6, tipY + thick*0.85*Math.sin(a)]);
+        }
+        // Dış alt kol
+        for(let i=0;i<n4;i++){
+            const t=i/n4;
+            pts.push([tipX-(tipX-topStartX)*t, (tipY+armH*0.15)+(topStartY+armH*2-tipY-armH*0.15)*t]);
+        }
+        // Sol alt düz kenar (ekran dışında — birkaç nokta)
+        for(let i=0;i<nFlat;i++){
+            const t=i/nFlat;
+            pts.push([offX, tipY+armH - t*thick]);
+        }
+        // İç alt kol (sağdan sola)
+        for(let i=0;i<n4;i++){
+            const t=i/n4;
+            pts.push([offX+(tipX-thick*0.8-offX)*t, tipY+armH-thick+(-(armH-thick)*t)]);
+        }
+        // İç uç yayı
+        for(let i=0;i<=nTip;i++){
+            const t=i/nTip;
+            const a = Math.PI*0.55 - t*Math.PI*1.1;
+            pts.push([tipX-thick*0.9 + thick*0.3*Math.cos(a)*0.6, tipY + thick*0.7*Math.sin(a)]);
+        }
+        // İç üst kol (soldan sağa geri)
+        for(let i=0;i<n4;i++){
+            const t=i/n4;
+            pts.push([tipX-thick*0.8-(tipX-thick*0.8-offX)*t, tipY-armH+thick+(armH-thick)*t]);
+        }
+        // Sol üst düz kenar
+        for(let i=0;i<nFlat;i++){
+            const t=i/nFlat;
+            pts.push([offX, tipY-armH+thick*t]);
+        }
+        return pts;
     }
 
-    place() {
-        const W = canvas.width, H = canvas.height;
-        if (this.side === 'left')       { this.homeX = Math.random()*(W/2);         this.homeY = Math.random()*H; }
-        else if (this.side === 'right') { this.homeX = W/2+Math.random()*(W/2);     this.homeY = Math.random()*H; }
-        else                            { this.homeX = Math.random()*W;              this.homeY = Math.random()*H; }
+    const vPts = sampleChevron(480);
 
-        this.x = this.homeX; this.y = this.homeY;
+    /* ══════════════════════════════════════════════════════
+       SAĞ — Manzara fotoğrafı ikonu
+       Taslak: sağda dağ silüeti + üst sağda çember (güneş/kafa)
+       Konumlar ekranın sağ yarısında, kısmen dışarıda.
+    ══════════════════════════════════════════════════════ */
+    const S   = Math.min(W,H);
+    const rcx = W * 0.78;  // sağ grup merkezi X
+    const rcy = H * 0.50;
 
-        /* Boyut */
-        const tier = Math.random();
-        if (tier<0.72)      { this.baseR=Math.random()*0.55+0.15; this.baseLum=Math.random()*0.30+0.06; }
-        else if (tier<0.95) { this.baseR=Math.random()*0.75+0.45; this.baseLum=Math.random()*0.35+0.18; }
-        else                { this.baseR=Math.random()*1.1 +0.85; this.baseLum=Math.random()*0.25+0.55; }
+    // Dağlar: büyük iki tepe, geniş
+    const mW = S * 0.38, mH = S * 0.42;
+    const mBase = rcy + mH * 0.28;
 
+    function sampleLandscape(count) {
+        const pts = [];
+        // İki dağ tepesi path
+        const path = [
+            [rcx - mW*0.50, mBase],          // sol dip
+            [rcx - mW*0.10, rcy - mH*0.10],  // sol tepe
+            [rcx + mW*0.10, mBase - mH*0.05],// iki tepe arası vadi
+            [rcx + mW*0.42, rcy - mH*0.38],  // sağ tepe (daha yüksek)
+            [rcx + mW*0.72, mBase],           // sağ dip (ekran dışına uzanır)
+        ];
+        const lens = path.map((_,i)=>i===0?0:Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+        const total = lens.reduce((a,b)=>a+b,0);
+        const step  = total/count;
+        let dist=step/2;
+        for(let i=1;i<path.length;i++){
+            const[ax,ay]=path[i-1],[bx,by]=path[i];
+            const sLen=Math.hypot(bx-ax,by-ay);
+            let pos=0;
+            while(pos+dist<=sLen){pos+=dist;const t=pos/sLen;pts.push([ax+(bx-ax)*t,ay+(by-ay)*t]);dist=step;}
+            dist-=(sLen-pos);
+        }
+        return pts;
+    }
+
+    // Çember (baş/güneş): sağ üstte
+    const circR  = S * 0.090;
+    const circCx = rcx + mW * 0.28;
+    const circCy = rcy - mH * 0.42;
+    const circPts= sampleCircle(circCx, circCy, circR, 180);
+
+    const landPts = sampleLandscape(300);
+
+    const iPts = [...circPts, ...landPts];
+
+    return {vPts, iPts};
+}
+
+/* ═══════════════════════════════════════════════════
+   STAR — warp hareketi + isteğe bağlı morph
+═══════════════════════════════════════════════════ */
+class Star {
+    constructor(side) {
+        this.side       = side;   // 'left'|'right'|'none'
+        this.morphTarget= null;
+        this.progress   = 0;
+        this.phase      = Math.random()*Math.PI*2;
+        this.twinkleSpeed = Math.random()*0.010+0.003;
+        this.twinkleAmp   = Math.random()*0.35+0.10;
         const cr=Math.random();
         this.color = cr<0.76?'255,255,255':cr<0.90?'210,228,255':'255,248,215';
+        this.initWarp();
+    }
+
+    initWarp(fromCenter=false) {
+        const W=canvas.width, H=canvas.height;
+        const cx=W/2, cy=H/2;
+        const maxD=Math.hypot(W,H)*0.65;
+
+        /* Açıyı yıldızın tarafına göre kısıtla */
+        if (this.side === 'left') {
+            // Sol yarı: π/2 … 3π/2 (sol yönler)
+            this.warpAngle = Math.PI*0.5 + Math.random()*Math.PI;
+        } else if (this.side === 'right') {
+            // Sağ yarı: -π/2 … π/2 (sağ yönler)
+            this.warpAngle = -Math.PI*0.5 + Math.random()*Math.PI;
+        } else {
+            // Merkez şerit: tam orta band
+            this.warpAngle = Math.random()*Math.PI*2;
+        }
+
+        this.warpDist  = fromCenter
+            ? Math.random()*40
+            : Math.random()*maxD;
+        this.warpSpeed = Math.random()*0.22+0.04;
+
+        this._updateWarpPos(cx,cy,maxD);
+        this.homeX=this.x; this.homeY=this.y;
+    }
+
+    _updateWarpPos(cx,cy,maxD) {
+        const W=canvas.width, H=canvas.height;
+        const ratio=Math.min(1, this.warpDist/maxD);
+        this.homeX = cx+Math.cos(this.warpAngle)*this.warpDist;
+        this.homeY = cy+Math.sin(this.warpAngle)*this.warpDist;
+        this.baseR  = 0.15+ratio*1.4;
+        this.baseLum= 0.04+ratio*0.58;
     }
 
     update(t, hoverProgress) {
-        /* ── Morph lerp — hızlı ── */
-        const target = (this.morphTarget && hoverProgress > 0) ? hoverProgress : 0;
-        /* 0.12 = hızlı yaklaşma */
-        this.progress += (target - this.progress) * 0.12;
+        const W=canvas.width, H=canvas.height;
+        const cx=W/2, cy=H/2;
+        const maxD=Math.hypot(W,H)*0.65;
 
-        if (this.morphTarget && this.progress > 0.001) {
-            this.x = this.homeX + this.progress * (this.morphTarget[0] - this.homeX);
-            this.y = this.homeY + this.progress * (this.morphTarget[1] - this.homeY);
+        /* ── Warp: merkezdEN dışa ── */
+        this.warpDist += this.warpSpeed;
+        if (this.warpDist > maxD) this.initWarp(true);
+        else this._updateWarpPos(cx,cy,maxD);
+
+        /* ── Morph lerp ── */
+        const tgt = (this.morphTarget && hoverProgress>0) ? hoverProgress : 0;
+        this.progress += (tgt - this.progress) * 0.07;
+
+        if (this.morphTarget && this.progress > 0.002) {
+            this.x = this.homeX + this.progress*(this.morphTarget[0]-this.homeX);
+            this.y = this.homeY + this.progress*(this.morphTarget[1]-this.homeY);
         } else {
-            this.x = this.homeX;
-            this.y = this.homeY;
+            this.x = this.homeX; this.y = this.homeY;
         }
 
-        /* Titreşim (yalnızca home modunda) */
-        const flicker = Math.sin(t * this.twinkleSpeed + this.phase) * this.twinkleAmp;
-        const p = this.progress;
+        /* ── Parlaklık & boyut ── */
+        const flicker=Math.sin(t*this.twinkleSpeed+this.phase)*this.twinkleAmp;
+        const p=this.progress;
 
-        if (p > 0.5) {
-            /* İkon modunda: mavi nokta, sabit parlaklık */
-            this.lum       = 0.85;
-            this.drawColor = '148,179,255';
-            this.r         = this.baseR * 1.1;
-        } else {
-            /* Tavan modu: beyaz yıldız, titreşiyor */
-            this.lum       = Math.max(0.02, this.baseLum + flicker * (1-p));
-            this.drawColor = this.color;
-            this.r         = this.baseR;
+        this.lum = Math.max(0.04, this.baseLum+flicker*(1-p*0.6));
+        this.r   = this.baseR*(1+p*0.3);
 
-            /* Fare yakınlığı — sadece home modunda */
+        /* Fare yakınlığı (sadece home modunda, düşük progress) */
+        if (p < 0.3) {
             const dx=this.x-mouse.x, dy=this.y-mouse.y;
             const dist=Math.sqrt(dx*dx+dy*dy);
             if (dist<180) {
                 const prx=1-dist/180;
-                this.lum = Math.min(1, this.lum+prx*0.75);
-                this.r   = this.baseR*(1+prx*3.8);
+                this.lum=Math.min(1,this.lum+prx*0.75);
+                this.r  =this.baseR*(1+prx*3.5);
             }
         }
     }
 
     draw() {
-        /* Morph sırasında glow yok — sadece sade nokta */
-        if (this.progress > 0.05) {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.r * 0.9, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(${this.drawColor},${Math.min(1, this.lum)})`;
-            ctx.fill();
-            return;
-        }
+        const p = this.progress;
 
-        /* Normal yıldız — hafif hale */
-        const gR = this.r * 9;
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(${this.drawColor||this.color},${Math.min(1,this.lum*1.8)})`; ctx.fill();
-        const g = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,gR);
-        g.addColorStop(0,   `rgba(${this.drawColor||this.color},${(this.lum||0.1)*0.55})`);
-        g.addColorStop(0.4, `rgba(${this.drawColor||this.color},${(this.lum||0.1)*0.12})`);
-        g.addColorStop(1,   `rgba(${this.drawColor||this.color},0)`);
-        ctx.beginPath(); ctx.arc(this.x,this.y,gR,0,Math.PI*2);
-        ctx.fillStyle=g; ctx.fill();
+        /* ── Glow miktarı p arttıkça sıfıra iner, azaldıkça geri gelir ──
+           Bu sayede morph↔home geçişinde ani parlama olmaz.           */
+        const glowFade = Math.max(0, 1 - p * 6);   // p>0.17'de glow=0
+
+        /* Nokta boyutu ve parlaklığı: her iki modda tutarlı */
+        const dotR   = Math.max(0.4, this.r);
+        const dotAlp = Math.min(1, this.lum * (1.2 + p * 0.4));
+
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, dotR, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${dotAlp})`;
+        ctx.fill();
+
+        /* Glow halo — yalnızca home moduna yakınken, smooth fade */
+        if (glowFade > 0.01) {
+            const gR = dotR * 8;
+            const g  = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, gR);
+            g.addColorStop(0,   `rgba(${this.color},${this.lum * 0.5  * glowFade})`);
+            g.addColorStop(0.4, `rgba(${this.color},${this.lum * 0.10 * glowFade})`);
+            g.addColorStop(1,   `rgba(${this.color},0)`);
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, gR, 0, Math.PI * 2);
+            ctx.fillStyle = g;
+            ctx.fill();
+        }
     }
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    KAYAN YILDIZ
-═══════════════════════════════════════════════ */
+═══════════════════════════════════════════════════ */
 class ShootingStar {
     constructor() {
-        const edge=Math.floor(Math.random()*4);
-        if(edge===0){this.x=Math.random()*canvas.width;this.y=-10;}
-        else if(edge===1){this.x=canvas.width+10;this.y=Math.random()*canvas.height;}
-        else if(edge===2){this.x=Math.random()*canvas.width;this.y=canvas.height+10;}
+        const e=Math.floor(Math.random()*4);
+        if(e===0){this.x=Math.random()*canvas.width;this.y=-10;}
+        else if(e===1){this.x=canvas.width+10;this.y=Math.random()*canvas.height;}
+        else if(e===2){this.x=Math.random()*canvas.width;this.y=canvas.height+10;}
         else{this.x=-10;this.y=Math.random()*canvas.height;}
         const a=Math.atan2(canvas.height/2-this.y,canvas.width/2-this.x)+(Math.random()-0.5)*0.8;
         this.speed=Math.random()*6+3;
@@ -434,8 +579,7 @@ class ShootingStar {
 /* ════════════════════════════
    ANA DÖNGÜ
 ════════════════════════════ */
-let stars         = [];
-let shootingStars = [];
+let stars=[], shootingStars=[];
 let t=0, shootTimer=240;
 let leftHover=0, rightHover=0;
 
@@ -443,68 +587,68 @@ function init() {
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    /* İkon noktaları */
-    const { vPts, iPts } = buildIconPoints(canvas.width, canvas.height);
+    const {vPts,iPts} = buildIconPoints(canvas.width, canvas.height);
 
-    /* Yoğunluk: sol/sağ morph için yeterli yıldız olsun */
-    const totalStars = Math.max(
-        Math.floor((canvas.width * canvas.height) / 3200),
-        vPts.length + iPts.length + 100
-    );
-    const leftCount  = Math.max(vPts.length, Math.floor(totalStars * 0.35));
-    const rightCount = Math.max(iPts.length, Math.floor(totalStars * 0.35));
-    const restCount  = totalStars - leftCount - rightCount;
+    /*  Toplam yıldız yoğunluğu.
+        Her iki yarı için: ikonPoints kadar morph + 2× kadar bg yıldızı
+        → morph sırasında arkaplan %65-70 dolu kalır              */
+    const morphPerSide = Math.max(vPts.length, iPts.length);  // ~380
+    const bgPerSide    = Math.round(morphPerSide * 2.2);       // ~836
+    const centerCount  = Math.round(morphPerSide * 0.8);
 
-    stars = [];
+    stars=[];
 
-    /* Sol yıldızlar — video ikonuna morph eder */
-    for (let i=0; i<leftCount; i++) {
-        const s = new Star('left');
-        if (i < vPts.length) s.morphTarget = vPts[i];
+    /* Sol: morph yıldızları */
+    for(let i=0;i<morphPerSide;i++){
+        const s=new Star('left');
+        if(i<vPts.length) s.morphTarget=vPts[i];
         stars.push(s);
     }
+    /* Sol: arka plan yıldızları (morph yok) */
+    for(let i=0;i<bgPerSide;i++) stars.push(new Star('left'));
 
-    /* Sağ yıldızlar — görsel ikonuna morph eder */
-    for (let i=0; i<rightCount; i++) {
-        const s = new Star('right');
-        if (i < iPts.length) s.morphTarget = iPts[i];
+    /* Sağ: morph yıldızları */
+    for(let i=0;i<morphPerSide;i++){
+        const s=new Star('right');
+        if(i<iPts.length) s.morphTarget=iPts[i];
         stars.push(s);
     }
+    /* Sağ: arka plan yıldızları */
+    for(let i=0;i<bgPerSide;i++) stars.push(new Star('right'));
 
-    /* Kalan — merkez/ekstra, morph yok */
-    for (let i=0; i<restCount; i++) stars.push(new Star('none'));
+    /* Merkez şerit */
+    for(let i=0;i<centerCount;i++) stars.push(new Star('none'));
 
-    shootingStars = [];
+    shootingStars=[];
 }
 
 function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     t++;
 
-    const homeEl = document.getElementById('home');
-    const homeVisible = !homeEl.classList.contains('slide-out-right') &&
-                        !homeEl.classList.contains('slide-out-left') &&
-                        parseFloat(getComputedStyle(homeEl).opacity) > 0.1;
+    const homeEl=document.getElementById('home');
+    const homeVisible=!homeEl.classList.contains('slide-out-right')&&
+                      !homeEl.classList.contains('slide-out-left')&&
+                      parseFloat(getComputedStyle(homeEl).opacity)>0.1;
 
-    if (homeVisible) {
-        const inLeft  = mouse.x > 0 && mouse.x < canvas.width/2  && mouse.y > 0 && mouse.y < canvas.height;
-        const inRight = mouse.x >= canvas.width/2 && mouse.x < canvas.width && mouse.y > 0 && mouse.y < canvas.height;
-        leftHover  += ((inLeft  ? 1:0) - leftHover)  * 0.06;
-        rightHover += ((inRight ? 1:0) - rightHover) * 0.06;
+    if(homeVisible){
+        const inL=mouse.x>0&&mouse.x<canvas.width/2&&mouse.y>0&&mouse.y<canvas.height;
+        const inR=mouse.x>=canvas.width/2&&mouse.x<canvas.width&&mouse.y>0&&mouse.y<canvas.height;
+        leftHover +=((inL?1:0)-leftHover)*0.06;
+        rightHover+=((inR?1:0)-rightHover)*0.06;
     } else {
-        leftHover  += (0-leftHover)  * 0.10;
-        rightHover += (0-rightHover) * 0.10;
+        leftHover +=(0-leftHover)*0.10;
+        rightHover+=(0-rightHover)*0.10;
     }
 
-    stars.forEach(s => {
-        const hp = s.side==='left' ? leftHover : s.side==='right' ? rightHover : 0;
-        s.update(t, hp);
-        s.draw();
+    stars.forEach(s=>{
+        const hp=s.side==='left'?leftHover:s.side==='right'?rightHover:0;
+        s.update(t,hp); s.draw();
     });
 
-    if (--shootTimer<=0) {
+    if(--shootTimer<=0){
         shootingStars.push(new ShootingStar());
-        if (Math.random()<0.2) setTimeout(()=>shootingStars.push(new ShootingStar()),800);
+        if(Math.random()<0.2)setTimeout(()=>shootingStars.push(new ShootingStar()),800);
         shootTimer=Math.floor(Math.random()*300+200);
     }
     shootingStars.forEach(s=>{s.update();s.draw();});
@@ -513,7 +657,7 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-window.addEventListener('resize', init);
+window.addEventListener('resize',init);
 init();
 animate();
 </script>
