@@ -16,11 +16,13 @@
             overflow-x: hidden; background-color: transparent;
             font-family: 'SF Pro Display', sans-serif; color: #F4F6FA;
         }
+        /* DEAKTIF: yıldız canvas stili
         #bg-canvas {
             position: fixed; inset: 0; z-index: -1;
             background: transparent;
             pointer-events: none;
         }
+        */
         .page-section {
             position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh;
             padding-bottom: 100px; box-sizing: border-box;
@@ -231,7 +233,9 @@
         <source src="videos/background1.mp4" type="video/mp4">
     </video>
 </div>
+<!-- DEAKTIF: yıldız canvas
 <canvas id="bg-canvas"></canvas>
+-->
 
 <div id="content-modal" onclick="closeModal()">
     <div class="modal-wrapper" onclick="event.stopPropagation()">
@@ -329,6 +333,7 @@ function goHome()      { document.querySelectorAll('.page-section').forEach(s =>
 const canvas = document.getElementById('bg-canvas');
 const ctx    = canvas.getContext('2d');
 
+/* DEAKTIF: yıldız sistemi
 const mouse = { x: -9999, y: -9999 };
 window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
@@ -607,6 +612,7 @@ function animate() {
 window.addEventListener('resize', init);
 init();
 animate();
+*/
 </script>
 </body>
 </html>
