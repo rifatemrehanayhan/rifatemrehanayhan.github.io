@@ -54,27 +54,29 @@
             z-index: 1;
         }
 
-        /* ── Alt sayfalarda arka plan blur + karartma katmanı ── */
-        #videos::before,
-        #images::before {
-            content: '';
+        /* ── Blur overlay katmanı — soft geçiş için ayrı div ── */
+        #blur-overlay {
             position: fixed;
             inset: 0;
-            z-index: -1;
+            z-index: 2;
             background: rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(18px) saturate(120%);
             -webkit-backdrop-filter: blur(18px) saturate(120%);
             pointer-events: none;
-            transition: opacity 0.6s ease;
+            opacity: 0;
+            transition: opacity 0.75s ease;
+        }
+        #blur-overlay.visible {
+            opacity: 1;
         }
 
         /* Aktif sayfa → tıklanabilir */
         .page-section.active,
         #home {
             opacity: 1;
-            pointer-events: all;    /* ← kritik */
+            pointer-events: all;
             transform: translateX(0) !important;
-            z-index: 20;
+            z-index: 10;
         }
 
         #home {
@@ -284,6 +286,9 @@
     </video>
 </div>
 
+<!-- Blur Overlay — soft fade geçişi için -->
+<div id="blur-overlay"></div>
+
 <!-- Modal -->
 <div id="content-modal" onclick="closeModal()">
     <div class="modal-wrapper" onclick="event.stopPropagation()">
@@ -380,21 +385,26 @@
     }
 
     /* ── Sayfa geçişleri ── */
+    const blurOverlay = document.getElementById('blur-overlay');
+
     function goToVideos() {
-        const home   = document.getElementById('home');
-        const videos = document.getElementById('videos');
-        home.classList.add('slide-out-right');
-        videos.classList.add('active');
+        blurOverlay.classList.add('visible');
+        setTimeout(() => {
+            document.getElementById('home').classList.add('slide-out-right');
+            document.getElementById('videos').classList.add('active');
+        }, 80);
     }
 
     function goToImages() {
-        const home   = document.getElementById('home');
-        const images = document.getElementById('images');
-        home.classList.add('slide-out-left');
-        images.classList.add('active');
+        blurOverlay.classList.add('visible');
+        setTimeout(() => {
+            document.getElementById('home').classList.add('slide-out-left');
+            document.getElementById('images').classList.add('active');
+        }, 80);
     }
 
     function goHome() {
+        blurOverlay.classList.remove('visible');
         document.querySelectorAll('.page-section').forEach(s => {
             s.classList.remove('active', 'slide-out-right', 'slide-out-left');
         });
