@@ -1,281 +1,341 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rıfat Emrehan Ayhan – Portfolio</title>
-    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/sf-pro-display">
-    <style>
-        :root {
-            --white: #ffffff;
-            --accent-blue: #94b3ff;
-            --glow-color: rgba(148, 179, 255, 0.9);
-        }
-        html, body {
-            margin: 0; padding: 0; width: 100vw; min-height: 100vh;
-            overflow-x: hidden; background-color: transparent;
-            font-family: 'SF Pro Display', sans-serif; color: #F4F6FA;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rıfat Emrehan Ayhan — Portfolyo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --white: #ffffff;
+        --text: #f2f5fa;
+        --muted: #a3aec4;
+        --accent-blue: #94b3ff;
+        --c1: #6366f1;   /* indigo */
+        --c2: #22d3ee;   /* cyan */
+        --c3: #a855f7;   /* violet */
+        --glass: rgba(255,255,255,0.055);
+        --glass-strong: rgba(255,255,255,0.09);
+        --border: rgba(255,255,255,0.14);
+        --border-strong: rgba(255,255,255,0.30);
+        --radius: 20px;
+        --shadow: 0 28px 70px rgba(0,0,0,0.60);
+    }
 
-        /* ── Video arka plan ── */
-        #video-bg {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            overflow: hidden;
-            background: #000;
-            pointer-events: none;   /* ← kritik: tıklamaları engellemesin */
-        }
-        #video-bg iframe {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100vw;
-            height: 56.25vw;
-            min-height: 100vh;
-            min-width: 177.78vh;
-            border: none;
-            pointer-events: none;   /* ← kritik */
-            opacity: 0.75;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* ── Sayfa geçiş sistemi ── */
-        .page-section {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            min-height: 100vh;
-            padding-bottom: 100px;
-            box-sizing: border-box;
-            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
-                        opacity 0.6s ease;
-            opacity: 0;
-            pointer-events: none;   /* varsayılan: dokunulmaz */
-            z-index: 1;
-        }
+    html, body {
+        margin: 0; padding: 0; width: 100vw; min-height: 100vh;
+        overflow-x: hidden;
+        background-color: #06070c;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+    }
 
-        /* ── Blur overlay katmanı — soft geçiş için ayrı div ── */
-        #blur-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 2;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(18px) saturate(120%);
-            -webkit-backdrop-filter: blur(18px) saturate(120%);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.75s ease;
-        }
-        #blur-overlay.visible {
-            opacity: 1;
-        }
+    /* ── Derinlik katmanları (video arkaplanın üstüne) ── */
+    body::before {
+        content: '';
+        position: fixed; inset: 0; z-index: -1; pointer-events: none;
+        background:
+            radial-gradient(900px 520px at 80% -10%, rgba(99,102,241,0.22), transparent 60%),
+            radial-gradient(800px 520px at 0% 30%, rgba(34,211,238,0.14), transparent 55%),
+            radial-gradient(900px 600px at 100% 100%, rgba(168,85,247,0.14), transparent 60%),
+            linear-gradient(180deg, rgba(4,5,9,0.55) 0%, rgba(4,5,9,0.72) 100%);
+    }
 
-        /* Aktif sayfa → tıklanabilir */
-        .page-section.active,
-        #home {
-            opacity: 1;
-            pointer-events: all;
-            transform: translateX(0) !important;
-            z-index: 10;
-        }
+    /* ── Vimeo arkaplan ── */
+    #video-bg {
+        position: fixed; inset: 0; z-index: -2; overflow: hidden;
+        background: #000; pointer-events: none;
+    }
+    #video-bg iframe {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.78vh;
+        border: none; pointer-events: none; opacity: 0.5;
+        filter: saturate(110%) brightness(0.9);
+    }
 
-        #home {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #home.slide-out-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
-        #home.slide-out-left  { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+    /* ── Sayfa geçiş sistemi ── */
+    .page-section {
+        position: absolute; top: 0; left: 0; width: 100%;
+        min-height: 100vh; padding-bottom: 90px;
+        box-sizing: border-box;
+        transition: transform 0.85s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.6s ease;
+        opacity: 0; pointer-events: none; z-index: 1;
+    }
+    #blur-overlay {
+        position: fixed; inset: 0; z-index: 2;
+        background: rgba(0,0,0,0.40);
+        backdrop-filter: blur(20px) saturate(130%);
+        -webkit-backdrop-filter: blur(20px) saturate(130%);
+        pointer-events: none; opacity: 0;
+        transition: opacity 0.75s ease;
+    }
+    #blur-overlay.visible { opacity: 1; }
 
-        #videos { transform: translateX(-100%); }
-        #images { transform: translateX(100%); }
+    .page-section.active, #home {
+        opacity: 1; pointer-events: all;
+        transform: translateX(0) !important; z-index: 10;
+    }
+    #home { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+    #home.slide-out-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
+    #home.slide-out-left  { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+    #videos { transform: translateX(-100%); }
+    #images { transform: translateX(100%); }
 
-        /* ── Hero ── */
-        .hero {
-            text-align: center;
-            padding-top: 100px;
-            pointer-events: none;   /* yazılar tıklamayı yutmasın */
-        }
-        .hero h1 { font-size: 48px; font-weight: 600; margin: 0; color: var(--white); letter-spacing: 2px; }
-        .hero h2 { font-size: 22px; font-weight: 300; opacity: 0.7; margin-top: 12px; letter-spacing: 1px; }
+    /* ═══════════════ HERO ═══════════════ */
+    .hero { text-align: center; padding: 0 24px; pointer-events: none; }
+    .hero-badge {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 8px 18px; margin-bottom: 26px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--glass);
+        backdrop-filter: blur(14px);
+        color: var(--muted); font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .hero-badge .dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--c2), var(--c1));
+        box-shadow: 0 0 14px var(--c2);
+        animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
 
-        .section-boxes {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 80px;
-            pointer-events: all;    /* ← buton sarmalayıcısı tıklanabilir */
-            position: relative;
-            z-index: 30;            /* ← video arka planın üzerinde kesin */
-        }
+    .hero h1 {
+        font-family: 'Sora', sans-serif;
+        font-size: clamp(2.6rem, 6vw, 4.6rem);
+        font-weight: 800; letter-spacing: -1px; line-height: 1.08; margin: 0;
+        background: linear-gradient(120deg, #ffffff 0%, #dfe7ff 45%, var(--c2) 100%);
+        -webkit-background-clip: text; background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 60px rgba(120,130,255,0.35);
+    }
+    .hero h1 em {
+        font-style: normal;
+        background: linear-gradient(120deg, var(--c2), var(--c1), var(--c3));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero h2 {
+        font-size: clamp(1rem, 2.2vw, 1.35rem); font-weight: 300;
+        opacity: 0.85; margin-top: 18px; letter-spacing: 4px; text-transform: uppercase; color: var(--muted);
+    }
+    .hero-divider {
+        width: 120px; height: 3px; margin: 34px auto 0;
+        border-radius: 99px; background: linear-gradient(90deg, transparent, var(--c1), var(--c2), transparent);
+    }
 
-        /* ══════════════════════════════════════════
-           LIQUID GLASS — buton sistemi
-        ══════════════════════════════════════════ */
-        .lg {
-            position: relative;
-            isolation: isolate;
-            overflow: hidden;
-            cursor: pointer;
-            color: rgba(255,255,255,0.95);
-            background: rgba(255,255,255,0.01);
-            backdrop-filter: blur(40px) saturate(200%) brightness(1.15);
-            -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.15);
-            border: 1px solid transparent;
-            background-clip: padding-box;
-            box-shadow:
-                0 12px 40px rgba(0,0,0,0.45),
-                0  4px 12px rgba(0,0,0,0.30),
-                inset 0  1.5px 0 rgba(255,255,255,0.28),
-                inset 1px 0    rgba(255,255,255,0.25),
-                inset 0 -1px 0 rgba(0,0,0,0.35),
-                inset -1px 0   rgba(0,0,0,0.15);
-            transition: transform 0.30s cubic-bezier(0.34,1.56,0.64,1),
-                        box-shadow 0.30s ease,
-                        background 0.30s ease;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .lg::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: linear-gradient(
-                130deg,
-                rgba(255,255,255,0.08) 0%,
-                rgba(255,255,255,0.02) 30%,
-                rgba(255,255,255,0.00) 60%,
-                rgba(0,0,0,0.02) 100%
-            );
-            pointer-events: none;
-        }
-        .lg::after {
-            content: '';
-            position: absolute;
-            inset: 3px;
-            border: 1px solid rgba(255,255,255,0.07);
-            background: transparent;
-            pointer-events: none;
-        }
+    /* ═══════════════ ANA SAYFA BUTONLARI — Liquid Glass ═══════════════ */
+    .section-boxes {
+        display: flex; justify-content: center; gap: 42px; margin-top: 70px;
+        pointer-events: all; position: relative; z-index: 30;
+        flex-wrap: wrap; padding: 0 20px;
+    }
+    .lg {
+        position: relative; isolation: isolate; overflow: hidden; cursor: pointer;
+        color: rgba(255,255,255,0.95);
+        background: rgba(255,255,255,0.01);
+        backdrop-filter: blur(42px) saturate(200%) brightness(1.15);
+        -webkit-backdrop-filter: blur(42px) saturate(200%) brightness(1.15);
+        border: 1px solid var(--border);
+        background-clip: padding-box;
+        box-shadow:
+            0 12px 40px rgba(0,0,0,0.45),
+            0 4px 12px rgba(0,0,0,0.30),
+            inset 0 1.5px 0 rgba(255,255,255,0.28),
+            inset 1px 0 rgba(255,255,255,0.22),
+            inset 0 -1px 0 rgba(0,0,0,0.35),
+            inset -1px 0 rgba(0,0,0,0.15);
+        transition: transform 0.30s cubic-bezier(0.34,1.56,0.64,1),
+                    box-shadow 0.30s ease, background 0.30s ease, border-color 0.30s ease;
+        user-select: none; -webkit-user-select: none;
+    }
+    .lg::before {
+        content: ''; position: absolute; inset: 0; border-radius: inherit;
+        background: linear-gradient(130deg,
+            rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 30%,
+            rgba(255,255,255,0) 60%, rgba(0,0,0,0.02) 100%);
+        pointer-events: none;
+    }
+    .lg::after {
+        content: ''; position: absolute; inset: 3px;
+        border: 1px solid rgba(255,255,255,0.07); background: transparent; pointer-events: none;
+    }
+    .big-box {
+        display: flex; align-items: center; gap: 18px;
+        padding: 46px 60px; border-radius: 34px;
+        font-family: 'Sora', sans-serif;
+        font-size: clamp(1.15rem, 2.5vw, 1.6rem); font-weight: 600; letter-spacing: 0.3px;
+    }
+    .big-box .arrow {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 42px; height: 42px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--c1), var(--c2));
+        color: #fff; font-size: 20px; flex-shrink: 0;
+        box-shadow: 0 0 24px rgba(99,102,241,0.5);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .big-box:hover { transform: translateY(-8px) scale(1.03); border-color: var(--border-strong); }
+    .big-box:hover .arrow { transform: translateX(4px); box-shadow: 0 0 36px rgba(34,211,238,0.6); }
+    .big-box:nth-child(2) .arrow { background: linear-gradient(135deg, var(--c3), var(--c1)); }
 
-        /* Ana sayfa büyük butonları */
-        .big-box {
-            padding: 55px 85px;
-            border-radius: 32px;
-            font-size: 28px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-        .big-box:hover {
-            transform: translateY(-7px) scale(1.025);
-            background: rgba(255,255,255,0.03);
-            box-shadow:
-                0 24px 64px rgba(0,0,0,0.50),
-                0  8px 20px rgba(0,0,0,0.30),
-                inset 0  1.5px 0 rgba(255,255,255,0.32),
-                inset 1px 0    rgba(255,255,255,0.35),
-                inset 0 -1px 0 rgba(0,0,0,0.40),
-                inset -1px 0   rgba(0,0,0,0.18),
-                0 0 50px rgba(200,220,255,0.08);
-        }
+    /* ═══════════════ GERİ BUTONU ═══════════════ */
+    .back-btn {
+        display: inline-flex; align-items: center; gap: 10px;
+        font-size: 15px; font-weight: 500; margin: 44px 0 18px 8%;
+        padding: 13px 30px; border-radius: 999px; color: #eef2fd;
+    }
+    .back-btn svg { width: 15px; height: 15px; transition: transform 0.3s; }
+    .back-btn:hover { transform: translateY(-2px); border-color: var(--border-strong); color: #fff; }
+    .back-btn:hover svg { transform: translateX(-4px); }
 
-        /* Geri dön butonu */
-        .back-btn {
-            font-size: 16px;
-            font-weight: 500;
-            margin: 40px 0 20px 8%;
-            display: inline-block;
-            padding: 12px 28px;
-            border-radius: 50px;
-        }
-        .back-btn:hover {
-            transform: translateY(-2px) scale(1.04);
-            background: rgba(255,255,255,0.03);
-            box-shadow:
-                0 12px 32px rgba(0,0,0,0.45),
-                0  4px 10px rgba(0,0,0,0.25),
-                inset 0  1.5px 0 rgba(255,255,255,0.35),
-                inset 1px 0    rgba(255,255,255,0.40),
-                inset 0 -1px 0 rgba(0,0,0,0.45),
-                inset -1px 0   rgba(0,0,0,0.20);
-            color: #fff;
-        }
+    /* ═══════════════ BÖLÜM BAŞLIKLARI ═══════════════ */
+    .section-head { padding: 0 8%; margin-bottom: 38px; }
+    .section-eyebrow {
+        display: inline-flex; align-items: center; gap: 10px;
+        font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+        color: var(--c2); margin-bottom: 14px;
+    }
+    .section-eyebrow::after {
+        content: ''; width: 44px; height: 1.5px;
+        background: linear-gradient(90deg, var(--c2), transparent); border-radius: 99px;
+    }
+    h1.section-title {
+        font-family: 'Sora', sans-serif;
+        font-size: clamp(1.9rem, 4vw, 2.9rem); font-weight: 700; letter-spacing: -0.8px; margin: 0;
+        background: linear-gradient(120deg, #fff, #c7d4ff 70%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .section-sub { color: var(--muted); margin-top: 10px; font-weight: 300; font-size: 1rem; }
 
-        /* ── Grid & içerik ── */
-        h1.section-title { padding-left: 8%; margin-bottom: 30px; }
+    /* ═══════════════ VİDEO & GÖRSEL GRID ═══════════════ */
+    .grid-layout {
+        display: grid; gap: 24px;
+        max-width: 1400px; margin: 0 auto; padding: 0 26px; box-sizing: border-box;
+    }
+    .video-grid, .image-grid { grid-template-columns: repeat(5, 1fr); }
 
-        .grid-layout { display: grid; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
-        .video-grid, .image-grid { grid-template-columns: repeat(5, 1fr); }
+    .item-wrapper {
+        position: relative; width: 100%; height: 0;
+        border-radius: var(--radius); overflow: hidden; cursor: pointer;
+        background: #0d0d12;
+        border: 1px solid rgba(255,255,255,0.09);
+        transition: transform 0.35s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+    .video-item { padding-bottom: 125%; }
+    .image-item { padding-bottom: 56.25%; }
 
-        .item-wrapper {
-            position: relative; width: 100%; height: 0;
-            border-radius: 12px; overflow: hidden; cursor: pointer;
-            background: #0d0d12; border: 1px solid rgba(255,255,255,0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        .video-item { padding-bottom: 125%; }
-        .image-item { padding-bottom: 56.25%; }
-        .main-thumbnail {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; transition: transform 0.5s ease;
-        }
-        .item-wrapper:hover {
-            transform: scale(1.04);
-            border-color: rgba(255,255,255,0.45);
-            box-shadow: 0 0 40px rgba(200,215,255,0.12);
-            z-index: 5;
-        }
-        .item-wrapper:hover .main-thumbnail { transform: scale(1.1); }
+    .item-wrapper::after {
+        content: ''; position: absolute; inset: 0; border-radius: inherit;
+        background: linear-gradient(180deg, rgba(255,255,255,0.0) 55%, rgba(0,0,0,0.55) 100%);
+        pointer-events: none; opacity: 0; transition: opacity 0.35s;
+    }
+    .item-wrapper:hover::after { opacity: 1; }
 
-        .screenshot-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
-            max-width: 1400px; margin: 0 auto; padding-bottom: 50px;
-        }
-        .screenshot-item {
-            position: relative; width: 100%; padding-bottom: 63.1%;
-            border-radius: 12px; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: 0.3s; cursor: pointer;
-        }
-        .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .screenshot-item:hover {
-            border-color: rgba(255,255,255,0.35);
-            box-shadow: 0 0 40px rgba(200,215,255,0.1);
-            transform: scale(1.02);
-        }
+    .main-thumbnail {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover; transition: transform 0.55s ease, filter 0.4s ease;
+    }
+    .item-wrapper:hover {
+        transform: translateY(-8px) scale(1.02);
+        border-color: var(--border-strong);
+        box-shadow: 0 24px 50px rgba(0,0,0,0.6), 0 0 34px rgba(130,140,255,0.16);
+        z-index: 5;
+    }
+    .item-wrapper:hover .main-thumbnail { transform: scale(1.08); filter: brightness(0.75); }
 
-        /* ── Modal ── */
-        #content-modal {
-            display: none; position: fixed; inset: 0;
-            background-color: rgba(0,0,0,0.85);
-            z-index: 10000; align-items: center; justify-content: center;
-            backdrop-filter: blur(30px);
-        }
-        .modal-wrapper { position: relative; display: inline-block; max-width: 90vw; max-height: 85vh; line-height: 0; }
-        #modal-content-container { position: relative; display: block; }
-        #modal-content-container img,
-        #modal-content-container iframe {
-            max-width: 90vw; max-height: 85vh; border-radius: 8px; display: block;
-            box-shadow: 0 0 60px rgba(0,0,0,0.9);
-            border: 1px solid rgba(255,255,255,0.07);
-        }
-        .close-btn {
-            position: absolute; top: -18px; right: -18px;
-            width: 36px; height: 36px;
-            background: var(--white); color: #000; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10010;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: 0.2s;
-        }
-        .close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 3; pointer-events: none; }
-        .close-btn:hover { transform: scale(1.15); background: var(--accent-blue); }
+    /* ── Oynat rozeti ── */
+    .play-chip {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.7);
+        width: 62px; height: 62px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,0.16);
+        backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+        border: 1.5px solid rgba(255,255,255,0.45);
+        opacity: 0; transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        z-index: 3; box-shadow: 0 12px 34px rgba(0,0,0,0.45);
+    }
+    .play-chip svg { width: 22px; height: 22px; fill: #fff; margin-left: 3px; }
+    .item-wrapper:hover .play-chip { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    .item-wrapper:hover .play-chip:hover { background: linear-gradient(135deg, var(--c1), var(--c2)); transform: translate(-50%,-50%) scale(1.08); }
 
-        @media (max-width: 1024px) {
-            .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); }
-            .screenshot-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    /* ── Ekran görüntüleri ── */
+    .screenshot-block { max-width: 1400px; margin: 70px auto 0; padding: 0 26px; }
+    .screenshot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .screenshot-item {
+        position: relative; width: 100%; padding-bottom: 63.1%;
+        border-radius: var(--radius); overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.10); cursor: pointer;
+        background: #0d0d12;
+        transition: transform 0.35s cubic-bezier(0.2,0.8,0.2,1), border-color 0.35s, box-shadow 0.35s;
+    }
+    .screenshot-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .screenshot-item .cap {
+        position: absolute; left: 0; right: 0; bottom: 0; padding: 34px 22px 16px;
+        background: linear-gradient(180deg, transparent, rgba(0,0,0,0.82));
+        font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.4px;
+        opacity: 0; transform: translateY(8px); transition: 0.35s; z-index: 2;
+    }
+    .screenshot-item:hover { border-color: var(--border-strong); box-shadow: 0 20px 45px rgba(0,0,0,0.55); transform: translateY(-5px); }
+    .screenshot-item:hover img { transform: scale(1.05); }
+    .screenshot-item:hover .cap { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════ MODAL ═══════════════ */
+    #content-modal {
+        display: none; position: fixed; inset: 0;
+        background-color: rgba(4,5,9,0.88);
+        z-index: 10000; align-items: center; justify-content: center;
+        backdrop-filter: blur(34px); -webkit-backdrop-filter: blur(34px);
+    }
+    .modal-wrapper { position: relative; display: inline-block; max-width: 92vw; max-height: 88vh; line-height: 0; }
+    #modal-content-container { position: relative; display: block; }
+    #modal-content-container img,
+    #modal-content-container iframe {
+        max-width: 92vw; max-height: 88vh; border-radius: 14px; display: block;
+        box-shadow: 0 0 90px rgba(0,0,0,0.95);
+        border: 1px solid rgba(255,255,255,0.10);
+    }
+    .close-btn {
+        position: absolute; top: -20px; right: -20px;
+        width: 42px; height: 42px;
+        background: linear-gradient(135deg, var(--c1), var(--c3));
+        color: #fff; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; z-index: 10010;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.6); transition: 0.25s;
+    }
+    .close-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 3; pointer-events: none; }
+    .close-btn:hover { transform: scale(1.15) rotate(90deg); box-shadow: 0 0 28px rgba(168,85,247,0.6); }
+
+    /* ── Alt bilgi ── */
+    .site-footer {
+        max-width: 1400px; margin: 90px auto 0; padding: 30px 26px 0;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+        color: var(--muted); font-size: 13.5px; letter-spacing: 0.3px;
+    }
+    .site-footer b { color: #eef2fd; font-weight: 600; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1300px) {
+        .video-grid, .image-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 1024px) {
+        .video-grid, .image-grid { grid-template-columns: repeat(3, 1fr); }
+        .screenshot-grid { grid-template-columns: 1fr; }
+        .big-box { padding: 34px 38px; }
+    }
+    @media (max-width: 640px) {
+        .video-grid, .image-grid { grid-template-columns: repeat(2, 1fr); }
+        .section-boxes { flex-direction: column; align-items: center; }
+        .back-btn { margin-left: 5%; }
+        .section-head { padding: 0 5%; }
+    }
+</style>
 </head>
 <body>
 
@@ -283,9 +343,6 @@
 <div id="video-bg"></div>
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
-    /* ── Rastgele arkaplan videosu seçimi (Vimeo) ──
-       Sayfa her açıldığında/refresh edildiğinde 5 videodan biri rastgele seçilip
-       Vimeo'nun "background" modunda (autoplay + loop + muted, kontrolsüz) oynatılır */
     (function() {
         const backgroundVideos = [
             { id: '1203821261', title: 'background_1' },
@@ -295,19 +352,17 @@
             { id: '1203821488', title: 'background_5' }
         ];
         const chosen = backgroundVideos[Math.floor(Math.random() * backgroundVideos.length)];
-
         const iframe = document.createElement('iframe');
         iframe.src = `https://player.vimeo.com/video/${chosen.id}?background=1&autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`;
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share');
         iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
         iframe.setAttribute('title', chosen.title);
-
         document.getElementById('video-bg').appendChild(iframe);
     })();
 </script>
 
-<!-- Blur Overlay — soft fade geçişi için -->
+<!-- Blur Overlay -->
 <div id="blur-overlay"></div>
 
 <!-- Modal -->
@@ -323,82 +378,163 @@
     </div>
 </div>
 
-<!-- Ana Sayfa -->
+<!-- ═════════ ANA SAYFA ═════════ -->
 <div id="home" class="page-section">
     <div class="hero">
-        <h1>Rıfat Emrehan Ayhan</h1>
-        <h2>Video Editörü • Kurgu & Montaj • İçerik Üreticisi</h2>
+        <div class="hero-badge"><span class="dot"></span> Portfolyo</div>
+        <h1>Rıfat Emrehan <em>Ayhan</em></h1>
+        <h2>Video Editörü • Kurgu &amp; Montaj • İçerik Üreticisi</h2>
+        <div class="hero-divider"></div>
     </div>
     <div class="section-boxes">
-        <div class="big-box lg" onclick="goToVideos()">Video Çalışmalarım</div>
-        <div class="big-box lg" onclick="goToImages()">Görsel Çalışmalarım</div>
-    </div>
-</div>
-
-<!-- Video Sayfası -->
-<div id="videos" class="page-section">
-    <div class="back-btn lg" onclick="goHome()">← Ana Sayfa</div>
-    <h1 class="section-title">Video Çalışmalarım</h1>
-    <div class="grid-layout video-grid">
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689325','16:9')"><img src="images/kuma-evetmihayirmi.jpg"    class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689168','9:16')"><img src="images/hilaltufek.jpg"           class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1159228579','9:16')"><img src="images/k7-5m.jpg"                class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689244','16:9')"><img src="images/nesetertas.jpg"           class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689113','16:9')"><img src="images/gelin-evetmihayirmi1.jpg" class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689373','9:16')"><img src="images/teknofest.jpg"            class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689290','9:16')"><img src="images/setinenleri.jpg"          class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689403','9:16')"><img src="images/omubumu.jpg"              class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689001','9:16')"><img src="images/ayvazsef.jpg"             class="main-thumbnail"></div>
-        <div class="item-wrapper video-item" onclick="openVideoModal('1144689354','16:9')"><img src="images/fanus.jpg"               class="main-thumbnail"></div>
-    </div>
-    <div style="max-width:1400px;margin:60px auto 0;padding:0 20px;">
-        <h2 style="font-size:24px;opacity:0.9;margin-bottom:30px;">Program Ekran Görüntüleri</h2>
-        <div class="screenshot-grid">
-            <div class="screenshot-item" onclick="openImageModal('images/sırtsırtaproje.png')"><img src="images/sırtsırtaproje.png"></div>
-            <div class="screenshot-item" onclick="openImageModal('images/teknofestproje.png')"><img src="images/teknofestproje.png"></div>
+        <div class="big-box lg" onclick="goToVideos()">
+            <span>Video Çalışmalarım</span>
+            <span class="arrow">&#8594;</span>
+        </div>
+        <div class="big-box lg" onclick="goToImages()">
+            <span>Görsel Çalışmalarım</span>
+            <span class="arrow">&#8594;</span>
         </div>
     </div>
 </div>
 
-<!-- Görsel Sayfası -->
+<!-- ═════════ VİDEO SAYFASI ═════════ -->
+<div id="videos" class="page-section">
+    <div class="back-btn lg" onclick="goHome()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Ana Sayfa
+    </div>
+
+    <div class="section-head">
+        <div class="section-eyebrow">01 — Portfolyo</div>
+        <h1 class="section-title">Video Çalışmalarım</h1>
+        <p class="section-sub">Kurgu, montaj ve içerik üretimi çalışmalarım</p>
+    </div>
+
+    <div class="grid-layout video-grid">
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689325','16:9')">
+            <img src="images/kuma-evetmihayirmi.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689168','9:16')">
+            <img src="images/hilaltufek.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1159228579','9:16')">
+            <img src="images/k7-5m.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689244','16:9')">
+            <img src="images/nesetertas.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689113','16:9')">
+            <img src="images/gelin-evetmihayirmi1.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689373','9:16')">
+            <img src="images/teknofest.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689290','9:16')">
+            <img src="images/setinenleri.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689403','9:16')">
+            <img src="images/omubumu.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689001','9:16')">
+            <img src="images/ayvazsef.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+        <div class="item-wrapper video-item" onclick="openVideoModal('1144689354','16:9')">
+            <img src="images/fanus.jpg" class="main-thumbnail" alt="Video kapağı">
+            <span class="play-chip"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        </div>
+    </div>
+
+    <div class="screenshot-block">
+        <div class="section-head" style="padding:0;margin-bottom:30px;">
+            <div class="section-eyebrow">02 — Süreç</div>
+            <h1 class="section-title" style="font-size:clamp(1.5rem,3vw,2.2rem);">Program Ekran Görüntüleri</h1>
+            <p class="section-sub">Projelerden alınmış çalışma ekranları</p>
+        </div>
+        <div class="screenshot-grid">
+            <div class="screenshot-item" onclick="openImageModal('images/sırtsırtaproje.png')">
+                <img src="images/sırtsırtaproje.png" alt="Sırt Sırta projesi ekran görüntüsü">
+                <div class="cap">Sırt Sırta — Proje Ekranı</div>
+            </div>
+            <div class="screenshot-item" onclick="openImageModal('images/teknofestproje.png')">
+                <img src="images/teknofestproje.png" alt="Teknofest projesi ekran görüntüsü">
+                <div class="cap">Teknofest — Proje Ekranı</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="site-footer">
+        <span><b>Rıfat Emrehan Ayhan</b> — Video Editörü</span>
+        <span>© <span id="year"></span> Tüm hakları saklıdır.</span>
+    </div>
+</div>
+
+<!-- ═════════ GÖRSEL SAYFASI ═════════ -->
 <div id="images" class="page-section">
-    <div class="back-btn lg" onclick="goHome()">← Ana Sayfa</div>
-    <h1 class="section-title">Görsel Çalışmalarım</h1>
+    <div class="back-btn lg" onclick="goHome()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Ana Sayfa
+    </div>
+
+    <div class="section-head">
+        <div class="section-eyebrow">Galeri</div>
+        <h1 class="section-title">Görsel Çalışmalarım</h1>
+        <p class="section-sub">Tasarım ve görsel üretim çalışmalarım</p>
+    </div>
+
     <div class="grid-layout image-grid" id="dynamic-image-grid"></div>
+
+    <div class="site-footer">
+        <span><b>Rıfat Emrehan Ayhan</b> — Video Editörü</span>
+        <span>© <span id="year2"></span> Tüm hakları saklıdır.</span>
+    </div>
 </div>
 
 <script>
-    /* ── Görsel grid ── */
+    /* ── Görsel grid (25 görsel) ── */
     const imageGrid = document.getElementById('dynamic-image-grid');
     for (let i = 1; i <= 25; i++) {
         const item = document.createElement('div');
         item.className = 'item-wrapper image-item';
-        item.onclick   = () => openImageModal(`images/thumbnails/${i}.jpg`);
-        item.innerHTML = `<img src="images/thumbnails/${i}.jpg" class="main-thumbnail"
+        item.onclick = () => openImageModal(`images/thumbnails/${i}.jpg`);
+        item.innerHTML = `<img src="images/thumbnails/${i}.jpg" class="main-thumbnail" alt="Görsel çalışma ${i}"
             onerror="this.src='https://via.placeholder.com/1600x900?text=Görsel+${i}'">`;
         imageGrid.appendChild(item);
     }
 
     /* ── Modal ── */
-    const modal            = document.getElementById('content-modal');
+    const modal = document.getElementById('content-modal');
     const contentContainer = document.getElementById('modal-content-container');
 
     function openVideoModal(id, ratio) {
         const s = ratio === '9:16'
-            ? 'aspect-ratio:9/16;width:400px;'
-            : 'aspect-ratio:16/9;width:1000px;';
+            ? 'aspect-ratio:9/16;width:min(400px,88vw);'
+            : 'aspect-ratio:16/9;width:min(1000px,92vw);';
         contentContainer.innerHTML = `<iframe src="https://player.vimeo.com/video/${id}?autoplay=1"
             style="${s}" frameborder="0" allow="autoplay;fullscreen" allowfullscreen></iframe>`;
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
-
     function openImageModal(src) {
         contentContainer.innerHTML = `<img src="${src}">`;
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
-
     function closeModal() {
         modal.style.display = 'none';
         contentContainer.innerHTML = '';
@@ -407,7 +543,6 @@
 
     /* ── Sayfa geçişleri ── */
     const blurOverlay = document.getElementById('blur-overlay');
-
     function goToVideos() {
         blurOverlay.classList.add('visible');
         setTimeout(() => {
@@ -415,7 +550,6 @@
             document.getElementById('videos').classList.add('active');
         }, 80);
     }
-
     function goToImages() {
         blurOverlay.classList.add('visible');
         setTimeout(() => {
@@ -423,13 +557,17 @@
             document.getElementById('images').classList.add('active');
         }, 80);
     }
-
     function goHome() {
         blurOverlay.classList.remove('visible');
         document.querySelectorAll('.page-section').forEach(s => {
             s.classList.remove('active', 'slide-out-right', 'slide-out-left');
         });
     }
+
+    /* ── Tarih ── */
+    const y = new Date().getFullYear();
+    document.getElementById('year').textContent = y;
+    document.getElementById('year2').textContent = y;
 </script>
 </body>
 </html>
