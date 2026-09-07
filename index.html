@@ -12,16 +12,12 @@
         --white: #ffffff;
         --text: #f2f5fa;
         --muted: #a3aec4;
-        --accent-blue: #94b3ff;
-        --c1: #6366f1;   /* indigo */
-        --c2: #22d3ee;   /* cyan */
-        --c3: #a855f7;   /* violet */
-        --glass: rgba(255,255,255,0.055);
-        --glass-strong: rgba(255,255,255,0.09);
+        --c1: #6366f1;
+        --c2: #22d3ee;
+        --c3: #a855f7;
         --border: rgba(255,255,255,0.14);
         --border-strong: rgba(255,255,255,0.30);
         --radius: 20px;
-        --shadow: 0 28px 70px rgba(0,0,0,0.60);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,17 +31,6 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Derinlik katmanları (video arkaplanın üstüne) ── */
-    body::before {
-        content: '';
-        position: fixed; inset: 0; z-index: -1; pointer-events: none;
-        background:
-            radial-gradient(900px 520px at 80% -10%, rgba(99,102,241,0.22), transparent 60%),
-            radial-gradient(800px 520px at 0% 30%, rgba(34,211,238,0.14), transparent 55%),
-            radial-gradient(900px 600px at 100% 100%, rgba(168,85,247,0.14), transparent 60%),
-            linear-gradient(180deg, rgba(4,5,9,0.55) 0%, rgba(4,5,9,0.72) 100%);
-    }
-
     /* ── Vimeo arkaplan ── */
     #video-bg {
         position: fixed; inset: 0; z-index: -2; overflow: hidden;
@@ -55,11 +40,20 @@
         position: absolute; top: 50%; left: 50%;
         transform: translate(-50%,-50%);
         width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.78vh;
-        border: none; pointer-events: none; opacity: 0.5;
-        filter: saturate(110%) brightness(0.9);
+        border: none; pointer-events: none; opacity: 0.85;
+        filter: saturate(115%) contrast(1.02);
     }
 
-    /* ── Sayfa geçiş sistemi ── */
+    /* ── Etkileşimli nokta arkaplanı ── */
+    #particles-canvas {
+        position: fixed; inset: 0; z-index: 3;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 0.6s ease;
+    }
+    #particles-canvas.hidden { opacity: 0; }
+
+    /* ── Sayfa geçişi ── */
     .page-section {
         position: absolute; top: 0; left: 0; width: 100%;
         min-height: 100vh; padding-bottom: 90px;
@@ -69,11 +63,11 @@
     }
     #blur-overlay {
         position: fixed; inset: 0; z-index: 2;
-        background: rgba(0,0,0,0.40);
-        backdrop-filter: blur(20px) saturate(130%);
-        -webkit-backdrop-filter: blur(20px) saturate(130%);
+        background: rgba(4,6,10,0.22);
+        backdrop-filter: blur(14px) saturate(130%);
+        -webkit-backdrop-filter: blur(14px) saturate(130%);
         pointer-events: none; opacity: 0;
-        transition: opacity 0.75s ease;
+        transition: opacity 0.6s ease;
     }
     #blur-overlay.visible { opacity: 1; }
 
@@ -87,33 +81,16 @@
     #videos { transform: translateX(-100%); }
     #images { transform: translateX(100%); }
 
-    /* ═══════════════ HERO ═══════════════ */
-    .hero { text-align: center; padding: 0 24px; pointer-events: none; }
-    .hero-badge {
-        display: inline-flex; align-items: center; gap: 10px;
-        padding: 8px 18px; margin-bottom: 26px;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background: var(--glass);
-        backdrop-filter: blur(14px);
-        color: var(--muted); font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
-    }
-    .hero-badge .dot {
-        width: 8px; height: 8px; border-radius: 50%;
-        background: linear-gradient(135deg, var(--c2), var(--c1));
-        box-shadow: 0 0 14px var(--c2);
-        animation: pulse 2.2s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
-
+    /* ═══════════ HERO ═══════════ */
+    .hero { text-align: center; padding: 64px 24px 0; pointer-events: none; position: relative; z-index: 20; }
     .hero h1 {
         font-family: 'Sora', sans-serif;
         font-size: clamp(2.6rem, 6vw, 4.6rem);
         font-weight: 800; letter-spacing: -1px; line-height: 1.08; margin: 0;
-        background: linear-gradient(120deg, #ffffff 0%, #dfe7ff 45%, var(--c2) 100%);
+        background: linear-gradient(120deg, #ffffff 0%, #e6ecff 50%, var(--c2) 100%);
         -webkit-background-clip: text; background-clip: text;
         color: transparent;
-        text-shadow: 0 0 60px rgba(120,130,255,0.35);
+        filter: drop-shadow(0 6px 30px rgba(0,0,0,0.7));
     }
     .hero h1 em {
         font-style: normal;
@@ -122,34 +99,34 @@
     }
     .hero h2 {
         font-size: clamp(1rem, 2.2vw, 1.35rem); font-weight: 300;
-        opacity: 0.85; margin-top: 18px; letter-spacing: 4px; text-transform: uppercase; color: var(--muted);
+        opacity: 0.92; margin-top: 18px; letter-spacing: 4px; text-transform: uppercase;
+        color: #cdd6e8;
+        text-shadow: 0 2px 18px rgba(0,0,0,0.9);
     }
     .hero-divider {
         width: 120px; height: 3px; margin: 34px auto 0;
         border-radius: 99px; background: linear-gradient(90deg, transparent, var(--c1), var(--c2), transparent);
     }
 
-    /* ═══════════════ ANA SAYFA BUTONLARI — Liquid Glass ═══════════════ */
+    /* ═══════════ ANA SAYFA BUTONLARI ═══════════ */
     .section-boxes {
-        display: flex; justify-content: center; gap: 42px; margin-top: 70px;
+        display: flex; justify-content: center; gap: 42px; margin-top: 78px;
         pointer-events: all; position: relative; z-index: 30;
         flex-wrap: wrap; padding: 0 20px;
     }
     .lg {
         position: relative; isolation: isolate; overflow: hidden; cursor: pointer;
         color: rgba(255,255,255,0.95);
-        background: rgba(255,255,255,0.01);
+        background: rgba(10,12,20,0.35);
         backdrop-filter: blur(42px) saturate(200%) brightness(1.15);
         -webkit-backdrop-filter: blur(42px) saturate(200%) brightness(1.15);
         border: 1px solid var(--border);
         background-clip: padding-box;
         box-shadow:
-            0 12px 40px rgba(0,0,0,0.45),
-            0 4px 12px rgba(0,0,0,0.30),
+            0 12px 40px rgba(0,0,0,0.55),
+            0 4px 12px rgba(0,0,0,0.35),
             inset 0 1.5px 0 rgba(255,255,255,0.28),
-            inset 1px 0 rgba(255,255,255,0.22),
-            inset 0 -1px 0 rgba(0,0,0,0.35),
-            inset -1px 0 rgba(0,0,0,0.15);
+            inset 1px 0 rgba(255,255,255,0.22);
         transition: transform 0.30s cubic-bezier(0.34,1.56,0.64,1),
                     box-shadow 0.30s ease, background 0.30s ease, border-color 0.30s ease;
         user-select: none; -webkit-user-select: none;
@@ -157,7 +134,7 @@
     .lg::before {
         content: ''; position: absolute; inset: 0; border-radius: inherit;
         background: linear-gradient(130deg,
-            rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 30%,
+            rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 30%,
             rgba(255,255,255,0) 60%, rgba(0,0,0,0.02) 100%);
         pointer-events: none;
     }
@@ -183,7 +160,7 @@
     .big-box:hover .arrow { transform: translateX(4px); box-shadow: 0 0 36px rgba(34,211,238,0.6); }
     .big-box:nth-child(2) .arrow { background: linear-gradient(135deg, var(--c3), var(--c1)); }
 
-    /* ═══════════════ GERİ BUTONU ═══════════════ */
+    /* ═══════════ GERİ BUTONU ═══════════ */
     .back-btn {
         display: inline-flex; align-items: center; gap: 10px;
         font-size: 15px; font-weight: 500; margin: 44px 0 18px 8%;
@@ -193,7 +170,7 @@
     .back-btn:hover { transform: translateY(-2px); border-color: var(--border-strong); color: #fff; }
     .back-btn:hover svg { transform: translateX(-4px); }
 
-    /* ═══════════════ BÖLÜM BAŞLIKLARI ═══════════════ */
+    /* ═══════════ BÖLÜM BAŞLIKLARI ═══════════ */
     .section-head { padding: 0 8%; margin-bottom: 38px; }
     .section-eyebrow {
         display: inline-flex; align-items: center; gap: 10px;
@@ -212,7 +189,7 @@
     }
     .section-sub { color: var(--muted); margin-top: 10px; font-weight: 300; font-size: 1rem; }
 
-    /* ═══════════════ VİDEO & GÖRSEL GRID ═══════════════ */
+    /* ═══════════ VİDEO & GÖRSEL GRID ═══════════ */
     .grid-layout {
         display: grid; gap: 24px;
         max-width: 1400px; margin: 0 auto; padding: 0 26px; box-sizing: border-box;
@@ -248,7 +225,6 @@
     }
     .item-wrapper:hover .main-thumbnail { transform: scale(1.08); filter: brightness(0.75); }
 
-    /* ── Oynat rozeti ── */
     .play-chip {
         position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.7);
         width: 62px; height: 62px; border-radius: 50%;
@@ -284,7 +260,7 @@
     .screenshot-item:hover img { transform: scale(1.05); }
     .screenshot-item:hover .cap { opacity: 1; transform: translateY(0); }
 
-    /* ═══════════════ MODAL ═══════════════ */
+    /* ═══════════ MODAL ═══════════ */
     #content-modal {
         display: none; position: fixed; inset: 0;
         background-color: rgba(4,5,9,0.88);
@@ -365,6 +341,9 @@
 <!-- Blur Overlay -->
 <div id="blur-overlay"></div>
 
+<!-- Etkileşimli nokta arkaplanı -->
+<canvas id="particles-canvas"></canvas>
+
 <!-- Modal -->
 <div id="content-modal" onclick="closeModal()">
     <div class="modal-wrapper" onclick="event.stopPropagation()">
@@ -381,7 +360,6 @@
 <!-- ═════════ ANA SAYFA ═════════ -->
 <div id="home" class="page-section">
     <div class="hero">
-        <div class="hero-badge"><span class="dot"></span> Portfolyo</div>
         <h1>Rıfat Emrehan <em>Ayhan</em></h1>
         <h2>Video Editörü • Kurgu &amp; Montaj • İçerik Üreticisi</h2>
         <div class="hero-divider"></div>
@@ -505,8 +483,8 @@
     </div>
 </div>
 
+<!-- ═════════ ANA SCRIPT ═════════ -->
 <script>
-    /* ── Görsel grid (25 görsel) ── */
     const imageGrid = document.getElementById('dynamic-image-grid');
     for (let i = 1; i <= 25; i++) {
         const item = document.createElement('div');
@@ -517,7 +495,6 @@
         imageGrid.appendChild(item);
     }
 
-    /* ── Modal ── */
     const modal = document.getElementById('content-modal');
     const contentContainer = document.getElementById('modal-content-container');
 
@@ -541,9 +518,9 @@
         document.body.style.overflow = 'auto';
     }
 
-    /* ── Sayfa geçişleri ── */
     const blurOverlay = document.getElementById('blur-overlay');
     function goToVideos() {
+        setParticles(false);
         blurOverlay.classList.add('visible');
         setTimeout(() => {
             document.getElementById('home').classList.add('slide-out-right');
@@ -551,6 +528,7 @@
         }, 80);
     }
     function goToImages() {
+        setParticles(false);
         blurOverlay.classList.add('visible');
         setTimeout(() => {
             document.getElementById('home').classList.add('slide-out-left');
@@ -562,12 +540,180 @@
         document.querySelectorAll('.page-section').forEach(s => {
             s.classList.remove('active', 'slide-out-right', 'slide-out-left');
         });
+        setParticles(true);
     }
 
-    /* ── Tarih ── */
     const y = new Date().getFullYear();
     document.getElementById('year').textContent = y;
     document.getElementById('year2').textContent = y;
 </script>
+
+<!-- ═════════ ETKİLEŞİMLİ NOKTA ARKAPLANI ═════════ -->
+<script>
+(function(){
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let W, H, DPR;
+    let mouseX = -1, mouseY = -1;
+    let lastMove = Date.now();
+    let total = 240;
+
+    function resize() {
+        W = window.innerWidth || document.documentElement.clientWidth;
+        H = window.innerHeight || document.documentElement.clientHeight;
+        DPR = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = W * DPR;
+        canvas.height = H * DPR;
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    window.addEventListener('resize', resize);
+
+    /* ── ŞEKİLLER (0-1 oranlı) ── */
+
+    /* PLAY ikonu — ekranın sol-orta bölgesi */
+    function buildPlay() {
+        const pts = [];
+        const cx = 0.30, cy = 0.50;
+        const w = 0.10, h = 0.22;
+        const seg = Math.round(total * 0.5);
+        for (let k = 0; k <= seg; k++) {
+            const t = k / seg;
+            pts.push([cx - w, cy - h + (h * 2) * t]);
+        }
+        for (let k = 0; k <= seg; k++) {
+            const t = k / seg;
+            pts.push([cx - w + (w * 2.0) * t, cy - h + (h * 2) * t]);
+        }
+        for (let k = 0; k <= seg; k++) {
+            const t = k / seg;
+            pts.push([cx + w - (w * 2.0) * (1 - t), cy + h - (h * 2) * (1 - t)]);
+        }
+        return pts;
+    }
+
+    /* MANZARA ikonu (dağ + güneş + kuş) — sağ-orta bölge */
+    function buildLandscape() {
+        const pts = [];
+        const cx = 0.70, baseY = 0.70;
+        const sunCX = cx + 0.06, sunCY = 0.38, rr = 0.07;
+        const nSun = 40;
+        for (let i = 0; i < nSun; i++) {
+            const a = (i / nSun) * Math.PI * 2;
+            pts.push([sunCX + Math.cos(a) * rr, sunCY + Math.sin(a) * rr]);
+        }
+        const m1 = Math.round(total * 0.16);
+        for (let i = 0; i <= m1; i++) {
+            const t = i / m1;
+            const x = (cx - 0.18) + 0.36 * t;
+            const y = t < 0.5
+                ? (baseY + 0.10) - (t / 0.5) * (baseY + 0.10 - 0.34)
+                : 0.34 + ((t - 0.5) / 0.5) * (baseY + 0.10 - 0.34);
+            pts.push([x, y]);
+        }
+        function bird(ix, iy, s) {
+            const a = [];
+            for (let i = 0; i <= 10; i++) {
+                const t = i / 10;
+                a.push([ix + (t - 0.5) * s, iy - Math.sin(t * Math.PI) * 0.04 * s]);
+            }
+            return a;
+        }
+        pts.push(...bird(cx - 0.03, 0.34, 0.12));
+        pts.push(...bird(cx + 0.04, 0.28, 0.10));
+        const nG = 10;
+        for (let i = 0; i <= nG; i++) {
+            pts.push([cx - 0.20 + 0.40 * (i / nG), baseY + 0.10]);
+        }
+        return pts;
+    }
+
+    const shapePlay      = buildPlay();
+    const shapeLandscape = buildLandscape();
+
+    const parts = [];
+    for (let i = 0; i < total; i++) {
+        parts.push({
+            x: Math.random() * 1000, y: Math.random() * 1000,
+            sx: Math.random() * 2000, sy: Math.random() * 2000,
+            p: shapePlay[i % shapePlay.length],
+            l: shapeLandscape[i % shapeLandscape.length]
+        });
+    }
+
+    const playCol = [34, 211, 238];
+    const landCol = [251, 146, 60];
+
+    window.addEventListener('mousemove', e => {
+        mouseX = e.clientX; mouseY = e.clientY; lastMove = Date.now();
+    });
+    window.addEventListener('touchmove', e => {
+        if (e.touches[0]) { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; lastMove = Date.now(); }
+    });
+    document.addEventListener('mouseleave', () => mouseX = -1);
+
+    function loop() {
+        if (!canvas.classList.contains('hidden')) {
+            ctx.clearRect(0, 0, W, H);
+
+            const idle  = (Date.now() - lastMove) > 2800 || mouseX < 0;
+            const onLeft = mouseX >= 0 && mouseX < W * 0.5;
+
+            const col = onLeft ? playCol : landCol;
+            const colStr = `rgb(${col[0]},${col[1]},${col[2]})`;
+
+            const zl = { x0: W*0.08, y0: H*0.14, x1: W*0.48, y1: H*0.86 };
+            const zr = { x0: W*0.52, y0: H*0.14, x1: W*0.92, y1: H*0.86 };
+
+            const xs = [], ys = [];
+            for (const p of parts) {
+                let tx, ty;
+                if (idle) { tx = p.sx; ty = p.sy; }
+                else if (onLeft) {
+                    tx = zl.x0 + p.p[0] * (zl.x1 - zl.x0);
+                    ty = zl.y0 + p.p[1] * (zl.y1 - zl.y0);
+                } else {
+                    tx = zr.x0 + p.l[0] * (zr.x1 - zr.x0);
+                    ty = zr.y0 + p.l[1] * (zr.y1 - zr.y0);
+                }
+                // Güvenlik: noktalar asla ekran dışına çıkamaz
+                tx = Math.max(5, Math.min(W - 5, tx));
+                ty = Math.max(5, Math.min(H - 5, ty));
+                p.x += (tx - p.x) * 0.06;
+                p.y += (ty - p.y) * 0.06;
+                xs.push(p.x); ys.push(p.y);
+            }
+
+            // Bağlantı çizgileri
+            const thresh = 100;
+            ctx.lineWidth = 1;
+            for (let i = 0; i < total; i++) {
+                for (let j = i + 1; j < total; j++) {
+                    const dx = xs[i]-xs[j], dy = ys[i]-ys[j];
+                    const d2 = dx*dx + dy*dy;
+                    if (d2 < thresh*thresh) {
+                        const a = (1 - Math.sqrt(d2)/thresh) * 0.2;
+                        ctx.strokeStyle = `rgba(${col[0]},${col[1]},${col[2]},${a})`;
+                        ctx.beginPath(); ctx.moveTo(xs[i],ys[i]); ctx.lineTo(xs[j],ys[j]); ctx.stroke();
+                    }
+                }
+            }
+
+            // Parlayan noktalar
+            ctx.shadowColor = colStr; ctx.shadowBlur = 12; ctx.fillStyle = colStr;
+            for (let i = 0; i < total; i++) {
+                ctx.beginPath(); ctx.arc(xs[i], ys[i], 2.1, 0, Math.PI*2); ctx.fill();
+            }
+            ctx.shadowBlur = 0;
+        }
+        requestAnimationFrame(loop);
+    }
+
+    resize();
+    loop();
+    window.setParticles = v => canvas.classList.toggle('hidden', !v);
+})();
+</script>
+
 </body>
 </html>
