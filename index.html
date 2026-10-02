@@ -175,7 +175,7 @@ section{position:relative;padding:clamp(70px,9vw,130px) clamp(18px,5vw,64px)}
 .hero-scroll svg{animation:bob 2.2s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
 
-/* ═════════ 📖 HAKKIMDA (İkili Ekran Görüntüsü Vitrini) ═════════ */
+/* ═════════ 📖 HAKKIMDA (İçten Hafifçe Büyütülmüş Ekran Görüntüleri) ═════════ */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
 .about-visual{position:relative;display:flex;flex-direction:column;gap:16px;max-width:540px}
 .about-frame-duo{
@@ -183,7 +183,15 @@ section{position:relative;padding:clamp(70px,9vw,130px) clamp(18px,5vw,64px)}
   box-shadow:var(--shadow);background:var(--bg-2);cursor:pointer;
   transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s ease,border-color .5s ease;
 }
-.about-frame-duo img{width:100%;aspect-ratio:16/9.5;object-fit:cover;transition:transform .8s ease;filter:saturate(.95) contrast(1.03)}
+/* Görseller çerçeve içerisinde varsayılan olarak hafifçe büyük ve odaklı */
+.about-frame-duo img{
+  width:100%;
+  aspect-ratio:16/9.5;
+  object-fit:cover;
+  transform:scale(1.08);
+  transition:transform .8s cubic-bezier(.2,.7,.2,1);
+  filter:saturate(.95) contrast(1.03);
+}
 .about-frame-duo:first-child{transform:rotate(-2deg)}
 .about-frame-duo:last-child{transform:rotate(2deg);margin-top:-24px}
 .about-frame-duo:hover{
@@ -192,7 +200,9 @@ section{position:relative;padding:clamp(70px,9vw,130px) clamp(18px,5vw,64px)}
   box-shadow:0 34px 70px -20px rgba(0,0,0,.9);
   z-index:5;
 }
-.about-frame-duo:hover img{transform:scale(1.06)}
+.about-frame-duo:hover img{
+  transform:scale(1.15);
+}
 .about-frame-duo::after{
   content:"";position:absolute;inset:0;
   background:linear-gradient(200deg,rgba(138,2,2,.15),transparent 45%,rgba(9,6,6,.4));
@@ -253,7 +263,7 @@ section{position:relative;padding:clamp(70px,9vw,130px) clamp(18px,5vw,64px)}
 .ar916 .p-thumb{aspect-ratio:9/16}
 .p-featured{grid-column:span 2;grid-row:span 2}
 
-/* — Görsel Grid (Numara ve Yazılar Kaldırıldı) — */
+/* — Görsel Grid (Numara ve Yazısız Sade Vitrin) — */
 .visual-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:8px}
 .v-card{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);cursor:pointer;background:var(--bg-2);transition:transform .45s cubic-bezier(.2,.7,.2,1),border-color .45s ease,box-shadow .45s ease}
 .v-card:hover{transform:translateY(-8px);border-color:rgba(184,20,20,.6);box-shadow:0 26px 60px -24px rgba(0,0,0,.8)}
@@ -423,7 +433,7 @@ footer .f-bordo{color:var(--bordo-light)}
   </div>
 </section>
 
-<!-- ═════════ HAKKIMDA (Program Ekran Görüntüleri Buraya Taşındı) ═════════ -->
+<!-- ═════════ HAKKIMDA (Program Ekran Görüntüleri) ═════════ -->
 <section id="hakkimda" class="about">
   <div class="wrap about-grid">
     <div class="about-visual reveal">
@@ -632,8 +642,12 @@ footer .f-bordo{color:var(--bordo-light)}
           E-posta
         </a>
         
-        <!-- Telefon Butonu (Fonksiyonsuz / Hazır) -->
-        <a href="javascript:void(0)" class="btn btn-ghost btn-icon" title="Telefonla İletişim">
+        <!-- ════════════════════════════════════════════════════════════
+             TELEFON NUMARASI ALANI:
+             Aşağıdaki href kısmına "tel:+905XXXXXXXXX" şeklinde numaranızı yazabilirsiniz.
+             Örnek: href="tel:+905551234567"
+             ════════════════════════════════════════════════════════════ -->
+        <a href="tel:BURAYA_TELEFON_NUMARANIZI_YAZIN" class="btn btn-ghost btn-icon" title="Telefonla İletişim">
           <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           Telefon
         </a>
@@ -642,7 +656,7 @@ footer .f-bordo{color:var(--bordo-light)}
       <!-- Sosyal Medya -->
       <div class="socials">
         <a href="https://www.linkedin.com/in/r%C4%B1fatemrehanayhan/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
-          <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" r="2"/></svg>
         </a>
         <a href="https://www.instagram.com/emrehan_ayhan/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg>
